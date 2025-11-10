@@ -26,6 +26,9 @@ export const PropertyFormPage = () => {
   });
   const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [glbFile, setGlbFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (isEditMode) {
@@ -55,7 +58,26 @@ export const PropertyFormPage = () => {
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setImageFile(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleGlbChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.name.toLowerCase().endsWith('.glb')) {
+        setGlbFile(file);
+      } else {
+        alert('Please select a valid GLB file');
+        e.target.value = '';
+      }
     }
   };
 
@@ -63,9 +85,11 @@ export const PropertyFormPage = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    setUploading(true);
 
     try {
       let imageUrl = formData.imageUrl || '';
+      let modelUrl = formData.modelUrl || '';
 
       if (imageFile) {
         const imageRef = ref(storage, `properties/${Date.now()}_${imageFile.name}`);
@@ -73,9 +97,16 @@ export const PropertyFormPage = () => {
         imageUrl = await getDownloadURL(imageRef);
       }
 
+      if (glbFile) {
+        const glbRef = ref(storage, `properties/${Date.now()}_${glbFile.name}`);
+        await uploadBytes(glbRef, glbFile);
+        modelUrl = await getDownloadURL(glbRef);
+      }
+
       const propertyData = {
         ...formData,
         imageUrl,
+        modelUrl,
         updatedAt: serverTimestamp(),
       };
 
@@ -95,6 +126,7 @@ export const PropertyFormPage = () => {
       setError('Failed to save property');
     } finally {
       setLoading(false);
+      setUploading(false);
     }
   };
 
@@ -184,8 +216,38 @@ export const PropertyFormPage = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                 />
-                {formData.imageUrl && !imageFile && (
-                  <p className="text-sm text-muted-foreground">Current image uploaded</p>
+                {(imagePreview || formData.imageUrl) && (
+                  <div className="mt-2">
+                    <img
+                      src={imagePreview || formData.imageUrl}
+                      alt="Property preview"
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {imageFile ? 'New image selected' : 'Current image'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="glbFile">3D Model File (GLB)</Label>
+                <Input
+                  id="glbFile"
+                  type="file"
+                  accept=".glb"
+                  onChange={handleGlbChange}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Upload a GLB 3D model file for this property
+                </p>
+                {glbFile && (
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    New model selected: {glbFile.name} ({(glbFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+                {formData.modelUrl && !glbFile && (
+                  <p className="text-sm text-muted-foreground">Current 3D model uploaded</p>
                 )}
               </div>
 
@@ -198,7 +260,7 @@ export const PropertyFormPage = () => {
               <div className="flex gap-3">
                 <Button type="submit" disabled={loading} className="flex-1">
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? 'Saving...' : isEditMode ? 'Update Property' : 'Create Property'}
+                  {uploading ? 'Uploading files...' : loading ? 'Saving...' : isEditMode ? 'Update Property' : 'Create Property'}
                 </Button>
                 <Button
                   type="button"

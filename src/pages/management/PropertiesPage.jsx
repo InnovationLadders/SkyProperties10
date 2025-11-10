@@ -127,10 +127,18 @@ export const PropertiesPage = () => {
               >
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div
-                    className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center cursor-pointer"
+                    className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center cursor-pointer overflow-hidden"
                     onClick={() => navigate(`/property/${property.id}`)}
                   >
-                    <Building2 className="h-24 w-24 text-primary opacity-50" />
+                    {property.imageUrl ? (
+                      <img
+                        src={property.imageUrl}
+                        alt={property.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Building2 className="h-24 w-24 text-primary opacity-50" />
+                    )}
                   </div>
                   <CardHeader>
                     <CardTitle className="line-clamp-1">{property.name || 'Unnamed Property'}</CardTitle>

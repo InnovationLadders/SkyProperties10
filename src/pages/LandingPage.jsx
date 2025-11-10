@@ -168,8 +168,16 @@ export const LandingPage = () => {
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
                     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
-                      <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center">
-                        <Building2 className="h-24 w-24 text-primary opacity-50" />
+                      <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center overflow-hidden">
+                        {property.imageUrl ? (
+                          <img
+                            src={property.imageUrl}
+                            alt={property.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Building2 className="h-24 w-24 text-primary opacity-50" />
+                        )}
                       </div>
                       <CardHeader>
                         <CardTitle className="line-clamp-1">{property.name || 'Unnamed Property'}</CardTitle>

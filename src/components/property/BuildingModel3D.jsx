@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Box } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Box, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 const Hotspot = ({ position, type, onClick, label }) => {
@@ -55,6 +55,26 @@ const Hotspot = ({ position, type, onClick, label }) => {
   );
 };
 
+const LoadedModel = ({ modelUrl, hotspots, onHotspotClick }) => {
+  const { scene } = useGLTF(modelUrl);
+  const modelRef = useRef();
+
+  return (
+    <group ref={modelRef}>
+      <primitive object={scene} />
+      {hotspots?.map((hotspot, index) => (
+        <Hotspot
+          key={index}
+          position={hotspot.position}
+          type={hotspot.type}
+          label={hotspot.label}
+          onClick={() => onHotspotClick(hotspot)}
+        />
+      ))}
+    </group>
+  );
+};
+
 const PlaceholderBuilding = ({ hotspots, onHotspotClick }) => {
   const meshRef = useRef();
 
@@ -78,9 +98,20 @@ const PlaceholderBuilding = ({ hotspots, onHotspotClick }) => {
   );
 };
 
-export const BuildingModel3D = ({ modelUrl, hotspots = [], onHotspotClick }) => {
+const LoadingFallback = () => {
   return (
-    <div className="w-full h-full">
+    <mesh>
+      <boxGeometry args={[4, 8, 3]} />
+      <meshStandardMaterial color="#999999" opacity={0.5} transparent wireframe />
+    </mesh>
+  );
+};
+
+export const BuildingModel3D = ({ modelUrl, hotspots = [], onHotspotClick }) => {
+  const [modelError, setModelError] = useState(false);
+
+  return (
+    <div className="w-full h-full relative">
       <Canvas>
         <PerspectiveCamera makeDefault position={[8, 5, 8]} />
         <OrbitControls
@@ -96,10 +127,25 @@ export const BuildingModel3D = ({ modelUrl, hotspots = [], onHotspotClick }) => 
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <directionalLight position={[-10, -10, -5]} intensity={0.3} />
 
-        <PlaceholderBuilding hotspots={hotspots} onHotspotClick={onHotspotClick} />
+        {modelUrl && !modelError ? (
+          <Suspense fallback={<LoadingFallback />}>
+            <LoadedModel
+              modelUrl={modelUrl}
+              hotspots={hotspots}
+              onHotspotClick={onHotspotClick}
+            />
+          </Suspense>
+        ) : (
+          <PlaceholderBuilding hotspots={hotspots} onHotspotClick={onHotspotClick} />
+        )}
 
         <gridHelper args={[20, 20, '#cccccc', '#eeeeee']} />
       </Canvas>
+      {modelError && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md text-sm">
+          Failed to load 3D model. Showing placeholder.
+        </div>
+      )}
     </div>
   );
 };

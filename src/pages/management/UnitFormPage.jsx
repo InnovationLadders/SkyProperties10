@@ -27,9 +27,10 @@ export const UnitFormPage = () => {
     listingType: 'sale',
     viewType: 'external',
     description: '',
-    coordinates: null,
+    coordinates: [0, 0, 0],
   });
   const [error, setError] = useState('');
+  const [coordinatesEnabled, setCoordinatesEnabled] = useState(false);
 
   useEffect(() => {
     fetchProperties();
@@ -55,7 +56,11 @@ export const UnitFormPage = () => {
     try {
       const unitDoc = await getDoc(doc(db, 'units', unitId));
       if (unitDoc.exists()) {
-        setFormData(unitDoc.data());
+        const data = unitDoc.data();
+        setFormData(data);
+        if (data.coordinates && Array.isArray(data.coordinates)) {
+          setCoordinatesEnabled(true);
+        }
       }
     } catch (error) {
       console.error('Error fetching unit:', error);
@@ -69,6 +74,31 @@ export const UnitFormPage = () => {
       ...prev,
       [name]: name === 'size' || name === 'price' ? parseFloat(value) || 0 : value,
     }));
+  };
+
+  const handleCoordinateChange = (axis, value) => {
+    const newCoordinates = [...formData.coordinates];
+    const axisIndex = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
+    newCoordinates[axisIndex] = parseFloat(value) || 0;
+    setFormData((prev) => ({
+      ...prev,
+      coordinates: newCoordinates,
+    }));
+  };
+
+  const toggleCoordinates = () => {
+    setCoordinatesEnabled(!coordinatesEnabled);
+    if (!coordinatesEnabled) {
+      setFormData((prev) => ({
+        ...prev,
+        coordinates: [0, 0, 0],
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        coordinates: null,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -269,6 +299,81 @@ export const UnitFormPage = () => {
                   className="w-full min-h-[100px] px-3 py-2 border border-input bg-background rounded-md text-sm"
                   placeholder="Describe the unit..."
                 />
+              </div>
+
+              <div className="space-y-4 border-t pt-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base font-semibold">3D Model Hotspot Position</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Set the coordinates for this unit on the 3D building model
+                    </p>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={coordinatesEnabled}
+                      onChange={toggleCoordinates}
+                      className="w-4 h-4 rounded border-gray-300"
+                    />
+                    <span className="text-sm">Enable</span>
+                  </label>
+                </div>
+
+                {coordinatesEnabled && (
+                  <div className="grid grid-cols-3 gap-4 bg-muted/50 p-4 rounded-lg">
+                    <div className="space-y-2">
+                      <Label htmlFor="coordX" className="text-sm font-medium">
+                        X Position
+                      </Label>
+                      <Input
+                        id="coordX"
+                        type="number"
+                        step="0.1"
+                        value={formData.coordinates?.[0] || 0}
+                        onChange={(e) => handleCoordinateChange('x', e.target.value)}
+                        className="text-center"
+                      />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Left (-) / Right (+)
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="coordY" className="text-sm font-medium">
+                        Y Position
+                      </Label>
+                      <Input
+                        id="coordY"
+                        type="number"
+                        step="0.1"
+                        value={formData.coordinates?.[1] || 0}
+                        onChange={(e) => handleCoordinateChange('y', e.target.value)}
+                        className="text-center"
+                      />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Down (-) / Up (+)
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="coordZ" className="text-sm font-medium">
+                        Z Position
+                      </Label>
+                      <Input
+                        id="coordZ"
+                        type="number"
+                        step="0.1"
+                        value={formData.coordinates?.[2] || 0}
+                        onChange={(e) => handleCoordinateChange('z', e.target.value)}
+                        className="text-center"
+                      />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Back (-) / Front (+)
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {error && (
