@@ -110,14 +110,14 @@ export const LandingPage = () => {
                     placeholder={t('landing.searchPlaceholder')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-12"
+                    className="pl-10 h-12 bg-white text-gray-900 placeholder:text-gray-500"
                   />
                 </div>
                 <div className="flex gap-2">
                   <select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
-                    className="h-12 px-4 rounded-md border border-input bg-background text-sm"
+                    className="h-12 px-4 rounded-md border border-input bg-white text-gray-900 text-sm"
                   >
                     <option value="all">All</option>
                     <option value="sale">{t('landing.forSale')}</option>
