@@ -9,12 +9,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { Wrench, Star, Clock, CheckCircle, Edit, Save, Plus } from 'lucide-react';
+import { TICKET_STATUS } from '../../utils/constants';
 
 export const ServicesPage = () => {
   const navigate = useNavigate();
   const { currentUser, userProfile } = useAuth();
-  const [services, setServices] = useState([]);
+  const [allTickets, setAllTickets] = useState([]);
   const [completedTickets, setCompletedTickets] = useState([]);
+  const [activeTickets, setActiveTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -40,28 +42,31 @@ export const ServicesPage = () => {
         hourlyRate: userProfile?.hourlyRate || '',
       });
 
-      const servicesQuery = query(
-        collection(db, 'services'),
-        where('providerId', '==', currentUser.uid)
-      );
-      const servicesSnapshot = await getDocs(servicesQuery);
-      const servicesData = servicesSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setServices(servicesData);
-
       const ticketsQuery = query(
         collection(db, 'tickets'),
-        where('assignedTo', '==', currentUser.uid),
-        where('status', 'in', ['completed', 'closed'])
+        where('assignedTo', '==', currentUser.uid)
       );
       const ticketsSnapshot = await getDocs(ticketsQuery);
       const ticketsData = ticketsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-      setCompletedTickets(ticketsData);
+
+      setAllTickets(ticketsData);
+
+      const completed = ticketsData.filter(ticket =>
+        ticket.status === TICKET_STATUS.COMPLETED ||
+        ticket.status === TICKET_STATUS.CLOSED ||
+        ticket.status === TICKET_STATUS.RATED
+      );
+      setCompletedTickets(completed);
+
+      const active = ticketsData.filter(ticket =>
+        ticket.status === TICKET_STATUS.OPEN ||
+        ticket.status === TICKET_STATUS.ASSIGNED ||
+        ticket.status === TICKET_STATUS.IN_PROGRESS
+      );
+      setActiveTickets(active);
     } catch (error) {
       console.error('Error fetching service data:', error);
     } finally {
@@ -100,15 +105,15 @@ export const ServicesPage = () => {
     },
     {
       title: 'Active Tickets',
-      value: services.filter(s => s.status === 'active').length,
+      value: activeTickets.length,
       icon: Clock,
       color: 'from-blue-500 to-blue-600',
     },
     {
-      title: 'Total Services',
-      value: services.length,
+      title: 'Total Tickets',
+      value: allTickets.length,
       icon: Wrench,
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-orange-500 to-orange-600',
     },
   ];
 
