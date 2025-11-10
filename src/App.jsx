@@ -16,6 +16,8 @@ import { UnitFormPage } from './pages/management/UnitFormPage';
 import { CoordinateVisualizerPage } from './pages/management/CoordinateVisualizerPage';
 import { TicketsPage } from './pages/tickets/TicketsPage';
 import { CreateTicketPage } from './pages/tickets/CreateTicketPage';
+import { TicketDetailPage } from './pages/tickets/TicketDetailPage';
+import { ServicesPage } from './pages/services/ServicesPage';
 import { ContractsPage } from './pages/contracts/ContractsPage';
 import { ContractFormPage } from './pages/contracts/ContractFormPage';
 import { ContractDetailPage } from './pages/contracts/ContractDetailPage';
@@ -117,6 +119,23 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <CreateTicketPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/tickets/:ticketId"
+                element={
+                  <ProtectedRoute>
+                    <TicketDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/services"
+                element={
+                  <ProtectedRoute>
+                    <ServicesPage />
                   </ProtectedRoute>
                 }
               />
