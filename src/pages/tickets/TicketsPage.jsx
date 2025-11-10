@@ -30,18 +30,27 @@ export const TicketsPage = () => {
     try {
       let ticketsQuery = query(collection(db, 'tickets'), orderBy('createdAt', 'desc'));
 
+      console.log('=== TICKETS PAGE DEBUG ===');
+      console.log('User Role:', userProfile?.role);
+      console.log('Current User UID:', currentUser.uid);
+      console.log('Current User Email:', currentUser.email);
+
       if (userProfile?.role === USER_ROLES.TENANT) {
+        console.log('Fetching tickets for TENANT (createdBy ==', currentUser.uid, ')');
         ticketsQuery = query(
           collection(db, 'tickets'),
           where('createdBy', '==', currentUser.uid),
           orderBy('createdAt', 'desc')
         );
       } else if (userProfile?.role === USER_ROLES.SERVICE_PROVIDER) {
+        console.log('Fetching tickets for SERVICE_PROVIDER (assignedTo ==', currentUser.uid, ')');
         ticketsQuery = query(
           collection(db, 'tickets'),
           where('assignedTo', '==', currentUser.uid),
           orderBy('createdAt', 'desc')
         );
+      } else {
+        console.log('Fetching all tickets (Admin/Manager/Other)');
       }
 
       const [ticketsSnapshot, propertiesSnapshot] = await Promise.all([
@@ -49,10 +58,25 @@ export const TicketsPage = () => {
         getDocs(collection(db, 'properties')),
       ]);
 
-      const ticketsData = ticketsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const ticketsData = ticketsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        if (userProfile?.role === USER_ROLES.SERVICE_PROVIDER) {
+          console.log('Ticket found:', {
+            id: doc.id,
+            title: data.title,
+            assignedTo: data.assignedTo,
+            assignedToEmail: data.assignedToEmail,
+            status: data.status
+          });
+        }
+        return {
+          id: doc.id,
+          ...data,
+        };
+      });
+
+      console.log('Total tickets fetched:', ticketsData.length);
+      console.log('========================');
 
       const propertiesData = {};
       propertiesSnapshot.docs.forEach((doc) => {
@@ -63,6 +87,7 @@ export const TicketsPage = () => {
       setProperties(propertiesData);
     } catch (error) {
       console.error('Error fetching tickets:', error);
+      console.error('Error details:', error.message);
     } finally {
       setLoading(false);
     }

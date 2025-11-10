@@ -32,11 +32,25 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
 
       if (user) {
+        console.log('Auth state changed - User logged in:', {
+          uid: user.uid,
+          email: user.email
+        });
+
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
-          setUserProfile(userDoc.data());
+          const profile = userDoc.data();
+          console.log('User profile loaded:', {
+            uid: profile.uid,
+            email: profile.email,
+            role: profile.role
+          });
+          setUserProfile(profile);
+        } else {
+          console.warn('User document not found in Firestore for UID:', user.uid);
         }
       } else {
+        console.log('Auth state changed - User logged out');
         setUserProfile(null);
       }
 
@@ -50,6 +64,12 @@ export const AuthProvider = ({ children }) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
+    console.log('Creating new user profile:', {
+      uid: user.uid,
+      email: user.email,
+      role: role || USER_ROLES.PUBLIC
+    });
+
     const userProfileData = {
       uid: user.uid,
       email: user.email,
@@ -59,6 +79,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     await setDoc(doc(db, 'users', user.uid), userProfileData);
+    console.log('User profile created successfully in Firestore');
     setUserProfile(userProfileData);
 
     return userCredential;
@@ -73,9 +94,15 @@ export const AuthProvider = ({ children }) => {
     const userCredential = await signInWithPopup(auth, provider);
     const user = userCredential.user;
 
+    console.log('Google login - User authenticated:', {
+      uid: user.uid,
+      email: user.email
+    });
+
     const userDoc = await getDoc(doc(db, 'users', user.uid));
 
     if (!userDoc.exists()) {
+      console.log('Creating new Google user profile in Firestore');
       const userProfileData = {
         uid: user.uid,
         email: user.email,
@@ -86,7 +113,10 @@ export const AuthProvider = ({ children }) => {
       };
 
       await setDoc(doc(db, 'users', user.uid), userProfileData);
+      console.log('Google user profile created successfully');
       setUserProfile(userProfileData);
+    } else {
+      console.log('Existing Google user profile found');
     }
 
     return userCredential;

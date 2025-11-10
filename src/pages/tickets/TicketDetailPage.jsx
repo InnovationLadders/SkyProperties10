@@ -138,8 +138,23 @@ export const TicketDetailPage = () => {
 
     setUpdating(true);
     try {
+      const assignedProvider = serviceProviders.find(p => p.id === selectedProvider);
+
+      console.log('=== TICKET ASSIGNMENT DEBUG ===');
+      console.log('Selected Provider ID:', selectedProvider);
+      console.log('Provider Details:', assignedProvider);
+      console.log('Current User UID:', currentUser.uid);
+      console.log('Ticket ID:', ticketId);
+      console.log('==============================');
+
+      if (!assignedProvider) {
+        throw new Error('Selected service provider not found');
+      }
+
       await updateDoc(doc(db, 'tickets', ticketId), {
         assignedTo: selectedProvider,
+        assignedToEmail: assignedProvider.email,
+        assignedToName: assignedProvider.displayName || assignedProvider.email,
         assignedBy: currentUser.uid,
         assignedAt: serverTimestamp(),
         status: TICKET_STATUS.ASSIGNED,
@@ -150,16 +165,17 @@ export const TicketDetailPage = () => {
         ticketId,
         userId: currentUser.uid,
         userName: userProfile?.displayName || userProfile?.email,
-        content: `Ticket assigned to service provider`,
+        content: `Ticket assigned to ${assignedProvider.displayName || assignedProvider.email}`,
         type: 'system',
         createdAt: serverTimestamp(),
       });
 
+      console.log('✓ Ticket assignment successful');
       setError('');
       await fetchTicketData();
     } catch (error) {
-      console.error('Error assigning ticket:', error);
-      setError('Failed to assign ticket');
+      console.error('✗ Error assigning ticket:', error);
+      setError(`Failed to assign ticket: ${error.message}`);
     } finally {
       setUpdating(false);
     }

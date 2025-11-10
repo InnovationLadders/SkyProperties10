@@ -165,6 +165,20 @@ The property home page features:
 - 3D models currently use placeholder geometry; implement GLB loader for actual models
 - Environment variables are pre-configured but should be secured in production
 
+### Ticket Assignment Debugging
+
+If service providers report not seeing assigned tickets:
+
+1. Open browser console in development mode
+2. Run `window.diagnoseTickets()` to analyze ticket assignments
+3. Run `window.fixTickets()` to automatically correct any issues
+4. See `TICKET_DIAGNOSTICS.md` for detailed troubleshooting guide
+
+The app includes comprehensive logging for:
+- User authentication and profile loading
+- Ticket queries and filtering
+- Ticket assignment operations
+
 ## License
 
 ISC
