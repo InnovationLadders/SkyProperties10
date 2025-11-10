@@ -211,11 +211,11 @@ export const LandingPage = () => {
                           <Building2 className="h-24 w-24 text-primary opacity-50" />
                         )}
                       </div>
-                      <CardHeader>
-                        <CardTitle className="line-clamp-1">{property.name || 'Unnamed Property'}</CardTitle>
-                        <CardDescription className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4" />
-                          {property.address || 'No address'}
+                      <CardHeader className="space-y-3">
+                        <CardTitle className="line-clamp-2 min-h-[3.5rem]">{property.name || 'Unnamed Property'}</CardTitle>
+                        <CardDescription className="flex items-center gap-2 mt-2">
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          <span className="line-clamp-1">{property.address || 'No address'}</span>
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
