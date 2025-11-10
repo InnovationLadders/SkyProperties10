@@ -28,10 +28,34 @@ export const PropertiesPage = () => {
       const propertiesRef = collection(db, 'properties');
       const q = query(propertiesRef, orderBy('createdAt', 'desc'));
       const snapshot = await getDocs(q);
-      const propertiesData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+
+      const unitsRef = collection(db, 'units');
+      const unitsSnapshot = await getDocs(unitsRef);
+
+      const unitsByProperty = {};
+      unitsSnapshot.docs.forEach((doc) => {
+        const unit = doc.data();
+        const propertyId = unit.propertyId;
+        if (!unitsByProperty[propertyId]) {
+          unitsByProperty[propertyId] = { total: 0, available: 0 };
+        }
+        unitsByProperty[propertyId].total += 1;
+        if (unit.status === 'available') {
+          unitsByProperty[propertyId].available += 1;
+        }
+      });
+
+      const propertiesData = snapshot.docs.map((doc) => {
+        const propertyId = doc.id;
+        const counts = unitsByProperty[propertyId] || { total: 0, available: 0 };
+        return {
+          id: propertyId,
+          ...doc.data(),
+          totalUnits: counts.total,
+          availableUnits: counts.available,
+        };
+      });
+
       setProperties(propertiesData);
     } catch (error) {
       console.error('Error fetching properties:', error);
