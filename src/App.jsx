@@ -13,6 +13,7 @@ import { PropertiesPage } from './pages/management/PropertiesPage';
 import { PropertyFormPage } from './pages/management/PropertyFormPage';
 import { UnitsPage } from './pages/management/UnitsPage';
 import { UnitFormPage } from './pages/management/UnitFormPage';
+import { CoordinateVisualizerPage } from './pages/management/CoordinateVisualizerPage';
 import { TicketsPage } from './pages/tickets/TicketsPage';
 import { CreateTicketPage } from './pages/tickets/CreateTicketPage';
 import { ContractsPage } from './pages/contracts/ContractsPage';
@@ -91,6 +92,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <UnitFormPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/units/visualizer"
+                element={
+                  <ProtectedRoute>
+                    <CoordinateVisualizerPage />
                   </ProtectedRoute>
                 }
               />

@@ -6,8 +6,10 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Calculator, Wand2 } from 'lucide-react';
 import { UNIT_STATUS } from '../../utils/constants';
+import { CoordinatePicker3D } from '../../components/property/CoordinatePicker3D';
+import { coordinateCalculator } from '../../utils/coordinateCalculator';
 
 export const UnitFormPage = () => {
   const navigate = useNavigate();
@@ -31,6 +33,8 @@ export const UnitFormPage = () => {
   });
   const [error, setError] = useState('');
   const [coordinatesEnabled, setCoordinatesEnabled] = useState(false);
+  const [showCoordinatePicker, setShowCoordinatePicker] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   useEffect(() => {
     fetchProperties();
@@ -70,9 +74,33 @@ export const UnitFormPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'propertyId') {
+      const property = properties.find((p) => p.id === value);
+      setSelectedProperty(property);
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'size' || name === 'price' ? parseFloat(value) || 0 : value,
+    }));
+
+    if (name === 'floor' && coordinatesEnabled) {
+      autoCalculateCoordinates(formData.unitNumber, value);
+    }
+  };
+
+  const autoCalculateCoordinates = (unitNumber, floor) => {
+    if (!unitNumber || !floor) return;
+
+    const calculatedCoords = coordinateCalculator.calculateUnitPosition(
+      floor,
+      unitNumber
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      coordinates: calculatedCoords,
     }));
   };
 
@@ -321,56 +349,102 @@ export const UnitFormPage = () => {
                 </div>
 
                 {coordinatesEnabled && (
-                  <div className="grid grid-cols-3 gap-4 bg-muted/50 p-4 rounded-lg">
-                    <div className="space-y-2">
-                      <Label htmlFor="coordX" className="text-sm font-medium">
-                        X Position
-                      </Label>
-                      <Input
-                        id="coordX"
-                        type="number"
-                        step="0.1"
-                        value={formData.coordinates?.[0] || 0}
-                        onChange={(e) => handleCoordinateChange('x', e.target.value)}
-                        className="text-center"
-                      />
-                      <p className="text-xs text-muted-foreground text-center">
-                        Left (-) / Right (+)
-                      </p>
+                  <div className="space-y-4">
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowCoordinatePicker(!showCoordinatePicker)}
+                        className="flex-1"
+                      >
+                        <Wand2 className="h-4 w-4 mr-2" />
+                        {showCoordinatePicker ? 'Hide' : 'Show'} Interactive Picker
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => autoCalculateCoordinates(formData.unitNumber, formData.floor)}
+                        disabled={!formData.floor || !formData.unitNumber}
+                      >
+                        <Calculator className="h-4 w-4 mr-2" />
+                        Auto Calculate
+                      </Button>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="coordY" className="text-sm font-medium">
-                        Y Position
-                      </Label>
-                      <Input
-                        id="coordY"
-                        type="number"
-                        step="0.1"
-                        value={formData.coordinates?.[1] || 0}
-                        onChange={(e) => handleCoordinateChange('y', e.target.value)}
-                        className="text-center"
+                    {showCoordinatePicker && (
+                      <CoordinatePicker3D
+                        modelUrl={selectedProperty?.modelUrl}
+                        currentCoordinate={formData.coordinates}
+                        onCoordinateChange={(newCoords) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            coordinates: newCoords,
+                          }));
+                        }}
+                        unitLabel={formData.unitNumber || 'Unit'}
                       />
-                      <p className="text-xs text-muted-foreground text-center">
-                        Down (-) / Up (+)
-                      </p>
+                    )}
+
+                    <div className="grid grid-cols-3 gap-4 bg-muted/50 p-4 rounded-lg">
+                      <div className="space-y-2">
+                        <Label htmlFor="coordX" className="text-sm font-medium">
+                          X Position
+                        </Label>
+                        <Input
+                          id="coordX"
+                          type="number"
+                          step="0.1"
+                          value={formData.coordinates?.[0] || 0}
+                          onChange={(e) => handleCoordinateChange('x', e.target.value)}
+                          className="text-center"
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          Left (-) / Right (+)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="coordY" className="text-sm font-medium">
+                          Y Position
+                        </Label>
+                        <Input
+                          id="coordY"
+                          type="number"
+                          step="0.1"
+                          value={formData.coordinates?.[1] || 0}
+                          onChange={(e) => handleCoordinateChange('y', e.target.value)}
+                          className="text-center"
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          Down (-) / Up (+)
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="coordZ" className="text-sm font-medium">
+                          Z Position
+                        </Label>
+                        <Input
+                          id="coordZ"
+                          type="number"
+                          step="0.1"
+                          value={formData.coordinates?.[2] || 0}
+                          onChange={(e) => handleCoordinateChange('z', e.target.value)}
+                          className="text-center"
+                        />
+                        <p className="text-xs text-muted-foreground text-center">
+                          Back (-) / Front (+)
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="coordZ" className="text-sm font-medium">
-                        Z Position
-                      </Label>
-                      <Input
-                        id="coordZ"
-                        type="number"
-                        step="0.1"
-                        value={formData.coordinates?.[2] || 0}
-                        onChange={(e) => handleCoordinateChange('z', e.target.value)}
-                        className="text-center"
-                      />
-                      <p className="text-xs text-muted-foreground text-center">
-                        Back (-) / Front (+)
-                      </p>
+                    <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md">
+                      <strong>Current Position:</strong> {coordinateCalculator.formatCoordinate(formData.coordinates)}
+                      {formData.floor && (
+                        <div className="mt-1">
+                          Floor {formData.floor} typical Y range: {coordinateCalculator.calculateFloorY(formData.floor).toFixed(1)}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

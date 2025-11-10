@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Plus, Building2, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { Plus, Building2, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
 import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
@@ -95,10 +95,16 @@ export const UnitsPage = () => {
             <h1 className="text-3xl font-bold mb-2">Units</h1>
             <p className="text-muted-foreground">Manage all units across properties</p>
           </div>
-          <Button onClick={() => navigate('/units/create')}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Unit
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/units/visualizer')}>
+              <Eye className="h-4 w-4 mr-2" />
+              3D Visualizer
+            </Button>
+            <Button onClick={() => navigate('/units/create')}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Unit
+            </Button>
+          </div>
         </div>
 
         <div className="mb-6 flex gap-4 flex-wrap">
