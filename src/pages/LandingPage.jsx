@@ -1,0 +1,246 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { Search, Building2, MapPin, DollarSign, Filter } from 'lucide-react';
+import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
+import { UNIT_STATUS } from '../utils/constants';
+
+export const LandingPage = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    setLoading(true);
+    try {
+      const propertiesRef = collection(db, 'properties');
+      const q = query(propertiesRef, orderBy('createdAt', 'desc'), limit(12));
+      const snapshot = await getDocs(q);
+      const propertiesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProperties(propertiesData);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredProperties = properties.filter((property) => {
+    const matchesSearch = property.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.address?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
+  });
+
+  return (
+    <div className="min-h-screen">
+      <section className="relative bg-gradient-to-br from-primary to-secondary text-white py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+              {t('landing.title')}
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-90">
+              {t('landing.subtitle')}
+            </p>
+
+            <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-xl p-4">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    type="text"
+                    placeholder={t('landing.searchPlaceholder')}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 h-12"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="h-12 px-4 rounded-md border border-input bg-background text-sm"
+                  >
+                    <option value="all">All</option>
+                    <option value="sale">{t('landing.forSale')}</option>
+                    <option value="rent">{t('landing.forRent')}</option>
+                  </select>
+                  <Button size="lg" className="h-12">
+                    <Filter className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link to="/login">
+                <Button size="lg" variant="outline" className="bg-white text-primary hover:bg-gray-100">
+                  {t('common.login')}
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button size="lg" variant="secondary">
+                  {t('common.register')}
+                </Button>
+              </Link>
+              <Button size="lg" variant="ghost" className="text-white hover:bg-white/10">
+                {t('common.browseAsGuest')}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent"></div>
+      </section>
+
+      <section className="py-16 px-4 bg-background">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="text-3xl font-bold text-center mb-12">
+              {t('landing.featuredProperties')}
+            </h2>
+
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <Card key={i} className="overflow-hidden">
+                    <div className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                    <CardContent className="p-4">
+                      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : filteredProperties.length === 0 ? (
+              <div className="text-center py-12">
+                <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-semibold mb-2">No properties found</h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your search or filters
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProperties.map((property, index) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                  >
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
+                      <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center">
+                        <Building2 className="h-24 w-24 text-primary opacity-50" />
+                      </div>
+                      <CardHeader>
+                        <CardTitle className="line-clamp-1">{property.name || 'Unnamed Property'}</CardTitle>
+                        <CardDescription className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {property.address || 'No address'}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {property.description || 'No description available'}
+                        </p>
+                        <div className="mt-4 flex items-center justify-between">
+                          <div className="text-sm">
+                            <span className="font-semibold">{property.totalUnits || 0}</span> units
+                          </div>
+                          <div className="text-sm text-green-600 dark:text-green-400">
+                            <span className="font-semibold">{property.availableUnits || 0}</span> available
+                          </div>
+                        </div>
+                      </CardContent>
+                      <CardFooter>
+                        <Button className="w-full" onClick={() => navigate(`/property/${property.id}`)}>
+                          {t('landing.viewDetails')}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="py-16 px-4 bg-muted">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Building2 className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Property Management</h3>
+              <p className="text-muted-foreground">
+                Comprehensive tools to manage your properties and units efficiently
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Smart Marketplace</h3>
+              <p className="text-muted-foreground">
+                Find your perfect property with advanced search and 3D visualization
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Secure Payments</h3>
+              <p className="text-muted-foreground">
+                Integrated payment system for rent, fees, and property transactions
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};

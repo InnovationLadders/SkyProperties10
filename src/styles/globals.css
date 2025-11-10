@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #40A9FF;
+  --color-primary-50: #E6F7FF;
+  --color-primary-100: #BAE7FF;
+  --color-primary-200: #91D5FF;
+  --color-primary-300: #69C0FF;
+  --color-primary-400: #40A9FF;
+  --color-primary-500: #1890FF;
+  --color-primary-600: #096DD9;
+  --color-primary-700: #0050B3;
+  --color-primary-800: #003A8C;
+  --color-primary-900: #002766;
+
+  --color-secondary: #708238;
+  --color-secondary-50: #F4F6EC;
+  --color-secondary-100: #E8EDC8;
+  --color-secondary-200: #D8E29F;
+  --color-secondary-300: #C5D576;
+  --color-secondary-400: #B0C753;
+  --color-secondary-500: #9AB930;
+  --color-secondary-600: #708238;
+  --color-secondary-700: #5A6A2E;
+  --color-secondary-800: #455124;
+  --color-secondary-900: #30391A;
+}
+
+@layer base {
+  * {
+    border-color: hsl(214.3 31.8% 91.4%);
+  }
+
+  body {
+    background-color: hsl(0 0% 100%);
+    color: hsl(222.2 84% 4.9%);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  .dark body {
+    background-color: hsl(222.2 84% 4.9%);
+    color: hsl(210 40% 98%);
+  }
+
+  .dark * {
+    border-color: hsl(217.2 32.6% 17.5%);
+  }
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="ltr"] {
+  direction: ltr;
+}
+
+.rtl-mirror {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(1);
+}

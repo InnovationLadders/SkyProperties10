@@ -1,0 +1,89 @@
+{
+  "common": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "browseAsGuest": "Browse as Guest",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "landing": {
+    "title": "Welcome to SkyProperties",
+    "subtitle": "Your Premier Property Management & Marketplace Platform",
+    "searchPlaceholder": "Search properties by location, type, or price...",
+    "featuredProperties": "Featured Properties",
+    "forSale": "For Sale",
+    "forRent": "For Rent",
+    "viewDetails": "View Details"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "selectRole": "Select Your Role",
+    "roles": {
+      "admin": "Administrator",
+      "propertyManager": "Property Manager",
+      "unitOwner": "Unit Owner",
+      "tenant": "Tenant",
+      "serviceProvider": "Service Provider"
+    }
+  },
+  "property": {
+    "properties": "Properties",
+    "addProperty": "Add Property",
+    "propertyName": "Property Name",
+    "address": "Address",
+    "description": "Description",
+    "units": "Units",
+    "availableUnits": "Available Units",
+    "totalUnits": "Total Units"
+  },
+  "unit": {
+    "units": "Units",
+    "unitNumber": "Unit Number",
+    "floor": "Floor",
+    "type": "Type",
+    "size": "Size",
+    "price": "Price",
+    "status": "Status",
+    "available": "Available",
+    "reserved": "Reserved",
+    "sold": "Sold",
+    "rented": "Rented",
+    "owner": "Owner",
+    "tenant": "Tenant"
+  },
+  "ticket": {
+    "tickets": "Tickets",
+    "createTicket": "Create Ticket",
+    "ticketTitle": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "assignedTo": "Assigned To",
+    "statuses": {
+      "open": "Open",
+      "assigned": "Assigned",
+      "inProgress": "In Progress",
+      "completed": "Completed",
+      "rated": "Rated",
+      "closed": "Closed"
+    }
+  }
+}
