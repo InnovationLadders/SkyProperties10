@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -20,10 +20,18 @@ export const PropertyHomePage = () => {
   const [showMediaViewer, setShowMediaViewer] = useState(false);
   const [mediaViewerIndex, setMediaViewerIndex] = useState(0);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const unitDetailsRef = useRef(null);
 
   useEffect(() => {
     setCurrentMediaIndex(0);
+    if (selectedUnit && unitDetailsRef.current) {
+      unitDetailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, [selectedUnit]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   useEffect(() => {
     fetchPropertyData();
@@ -103,6 +111,11 @@ export const PropertyHomePage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
+            <div className="mb-3 px-1">
+              <p className="text-sm text-muted-foreground">
+                Click on a unit hotspot in the 3D model to view details
+              </p>
+            </div>
             <Card className="overflow-hidden">
               <CardContent className="p-0">
                 <div className="h-[600px] bg-gray-100 dark:bg-gray-800">
@@ -111,6 +124,30 @@ export const PropertyHomePage = () => {
                     hotspots={hotspots}
                     onHotspotClick={handleHotspotClick}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Legend</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-500 rounded"></div>
+                  <span className="text-sm">For Sale (External)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                  <span className="text-sm">For Sale (Internal)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                  <span className="text-sm">For Rent (External)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm">For Rent (Internal)</span>
                 </div>
               </CardContent>
             </Card>
@@ -160,7 +197,7 @@ export const PropertyHomePage = () => {
             </Card>
           </div>
 
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" ref={unitDetailsRef}>
             <AnimatePresence mode="wait">
               {selectedUnit ? (
                 <motion.div
@@ -345,37 +382,13 @@ export const PropertyHomePage = () => {
                     <CardContent className="py-12 text-center">
                       <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <p className="text-muted-foreground">
-                        Click on a unit hotspot or card to view details
+                        Select a unit to view details
                       </p>
                     </CardContent>
                   </Card>
                 </motion.div>
               )}
             </AnimatePresence>
-
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle>Legend</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span className="text-sm">For Sale (External)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  <span className="text-sm">For Sale (Internal)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                  <span className="text-sm">For Rent (External)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm">For Rent (Internal)</span>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
