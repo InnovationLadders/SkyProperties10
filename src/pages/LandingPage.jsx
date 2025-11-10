@@ -10,6 +10,7 @@ import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { UNIT_STATUS } from '../utils/constants';
 import { seedDatabase } from '../utils/seedData';
+import bannerImage from '../assets/building1.jpg';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -86,18 +87,25 @@ export const LandingPage = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="relative bg-gradient-to-br from-primary to-secondary text-white py-20 px-4">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative text-white py-20 px-4 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${bannerImage})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-secondary/80"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
               {t('landing.title')}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">
+            <p className="text-xl md:text-2xl mb-8 drop-shadow-md">
               {t('landing.subtitle')}
             </p>
 
