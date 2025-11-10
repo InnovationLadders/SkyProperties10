@@ -16,6 +16,8 @@ import { UnitFormPage } from './pages/management/UnitFormPage';
 import { TicketsPage } from './pages/tickets/TicketsPage';
 import { CreateTicketPage } from './pages/tickets/CreateTicketPage';
 import { ContractsPage } from './pages/contracts/ContractsPage';
+import { ContractFormPage } from './pages/contracts/ContractFormPage';
+import { ContractDetailPage } from './pages/contracts/ContractDetailPage';
 import { PaymentsPage } from './pages/payments/PaymentsPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
 import './lib/i18n';
@@ -115,6 +117,30 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ContractsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contracts/create"
+                element={
+                  <ProtectedRoute>
+                    <ContractFormPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contracts/edit/:contractId"
+                element={
+                  <ProtectedRoute>
+                    <ContractFormPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/contracts/:contractId"
+                element={
+                  <ProtectedRoute>
+                    <ContractDetailPage />
                   </ProtectedRoute>
                 }
               />
