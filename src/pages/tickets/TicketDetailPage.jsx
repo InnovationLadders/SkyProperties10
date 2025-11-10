@@ -239,17 +239,17 @@ export const TicketDetailPage = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case TICKET_STATUS.OPEN:
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-blue-100 text-blue-800';
       case TICKET_STATUS.ASSIGNED:
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200';
+        return 'bg-purple-100 text-purple-800';
       case TICKET_STATUS.IN_PROGRESS:
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-yellow-100 text-yellow-800';
       case TICKET_STATUS.COMPLETED:
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-green-100 text-green-800';
       case TICKET_STATUS.CLOSED:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -548,9 +548,9 @@ export const TicketDetailPage = () => {
             )}
 
             {error && (
-              <Card className="border-red-200 bg-red-50 dark:bg-red-900/20">
+              <Card className="border-red-200 bg-red-50">
                 <CardContent className="pt-6">
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                  <p className="text-sm text-red-600">{error}</p>
                 </CardContent>
               </Card>
             )}

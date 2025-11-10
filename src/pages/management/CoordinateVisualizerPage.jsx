@@ -192,7 +192,7 @@ export const CoordinateVisualizerPage = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-[500px] bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                <div className="h-[500px] bg-gray-100 rounded-lg overflow-hidden">
                   <BuildingModel3D
                     modelUrl={selectedProperty?.modelUrl}
                     hotspots={hotspots}
@@ -225,8 +225,8 @@ export const CoordinateVisualizerPage = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {unitsWithoutCoordinates.length > 0 && (
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-md">
-                    <h4 className="font-semibold text-sm text-red-900 dark:text-red-200 mb-2">
+                  <div className="p-3 bg-red-50 rounded-md">
+                    <h4 className="font-semibold text-sm text-red-900 mb-2">
                       Units Without Coordinates ({unitsWithoutCoordinates.length})
                     </h4>
                     <ul className="space-y-1 text-xs">
@@ -253,8 +253,8 @@ export const CoordinateVisualizerPage = () => {
                 )}
 
                 {unitsWithIssues.length > 0 && (
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-md">
-                    <h4 className="font-semibold text-sm text-red-900 dark:text-red-200 mb-2">
+                  <div className="p-3 bg-red-50 rounded-md">
+                    <h4 className="font-semibold text-sm text-red-900 mb-2">
                       Critical Issues ({unitsWithIssues.length})
                     </h4>
                     <ul className="space-y-2 text-xs">
@@ -263,7 +263,7 @@ export const CoordinateVisualizerPage = () => {
                           <div className="font-medium">Unit {result.unitNumber}</div>
                           <ul className="pl-4 space-y-1">
                             {result.issues.map((issue, idx) => (
-                              <li key={idx} className="text-red-700 dark:text-red-300">
+                              <li key={idx} className="text-red-700">
                                 • {issue}
                               </li>
                             ))}
@@ -275,8 +275,8 @@ export const CoordinateVisualizerPage = () => {
                 )}
 
                 {unitsWithWarnings.length > 0 && (
-                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
-                    <h4 className="font-semibold text-sm text-yellow-900 dark:text-yellow-200 mb-2">
+                  <div className="p-3 bg-yellow-50 rounded-md">
+                    <h4 className="font-semibold text-sm text-yellow-900 mb-2">
                       Warnings ({unitsWithWarnings.length})
                     </h4>
                     <ul className="space-y-2 text-xs">
@@ -285,7 +285,7 @@ export const CoordinateVisualizerPage = () => {
                           <div className="font-medium">Unit {result.unitNumber}</div>
                           <ul className="pl-4 space-y-1">
                             {result.warnings.map((warning, idx) => (
-                              <li key={idx} className="text-yellow-700 dark:text-yellow-300">
+                              <li key={idx} className="text-yellow-700">
                                 • {warning}
                               </li>
                             ))}

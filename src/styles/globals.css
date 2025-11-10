@@ -36,15 +36,6 @@
     color: hsl(222.2 84% 4.9%);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-
-  .dark body {
-    background-color: hsl(222.2 84% 4.9%);
-    color: hsl(210 40% 98%);
-  }
-
-  .dark * {
-    border-color: hsl(217.2 32.6% 17.5%);
-  }
 }
 
 @layer components {
@@ -52,32 +43,16 @@
     background-color: hsl(0 0% 100%);
   }
 
-  .dark .bg-card {
-    background-color: hsl(222.2 47% 11%);
-  }
-
   .text-card-foreground {
     color: hsl(222.2 84% 4.9%);
-  }
-
-  .dark .text-card-foreground {
-    color: hsl(210 40% 98%);
   }
 
   .bg-background {
     background-color: hsl(0 0% 100%);
   }
 
-  .dark .bg-background {
-    background-color: hsl(222.2 84% 4.9%);
-  }
-
   .text-muted-foreground {
     color: hsl(215.4 16.3% 46.9%);
-  }
-
-  .dark .text-muted-foreground {
-    color: hsl(217.9 10.6% 64.9%);
   }
 }
 

@@ -137,7 +137,7 @@ export const MediaUploader = ({ unitId, userId, onUploadComplete, disabled }) =>
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
           isDragging
             ? 'border-primary bg-primary/5'
-            : 'border-gray-300 dark:border-gray-700'
+            : 'border-gray-300'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         onClick={() => !disabled && fileInputRef.current?.click()}
       >
@@ -166,7 +166,7 @@ export const MediaUploader = ({ unitId, userId, onUploadComplete, disabled }) =>
               key={upload.id}
               className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg"
             >
-              <div className="w-12 h-12 rounded bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0 overflow-hidden">
+              <div className="w-12 h-12 rounded bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
                 {upload.preview ? (
                   <img
                     src={upload.preview}
@@ -188,7 +188,7 @@ export const MediaUploader = ({ unitId, userId, onUploadComplete, disabled }) =>
 
                 {upload.status === 'uploading' && (
                   <div className="mt-1">
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className="bg-primary h-1.5 rounded-full transition-all"
                         style={{ width: `${upload.progress}%` }}
@@ -201,14 +201,14 @@ export const MediaUploader = ({ unitId, userId, onUploadComplete, disabled }) =>
                 )}
 
                 {upload.status === 'completed' && (
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                  <p className="text-xs text-green-600 mt-1">
                     Upload completed
                   </p>
                 )}
 
                 {upload.status === 'error' && (
                   <div className="mt-1">
-                    <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                    <p className="text-xs text-red-600 flex items-center gap-1">
                       <AlertCircle className="h-3 w-3" />
                       {upload.error}
                     </p>

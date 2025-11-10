@@ -34,7 +34,7 @@ export const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-gray-900 dark:to-gray-800 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -55,7 +55,7 @@ export const ForgotPasswordPage = () => {
           </CardHeader>
           <CardContent>
             {success ? (
-              <div className="p-4 text-sm text-green-600 bg-green-50 dark:bg-green-900/20 rounded-md mb-4">
+              <div className="p-4 text-sm text-green-600 bg-green-50 rounded-md mb-4">
                 Password reset email sent! Check your inbox.
               </div>
             ) : (
@@ -73,7 +73,7 @@ export const ForgotPasswordPage = () => {
                 </div>
 
                 {error && (
-                  <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                  <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                     {error}
                   </div>
                 )}

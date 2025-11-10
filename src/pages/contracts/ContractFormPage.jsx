@@ -432,7 +432,7 @@ export const ContractFormPage = () => {
               <div className="space-y-2">
                 <Label htmlFor="document">Contract Document (PDF)</Label>
                 {formData.documentUrl && !documentFile && (
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md">
                     <FileText className="h-5 w-5 text-primary" />
                     <span className="text-sm flex-1">Current document uploaded</span>
                     <a
@@ -446,7 +446,7 @@ export const ContractFormPage = () => {
                   </div>
                 )}
                 {documentFile && (
-                  <div className="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md">
                     <FileText className="h-5 w-5 text-primary" />
                     <span className="text-sm flex-1">{documentFile.name}</span>
                     <button
@@ -482,7 +482,7 @@ export const ContractFormPage = () => {
               </div>
 
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                   {error}
                 </div>
               )}

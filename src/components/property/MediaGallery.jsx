@@ -63,7 +63,7 @@ export const MediaGallery = ({
           className="relative group"
         >
           <div
-            className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 cursor-pointer"
+            className="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer"
             onClick={() => onMediaClick && onMediaClick(item)}
           >
             {item.type === 'image' ? (

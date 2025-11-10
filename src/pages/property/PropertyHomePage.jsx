@@ -118,7 +118,7 @@ export const PropertyHomePage = () => {
             </div>
             <Card className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="h-[600px] bg-gray-100 dark:bg-gray-800">
+                <div className="h-[600px] bg-gray-100">
                   <BuildingModel3D
                     modelUrl={property.modelUrl}
                     hotspots={hotspots}
@@ -173,8 +173,8 @@ export const PropertyHomePage = () => {
                         <span
                           className={`text-xs px-2 py-1 rounded ${
                             unit.status === 'available'
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                              : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
                           }`}
                         >
                           {unit.status}
@@ -225,7 +225,7 @@ export const PropertyHomePage = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {selectedUnit.media && selectedUnit.media.length > 0 ? (
-                        <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group">
+                        <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden group">
                           <div
                             className="w-full h-full cursor-pointer"
                             onClick={() => {
@@ -308,7 +308,7 @@ export const PropertyHomePage = () => {
                           )}
                         </div>
                       ) : (
-                        <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
                           <Building2 className="h-16 w-16 text-muted-foreground" />
                         </div>
                       )}

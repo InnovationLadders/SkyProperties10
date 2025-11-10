@@ -74,17 +74,17 @@ export const ContractDetailPage = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case CONTRACT_STATUS.ACTIVE:
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return 'bg-green-100 text-green-800';
       case CONTRACT_STATUS.EXPIRING:
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return 'bg-yellow-100 text-yellow-800';
       case CONTRACT_STATUS.EXPIRED:
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-red-100 text-red-800';
       case CONTRACT_STATUS.DRAFT:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200';
+        return 'bg-gray-100 text-gray-800';
       case CONTRACT_STATUS.TERMINATED:
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+        return 'bg-red-100 text-red-800';
       default:
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+        return 'bg-blue-100 text-blue-800';
     }
   };
 
@@ -118,9 +118,9 @@ export const ContractDetailPage = () => {
           <Card>
             <CardContent className="py-12">
               <div className="space-y-4">
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/3"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-2/3"></div>
+                <div className="h-8 bg-gray-200 rounded animate-pulse w-1/2"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-1/3"></div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
               </div>
             </CardContent>
           </Card>
@@ -325,7 +325,7 @@ export const ContractDetailPage = () => {
               {contract.terms && (
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Terms and Notes</p>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                  <div className="p-4 bg-gray-50 rounded-md">
                     <p className="text-sm whitespace-pre-wrap">{contract.terms}</p>
                   </div>
                 </div>
@@ -342,7 +342,7 @@ export const ContractDetailPage = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-md">
                   <div className="flex items-center gap-3">
                     <FileText className="h-8 w-8 text-primary" />
                     <div>
@@ -372,7 +372,7 @@ export const ContractDetailPage = () => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+              className="bg-white rounded-lg p-6 max-w-md w-full"
             >
               <h3 className="text-lg font-semibold mb-2">Delete Contract</h3>
               <p className="text-muted-foreground mb-6">

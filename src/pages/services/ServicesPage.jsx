@@ -296,7 +296,7 @@ export const ServicesPage = () => {
                   {loading ? (
                     <div className="space-y-3">
                       {[1, 2, 3].map(i => (
-                        <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                        <div key={i} className="h-16 bg-gray-200 rounded animate-pulse" />
                       ))}
                     </div>
                   ) : completedTickets.length === 0 ? (
@@ -317,7 +317,7 @@ export const ServicesPage = () => {
                               <p className="font-medium">{ticket.title}</p>
                               <p className="text-sm text-muted-foreground">{ticket.category}</p>
                             </div>
-                            <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
                               {ticket.status}
                             </span>
                           </div>

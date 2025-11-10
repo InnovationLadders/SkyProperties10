@@ -499,11 +499,11 @@ export const UnitFormPage = () => {
                     {showCoordinatePicker && (
                       <>
                         {!formData.propertyId ? (
-                          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-sm text-yellow-800 dark:text-yellow-200">
+                          <div className="p-4 bg-yellow-50 rounded-md text-sm text-yellow-800">
                             Please select a property first to use the 3D coordinate picker.
                           </div>
                         ) : !selectedProperty?.modelUrl ? (
-                          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-sm text-yellow-800 dark:text-yellow-200">
+                          <div className="p-4 bg-yellow-50 rounded-md text-sm text-yellow-800">
                             The selected property does not have a 3D model uploaded. Please upload a GLB model file to the property first.
                           </div>
                         ) : (
@@ -575,7 +575,7 @@ export const UnitFormPage = () => {
                       </div>
                     </div>
 
-                    <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md">
+                    <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-md">
                       <strong>Current Position:</strong> {coordinateCalculator.formatCoordinate(formData.coordinates)}
                       {formData.floor && (
                         <div className="mt-1">
@@ -650,13 +650,13 @@ export const UnitFormPage = () => {
               )}
 
               {!isEditMode && (
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md text-sm text-blue-800 dark:text-blue-200">
+                <div className="p-4 bg-blue-50 rounded-md text-sm text-blue-800">
                   <strong>Note:</strong> You can upload images and videos after creating the unit.
                 </div>
               )}
 
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                   {error}
                 </div>
               )}

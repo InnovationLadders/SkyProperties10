@@ -173,7 +173,7 @@ export const CoordinatePicker3D = ({
 
   return (
     <div className="space-y-4">
-      <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 border-2 border-dashed border-gray-300 dark:border-gray-600">
+      <div className="bg-gray-100 rounded-lg p-4 border-2 border-dashed border-gray-300">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Target className="h-4 w-4 text-primary" />
@@ -203,7 +203,7 @@ export const CoordinatePicker3D = ({
           Click on the 3D model to place the hotspot marker at that position
         </p>
 
-        <div className="h-[400px] bg-gray-50 dark:bg-gray-900 rounded-md overflow-hidden">
+        <div className="h-[400px] bg-gray-50 rounded-md overflow-hidden">
           <Canvas>
             <PerspectiveCamera makeDefault position={[12, 8, 12]} />
             <OrbitControls
@@ -342,7 +342,7 @@ export const CoordinatePicker3D = ({
         </div>
       </div>
 
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-md p-3 text-xs space-y-2">
+      <div className="bg-blue-50 rounded-md p-3 text-xs space-y-2">
         <div className="font-medium flex items-center gap-2">
           <Crosshair className="h-3 w-3" />
           Quick Tips

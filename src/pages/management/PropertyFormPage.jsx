@@ -242,7 +242,7 @@ export const PropertyFormPage = () => {
                   Upload a GLB 3D model file for this property
                 </p>
                 {glbFile && (
-                  <p className="text-sm text-green-600 dark:text-green-400">
+                  <p className="text-sm text-green-600">
                     New model selected: {glbFile.name} ({(glbFile.size / 1024 / 1024).toFixed(2)} MB)
                   </p>
                 )}
@@ -252,7 +252,7 @@ export const PropertyFormPage = () => {
               </div>
 
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                   {error}
                 </div>
               )}

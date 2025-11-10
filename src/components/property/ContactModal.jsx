@@ -82,8 +82,8 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
             <CardContent>
               {success ? (
                 <div className="py-8 text-center">
-                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Send className="w-8 h-8 text-green-600 dark:text-green-400" />
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Send className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2">Inquiry Sent!</h3>
                   <p className="text-muted-foreground">
@@ -143,7 +143,7 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
                   </div>
 
                   {error && (
-                    <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                    <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                       {error}
                     </div>
                   )}

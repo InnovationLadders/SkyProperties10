@@ -209,7 +209,7 @@ export const CreateTicketPage = () => {
               </div>
 
               {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
                   {error}
                 </div>
               )}

@@ -116,10 +116,10 @@ export const PropertiesPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="overflow-hidden">
-                <div className="h-48 bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+                <div className="h-48 bg-gray-200 animate-pulse"></div>
                 <CardContent className="p-4">
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2 animate-pulse"></div>
-                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 animate-pulse"></div>
+                  <div className="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
                 </CardContent>
               </Card>
             ))}
@@ -151,7 +151,7 @@ export const PropertiesPage = () => {
               >
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                   <div
-                    className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 dark:from-primary-900 dark:to-secondary-900 flex items-center justify-center cursor-pointer overflow-hidden"
+                    className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center cursor-pointer overflow-hidden"
                     onClick={() => navigate(`/property/${property.id}`)}
                   >
                     {property.imageUrl ? (
@@ -178,7 +178,7 @@ export const PropertiesPage = () => {
                       <div>
                         <span className="font-semibold">{property.totalUnits || 0}</span> units
                       </div>
-                      <div className="text-green-600 dark:text-green-400">
+                      <div className="text-green-600">
                         <span className="font-semibold">{property.availableUnits || 0}</span> available
                       </div>
                     </div>
