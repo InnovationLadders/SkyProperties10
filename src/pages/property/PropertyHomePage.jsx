@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { BuildingModel3D } from '../../components/property/BuildingModel3D';
+import { ContactModal } from '../../components/property/ContactModal';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Building2, MapPin, X, DollarSign, Ruler } from 'lucide-react';
@@ -14,6 +15,7 @@ export const PropertyHomePage = () => {
   const [units, setUnits] = useState([]);
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
     fetchPropertyData();
@@ -220,10 +222,19 @@ export const PropertyHomePage = () => {
                       )}
 
                       <div className="space-y-2 pt-4">
-                        <Button className="w-full" size="lg">
+                        <Button
+                          className="w-full"
+                          size="lg"
+                          onClick={() => setShowContactModal(true)}
+                        >
                           Contact for Sale
                         </Button>
-                        <Button className="w-full" variant="outline" size="lg">
+                        <Button
+                          className="w-full"
+                          variant="outline"
+                          size="lg"
+                          onClick={() => setShowContactModal(true)}
+                        >
                           Schedule Viewing
                         </Button>
                       </div>
@@ -275,6 +286,13 @@ export const PropertyHomePage = () => {
           </div>
         </div>
       </div>
+
+      <ContactModal
+        isOpen={showContactModal}
+        onClose={() => setShowContactModal(false)}
+        property={property}
+        unit={selectedUnit}
+      />
     </div>
   );
 };

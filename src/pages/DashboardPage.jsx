@@ -1,4 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Building2, Users, Ticket, FileText } from 'lucide-react';
@@ -7,6 +8,7 @@ import { USER_ROLES } from '../utils/constants';
 
 export const DashboardPage = () => {
   const { userProfile } = useAuth();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const getDashboardCards = () => {
@@ -146,7 +148,10 @@ export const DashboardPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
+                <Card
+                  className="hover:shadow-lg transition-shadow cursor-pointer group"
+                  onClick={() => navigate(card.link)}
+                >
                   <CardHeader>
                     <div className={`w-12 h-12 bg-gradient-to-br ${card.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                       <card.icon className="h-6 w-6 text-white" />

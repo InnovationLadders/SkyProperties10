@@ -9,6 +9,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { UNIT_STATUS } from '../utils/constants';
+import { seedDatabase } from '../utils/seedData';
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ export const LandingPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchProperties();
@@ -45,6 +47,18 @@ export const LandingPage = () => {
       property.address?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  const handleSeedData = async () => {
+    if (window.confirm('Do you want to seed the database with sample properties and units?')) {
+      const result = await seedDatabase();
+      if (result.success) {
+        alert('Database seeded successfully!');
+        fetchProperties();
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -85,7 +99,7 @@ export const LandingPage = () => {
                     <option value="sale">{t('landing.forSale')}</option>
                     <option value="rent">{t('landing.forRent')}</option>
                   </select>
-                  <Button size="lg" className="h-12">
+                  <Button size="lg" className="h-12" onClick={() => setShowFilters(!showFilters)}>
                     <Filter className="h-5 w-5" />
                   </Button>
                 </div>

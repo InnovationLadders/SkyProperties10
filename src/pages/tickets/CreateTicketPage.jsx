@@ -1,0 +1,237 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { doc, setDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../lib/firebase';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Label } from '../../components/ui/Label';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
+import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { TICKET_STATUS } from '../../utils/constants';
+
+export const CreateTicketPage = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [properties, setProperties] = useState([]);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    propertyId: '',
+    unitNumber: '',
+    category: 'general',
+    priority: 'medium',
+    status: TICKET_STATUS.OPEN,
+  });
+  const [error, setError] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const fetchProperties = async () => {
+    try {
+      const snapshot = await getDocs(collection(db, 'properties'));
+      const propertiesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProperties(propertiesData);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      let imageUrl = '';
+
+      if (imageFile) {
+        const imageRef = ref(storage, `tickets/${Date.now()}_${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      const newDocRef = doc(collection(db, 'tickets'));
+      await setDoc(newDocRef, {
+        ...formData,
+        imageUrl,
+        createdBy: currentUser.uid,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      navigate('/tickets');
+    } catch (error) {
+      console.error('Error creating ticket:', error);
+      setError('Failed to create ticket');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Button variant="ghost" onClick={() => navigate('/tickets')}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Tickets
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Create Maintenance Ticket</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title *</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                  placeholder="Brief description of the issue"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="description">Description *</Label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                  className="w-full min-h-[120px] px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  placeholder="Provide detailed information about the issue..."
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="propertyId">Property *</Label>
+                  <select
+                    id="propertyId"
+                    name="propertyId"
+                    value={formData.propertyId}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="">Select a property</option>
+                    {properties.map((property) => (
+                      <option key={property.id} value={property.id}>
+                        {property.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="unitNumber">Unit Number</Label>
+                  <Input
+                    id="unitNumber"
+                    name="unitNumber"
+                    value={formData.unitNumber}
+                    onChange={handleChange}
+                    placeholder="e.g., A101"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category *</Label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="general">General</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="hvac">HVAC</option>
+                    <option value="appliance">Appliance</option>
+                    <option value="structural">Structural</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="priority">Priority *</Label>
+                  <select
+                    id="priority"
+                    name="priority"
+                    value={formData.priority}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="image">Attach Image</Label>
+                <Input id="image" type="file" accept="image/*" onChange={handleImageChange} />
+                <p className="text-sm text-muted-foreground">
+                  Upload a photo of the issue (optional)
+                </p>
+              </div>
+
+              {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
+                  {error}
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <Button type="submit" disabled={loading} className="flex-1">
+                  <Save className="h-4 w-4 mr-2" />
+                  {loading ? 'Creating...' : 'Create Ticket'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate('/tickets')}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
