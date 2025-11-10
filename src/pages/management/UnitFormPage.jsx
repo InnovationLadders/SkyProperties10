@@ -43,6 +43,13 @@ export const UnitFormPage = () => {
     }
   }, [unitId]);
 
+  useEffect(() => {
+    if (formData.propertyId && properties.length > 0) {
+      const property = properties.find((p) => p.id === formData.propertyId);
+      setSelectedProperty(property);
+    }
+  }, [formData.propertyId, properties]);
+
   const fetchProperties = async () => {
     try {
       const snapshot = await getDocs(collection(db, 'properties'));
@@ -372,17 +379,29 @@ export const UnitFormPage = () => {
                     </div>
 
                     {showCoordinatePicker && (
-                      <CoordinatePicker3D
-                        modelUrl={selectedProperty?.modelUrl}
-                        currentCoordinate={formData.coordinates}
-                        onCoordinateChange={(newCoords) => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            coordinates: newCoords,
-                          }));
-                        }}
-                        unitLabel={formData.unitNumber || 'Unit'}
-                      />
+                      <>
+                        {!formData.propertyId ? (
+                          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-sm text-yellow-800 dark:text-yellow-200">
+                            Please select a property first to use the 3D coordinate picker.
+                          </div>
+                        ) : !selectedProperty?.modelUrl ? (
+                          <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-sm text-yellow-800 dark:text-yellow-200">
+                            The selected property does not have a 3D model uploaded. Please upload a GLB model file to the property first.
+                          </div>
+                        ) : (
+                          <CoordinatePicker3D
+                            modelUrl={selectedProperty.modelUrl}
+                            currentCoordinate={formData.coordinates}
+                            onCoordinateChange={(newCoords) => {
+                              setFormData((prev) => ({
+                                ...prev,
+                                coordinates: newCoords,
+                              }));
+                            }}
+                            unitLabel={formData.unitNumber || 'Unit'}
+                          />
+                        )}
+                      </>
                     )}
 
                     <div className="grid grid-cols-3 gap-4 bg-muted/50 p-4 rounded-lg">

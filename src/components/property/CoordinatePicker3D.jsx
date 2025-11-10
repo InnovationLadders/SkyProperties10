@@ -60,13 +60,15 @@ const ClickableModel = ({ modelUrl, onCoordinateClick, currentCoordinate, debugM
   if (modelUrl) {
     try {
       const { scene: modelScene } = useGLTF(modelUrl);
-      return (
-        <group ref={meshRef} onClick={handleClick}>
-          <primitive object={modelScene.clone()} />
-        </group>
-      );
+      if (modelScene) {
+        return (
+          <group ref={meshRef} onClick={handleClick}>
+            <primitive object={modelScene.clone()} />
+          </group>
+        );
+      }
     } catch (error) {
-      return <PlaceholderBuilding onClick={handleClick} />;
+      console.error('Error loading 3D model:', error);
     }
   }
 
