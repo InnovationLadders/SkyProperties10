@@ -1,23 +1,30 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { ArrowLeft, Save, Calculator, Wand2 } from 'lucide-react';
-import { UNIT_STATUS } from '../../utils/constants';
+import { ArrowLeft, Save, Calculator, Wand2, Images } from 'lucide-react';
+import { UNIT_STATUS, USER_ROLES } from '../../utils/constants';
 import { CoordinatePicker3D } from '../../components/property/CoordinatePicker3D';
 import { coordinateCalculator } from '../../utils/coordinateCalculator';
+import { MediaUploader } from '../../components/property/MediaUploader';
+import { MediaGallery } from '../../components/property/MediaGallery';
+import { MediaViewer } from '../../components/property/MediaViewer';
+import { useAuth } from '../../contexts/AuthContext';
+import { deleteUnitMedia, setPrimaryMedia, updateMediaMetadata } from '../../utils/mediaUpload';
 
 export const UnitFormPage = () => {
   const navigate = useNavigate();
   const { unitId } = useParams();
+  const { currentUser, userProfile, hasRole } = useAuth();
   const isEditMode = !!unitId;
 
   const [loading, setLoading] = useState(false);
   const [properties, setProperties] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     propertyId: '',
     unitNumber: '',
@@ -30,14 +37,19 @@ export const UnitFormPage = () => {
     viewType: 'external',
     description: '',
     coordinates: [0, 0, 0],
+    ownerId: '',
+    media: [],
   });
   const [error, setError] = useState('');
   const [coordinatesEnabled, setCoordinatesEnabled] = useState(false);
   const [showCoordinatePicker, setShowCoordinatePicker] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
+  const [showMediaViewer, setShowMediaViewer] = useState(false);
+  const [mediaViewerIndex, setMediaViewerIndex] = useState(0);
 
   useEffect(() => {
     fetchProperties();
+    fetchUsers();
     if (isEditMode) {
       fetchUnit();
     }
@@ -60,6 +72,23 @@ export const UnitFormPage = () => {
       setProperties(propertiesData);
     } catch (error) {
       console.error('Error fetching properties:', error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const usersQuery = query(
+        collection(db, 'users'),
+        where('role', 'in', [USER_ROLES.UNIT_OWNER, USER_ROLES.ADMIN])
+      );
+      const snapshot = await getDocs(usersQuery);
+      const usersData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(usersData);
+    } catch (error) {
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -164,6 +193,72 @@ export const UnitFormPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleMediaUploadComplete = (mediaData) => {
+    setFormData((prev) => ({
+      ...prev,
+      media: [...(prev.media || []), mediaData],
+    }));
+  };
+
+  const handleDeleteMedia = async (mediaItem) => {
+    try {
+      await deleteUnitMedia(unitId, mediaItem);
+      setFormData((prev) => ({
+        ...prev,
+        media: prev.media.filter((item) => item.id !== mediaItem.id),
+      }));
+    } catch (error) {
+      console.error('Error deleting media:', error);
+      alert('Failed to delete media');
+    }
+  };
+
+  const handleSetPrimaryMedia = async (mediaItem) => {
+    try {
+      await setPrimaryMedia(unitId, formData.media, mediaItem.id);
+      setFormData((prev) => ({
+        ...prev,
+        media: prev.media.map((item) => ({
+          ...item,
+          isPrimary: item.id === mediaItem.id,
+        })),
+      }));
+    } catch (error) {
+      console.error('Error setting primary media:', error);
+      alert('Failed to set primary media');
+    }
+  };
+
+  const handleEditCaption = async (mediaItem, newCaption) => {
+    try {
+      const updatedMedia = { ...mediaItem, caption: newCaption };
+      await updateMediaMetadata(unitId, mediaItem, updatedMedia);
+      setFormData((prev) => ({
+        ...prev,
+        media: prev.media.map((item) =>
+          item.id === mediaItem.id ? updatedMedia : item
+        ),
+      }));
+    } catch (error) {
+      console.error('Error updating caption:', error);
+      alert('Failed to update caption');
+    }
+  };
+
+  const handleMediaClick = (mediaItem) => {
+    const index = formData.media.findIndex((item) => item.id === mediaItem.id);
+    setMediaViewerIndex(index);
+    setShowMediaViewer(true);
+  };
+
+  const canEditMedia = () => {
+    if (!currentUser || !userProfile) return false;
+    if (hasRole(USER_ROLES.ADMIN)) return true;
+    if (hasRole(USER_ROLES.PROPERTY_MANAGER)) return true;
+    if (hasRole(USER_ROLES.UNIT_OWNER) && formData.ownerId === currentUser.uid) return true;
+    return false;
   };
 
   return (
@@ -336,6 +431,29 @@ export const UnitFormPage = () => {
                 />
               </div>
 
+              {hasRole(USER_ROLES.ADMIN) && (
+                <div className="space-y-2">
+                  <Label htmlFor="ownerId">Unit Owner</Label>
+                  <select
+                    id="ownerId"
+                    name="ownerId"
+                    value={formData.ownerId}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                  >
+                    <option value="">No owner assigned</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.displayName || user.email} ({user.role})
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    Assign an owner to this unit for access control
+                  </p>
+                </div>
+              )}
+
               <div className="space-y-4 border-t pt-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -469,6 +587,74 @@ export const UnitFormPage = () => {
                 )}
               </div>
 
+              {isEditMode && unitId && (
+                <div className="space-y-4 border-t pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label className="text-base font-semibold flex items-center gap-2">
+                        <Images className="h-5 w-5" />
+                        Unit Media
+                      </Label>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Upload images and videos to showcase this unit
+                      </p>
+                    </div>
+                    {formData.media && formData.media.length > 0 && (
+                      <span className="text-sm text-muted-foreground">
+                        {formData.media.filter(m => m.type === 'image').length} photos •{' '}
+                        {formData.media.filter(m => m.type === 'video').length} videos
+                      </span>
+                    )}
+                  </div>
+
+                  {canEditMedia() ? (
+                    <>
+                      <MediaUploader
+                        unitId={unitId}
+                        userId={currentUser?.uid}
+                        onUploadComplete={handleMediaUploadComplete}
+                        disabled={!unitId}
+                      />
+
+                      {formData.media && formData.media.length > 0 && (
+                        <div className="mt-6">
+                          <h3 className="text-sm font-medium mb-3">Uploaded Media</h3>
+                          <MediaGallery
+                            media={formData.media}
+                            onDelete={handleDeleteMedia}
+                            onSetPrimary={handleSetPrimaryMedia}
+                            onEditCaption={handleEditCaption}
+                            onMediaClick={handleMediaClick}
+                            canEdit={true}
+                          />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-4 bg-muted/30 rounded-lg text-center">
+                      <p className="text-sm text-muted-foreground">
+                        You don't have permission to manage media for this unit
+                      </p>
+                      {formData.media && formData.media.length > 0 && (
+                        <div className="mt-4">
+                          <MediaGallery
+                            media={formData.media}
+                            onMediaClick={handleMediaClick}
+                            canEdit={false}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {!isEditMode && (
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md text-sm text-blue-800 dark:text-blue-200">
+                  <strong>Note:</strong> You can upload images and videos after creating the unit.
+                </div>
+              )}
+
               {error && (
                 <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 rounded-md">
                   {error}
@@ -492,6 +678,13 @@ export const UnitFormPage = () => {
             </form>
           </CardContent>
         </Card>
+
+        <MediaViewer
+          media={formData.media || []}
+          initialIndex={mediaViewerIndex}
+          isOpen={showMediaViewer}
+          onClose={() => setShowMediaViewer(false)}
+        />
       </div>
     </div>
   );

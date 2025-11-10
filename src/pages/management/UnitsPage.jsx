@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Plus, Building2, Edit, Trash2, Search, Filter, Eye } from 'lucide-react';
+import { Plus, Building2, Edit, Trash2, Search, Filter, Eye, Image as ImageIcon, Video } from 'lucide-react';
 import { collection, getDocs, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
@@ -169,7 +169,29 @@ export const UnitsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.05 }}
               >
-                <Card className="hover:shadow-lg transition-shadow">
+                <Card className="hover:shadow-lg transition-shadow overflow-hidden">
+                  {unit.media && unit.media.length > 0 && (
+                    <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                      {unit.media.find(m => m.isPrimary) || unit.media[0] ? (
+                        <img
+                          src={(unit.media.find(m => m.isPrimary) || unit.media[0]).url}
+                          alt={`Unit ${unit.unitNumber}`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Building2 className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                        <ImageIcon className="h-3 w-3" />
+                        {unit.media.filter(m => m.type === 'image').length}
+                        <Video className="h-3 w-3 ml-1" />
+                        {unit.media.filter(m => m.type === 'video').length}
+                      </div>
+                    </div>
+                  )}
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <CardTitle>Unit {unit.unitNumber}</CardTitle>

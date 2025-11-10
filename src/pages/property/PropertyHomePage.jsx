@@ -4,9 +4,10 @@ import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { db } from '../../lib/firebase';
 import { BuildingModel3D } from '../../components/property/BuildingModel3D';
 import { ContactModal } from '../../components/property/ContactModal';
+import { MediaViewer } from '../../components/property/MediaViewer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { Building2, MapPin, X, DollarSign, Ruler } from 'lucide-react';
+import { Building2, MapPin, X, DollarSign, Ruler, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const PropertyHomePage = () => {
@@ -16,6 +17,13 @@ export const PropertyHomePage = () => {
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [showMediaViewer, setShowMediaViewer] = useState(false);
+  const [mediaViewerIndex, setMediaViewerIndex] = useState(0);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
+  useEffect(() => {
+    setCurrentMediaIndex(0);
+  }, [selectedUnit]);
 
   useEffect(() => {
     fetchPropertyData();
@@ -179,9 +187,94 @@ export const PropertyHomePage = () => {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                        <Building2 className="h-16 w-16 text-muted-foreground" />
-                      </div>
+                      {selectedUnit.media && selectedUnit.media.length > 0 ? (
+                        <div className="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden group">
+                          <div
+                            className="w-full h-full cursor-pointer"
+                            onClick={() => {
+                              setMediaViewerIndex(currentMediaIndex);
+                              setShowMediaViewer(true);
+                            }}
+                          >
+                            {selectedUnit.media[currentMediaIndex].type === 'image' ? (
+                              <img
+                                src={selectedUnit.media[currentMediaIndex].url}
+                                alt={selectedUnit.media[currentMediaIndex].caption || 'Unit media'}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="relative w-full h-full">
+                                <img
+                                  src={selectedUnit.media[currentMediaIndex].thumbnailUrl}
+                                  alt="Video thumbnail"
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                  <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
+                                    <Play className="h-8 w-8 text-gray-800 ml-1" fill="currentColor" />
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {selectedUnit.media.length > 1 && (
+                            <>
+                              <Button
+                                variant="secondary"
+                                size="icon"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCurrentMediaIndex((prev) =>
+                                    prev > 0 ? prev - 1 : selectedUnit.media.length - 1
+                                  );
+                                }}
+                              >
+                                <ChevronLeft className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                size="icon"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setCurrentMediaIndex((prev) =>
+                                    prev < selectedUnit.media.length - 1 ? prev + 1 : 0
+                                  );
+                                }}
+                              >
+                                <ChevronRight className="h-4 w-4" />
+                              </Button>
+
+                              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                                {selectedUnit.media.map((_, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCurrentMediaIndex(index);
+                                    }}
+                                    className={`w-1.5 h-1.5 rounded-full transition-all ${
+                                      index === currentMediaIndex
+                                        ? 'bg-white w-4'
+                                        : 'bg-white/50'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+
+                              <div className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                                {currentMediaIndex + 1} / {selectedUnit.media.length}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                          <Building2 className="h-16 w-16 text-muted-foreground" />
+                        </div>
+                      )}
 
                       <div className="space-y-2">
                         <div className="flex justify-between">
@@ -292,6 +385,13 @@ export const PropertyHomePage = () => {
         onClose={() => setShowContactModal(false)}
         property={property}
         unit={selectedUnit}
+      />
+
+      <MediaViewer
+        media={selectedUnit?.media || []}
+        initialIndex={mediaViewerIndex}
+        isOpen={showMediaViewer}
+        onClose={() => setShowMediaViewer(false)}
       />
     </div>
   );
