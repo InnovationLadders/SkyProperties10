@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
@@ -10,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { motion } from 'framer-motion';
 
 export const ContractDetailPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { contractId } = useParams();
   const { hasRole } = useAuth();
@@ -30,7 +32,7 @@ export const ContractDetailPage = () => {
     try {
       const contractDoc = await getDoc(doc(db, 'contracts', contractId));
       if (!contractDoc.exists()) {
-        setError('Contract not found');
+        setError(t('contract.contractNotFound'));
         setLoading(false);
         return;
       }
@@ -53,7 +55,7 @@ export const ContractDetailPage = () => {
       }
     } catch (error) {
       console.error('Error fetching contract:', error);
-      setError('Failed to load contract details');
+      setError(t('contract.failedToLoad'));
     } finally {
       setLoading(false);
     }
@@ -102,7 +104,7 @@ export const ContractDetailPage = () => {
     const start = new Date(contract.startDate);
     const end = new Date(contract.endDate);
     const months = Math.round((end - start) / (1000 * 60 * 60 * 24 * 30));
-    return `${months} months`;
+    return `${months} ${t('contract.months')}`;
   };
 
   if (loading) {
@@ -112,7 +114,7 @@ export const ContractDetailPage = () => {
           <div className="mb-6">
             <Button variant="ghost" onClick={() => navigate('/contracts')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Contracts
+              {t('contract.backToContracts')}
             </Button>
           </div>
           <Card>
@@ -136,14 +138,14 @@ export const ContractDetailPage = () => {
           <div className="mb-6">
             <Button variant="ghost" onClick={() => navigate('/contracts')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Contracts
+              {t('contract.backToContracts')}
             </Button>
           </div>
           <Card>
             <CardContent className="py-12 text-center">
               <FileText className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">{error || 'Contract not found'}</h3>
-              <p className="text-muted-foreground">The contract you're looking for doesn't exist or has been removed.</p>
+              <h3 className="text-xl font-semibold mb-2">{error || t('contract.contractNotFound')}</h3>
+              <p className="text-muted-foreground">{t('contract.contractNotFoundDesc')}</p>
             </CardContent>
           </Card>
         </div>
@@ -163,7 +165,7 @@ export const ContractDetailPage = () => {
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => navigate(`/contracts/edit/${contractId}`)}>
                 <Edit className="h-4 w-4 mr-2" />
-                Edit
+                {t('common.edit')}
               </Button>
               <Button
                 variant="outline"
@@ -171,7 +173,7 @@ export const ContractDetailPage = () => {
                 onClick={() => setShowDeleteConfirm(true)}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                {t('common.delete')}
               </Button>
             </div>
           )}
@@ -187,13 +189,13 @@ export const ContractDetailPage = () => {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-2xl">{contract.tenantName || 'Unnamed Contract'}</CardTitle>
+                  <CardTitle className="text-2xl">{contract.tenantName || t('contract.unnamedContract')}</CardTitle>
                   <CardDescription className="mt-2 text-base">
-                    Contract ID: {contractId}
+                    {t('contract.contractId')}: {contractId}
                   </CardDescription>
                 </div>
                 <span className={`text-sm px-4 py-2 rounded-full font-medium ${getStatusColor(contract.status)}`}>
-                  {contract.status}
+                  {t(`contract.statuses.${contract.status}`)}
                 </span>
               </div>
             </CardHeader>
@@ -204,16 +206,16 @@ export const ContractDetailPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-primary" />
-                  Tenant Information
+                  {t('contract.tenantInformation')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <p className="text-sm text-muted-foreground">Name</p>
+                  <p className="text-sm text-muted-foreground">{t('common.name')}</p>
                   <p className="font-medium">{contract.tenantName || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.tenantEmail')}</p>
                   <p className="font-medium">{contract.tenantEmail || 'N/A'}</p>
                 </div>
               </CardContent>
@@ -223,26 +225,26 @@ export const ContractDetailPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-primary" />
-                  Property Details
+                  {t('contract.propertyDetails')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <p className="text-sm text-muted-foreground">Property</p>
-                  <p className="font-medium">{property?.name || 'Unknown Property'}</p>
+                  <p className="text-sm text-muted-foreground">{t('unit.property')}</p>
+                  <p className="font-medium">{property?.name || t('contract.unknownProperty')}</p>
                 </div>
                 {unit && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Unit</p>
+                    <p className="text-sm text-muted-foreground">{t('unit.units')}</p>
                     <p className="font-medium">
-                      Unit {unit.unitNumber} - Floor {unit.floor}
+                      {t('unit.units')} {unit.unitNumber} - {t('unit.floor')} {unit.floor}
                     </p>
                   </div>
                 )}
                 {!unit && contract.unitNumber && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Unit</p>
-                    <p className="font-medium">Unit {contract.unitNumber}</p>
+                    <p className="text-sm text-muted-foreground">{t('unit.units')}</p>
+                    <p className="font-medium">{t('unit.units')} {contract.unitNumber}</p>
                   </div>
                 )}
               </CardContent>
@@ -253,21 +255,21 @@ export const ContractDetailPage = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary" />
-                Contract Period
+                {t('contract.contractPeriod')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Start Date</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.startDate')}</p>
                   <p className="font-medium">{formatDate(contract.startDate)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">End Date</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.endDate')}</p>
                   <p className="font-medium">{formatDate(contract.endDate)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Duration</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.duration')}</p>
                   <p className="font-medium">{calculateDuration()}</p>
                 </div>
               </div>
@@ -278,27 +280,27 @@ export const ContractDetailPage = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5 text-primary" />
-                Financial Details
+                {t('contract.financialDetails')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Rent Amount</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.rentAmount')}</p>
                   <p className="font-medium text-primary text-lg">
                     ${contract.rentAmount?.toLocaleString() || '0'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Deposit Amount</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.depositAmount')}</p>
                   <p className="font-medium text-lg">
                     ${contract.depositAmount?.toLocaleString() || '0'}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Payment Frequency</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.paymentFrequency')}</p>
                   <p className="font-medium capitalize">
-                    {contract.paymentFrequency || 'Monthly'}
+                    {contract.paymentFrequency || t('contract.monthly')}
                   </p>
                 </div>
               </div>
@@ -307,16 +309,16 @@ export const ContractDetailPage = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Contract Details</CardTitle>
+              <CardTitle>{t('contract.contractDetails')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Type</p>
+                  <p className="text-sm text-muted-foreground">{t('contract.type')}</p>
                   <p className="font-medium capitalize">{contract.type || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Created</p>
+                  <p className="text-sm text-muted-foreground">{t('ticket.created')}</p>
                   <p className="font-medium">
                     {contract.createdAt ? formatDate(contract.createdAt.toDate?.() || contract.createdAt) : 'N/A'}
                   </p>
@@ -324,7 +326,7 @@ export const ContractDetailPage = () => {
               </div>
               {contract.terms && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Terms and Notes</p>
+                  <p className="text-sm text-muted-foreground mb-2">{t('contract.termsAndNotes')}</p>
                   <div className="p-4 bg-gray-50 rounded-md">
                     <p className="text-sm whitespace-pre-wrap">{contract.terms}</p>
                   </div>
@@ -338,7 +340,7 @@ export const ContractDetailPage = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-primary" />
-                  Contract Document
+                  {t('contract.contractDocument')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -346,8 +348,8 @@ export const ContractDetailPage = () => {
                   <div className="flex items-center gap-3">
                     <FileText className="h-8 w-8 text-primary" />
                     <div>
-                      <p className="font-medium">Contract Document</p>
-                      <p className="text-sm text-muted-foreground">PDF Document</p>
+                      <p className="font-medium">{t('contract.contractDocument')}</p>
+                      <p className="text-sm text-muted-foreground">{t('contract.pdfDocument')}</p>
                     </div>
                   </div>
                   <a
@@ -358,7 +360,7 @@ export const ContractDetailPage = () => {
                   >
                     <Button variant="outline">
                       <Download className="h-4 w-4 mr-2" />
-                      Download
+                      {t('contract.download')}
                     </Button>
                   </a>
                 </div>
@@ -374,9 +376,9 @@ export const ContractDetailPage = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="bg-white rounded-lg p-6 max-w-md w-full"
             >
-              <h3 className="text-lg font-semibold mb-2">Delete Contract</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('contract.deleteContract')}</h3>
               <p className="text-muted-foreground mb-6">
-                Are you sure you want to delete this contract? This action cannot be undone.
+                {t('contract.deleteContractConfirm')}
               </p>
               <div className="flex gap-3 justify-end">
                 <Button
@@ -384,7 +386,7 @@ export const ContractDetailPage = () => {
                   onClick={() => setShowDeleteConfirm(false)}
                   disabled={deleting}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   variant="outline"
@@ -392,7 +394,7 @@ export const ContractDetailPage = () => {
                   onClick={handleDelete}
                   disabled={deleting}
                 >
-                  {deleting ? 'Deleting...' : 'Delete'}
+                  {deleting ? t('contract.deleting') : t('common.delete')}
                 </Button>
               </div>
             </motion.div>

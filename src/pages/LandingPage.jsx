@@ -185,9 +185,9 @@ export const LandingPage = () => {
             ) : filteredProperties.length === 0 ? (
               <div className="text-center py-12">
                 <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No properties found</h3>
+                <h3 className="text-xl font-semibold mb-2">{t('property.noPropertiesFound')}</h3>
                 <p className="text-muted-foreground">
-                  Try adjusting your search or filters
+                  {t('property.tryAdjustingSearch')}
                 </p>
               </div>
             ) : (
@@ -212,22 +212,22 @@ export const LandingPage = () => {
                         )}
                       </div>
                       <CardHeader className="space-y-3">
-                        <CardTitle className="line-clamp-2 min-h-[3.5rem]">{property.name || 'Unnamed Property'}</CardTitle>
+                        <CardTitle className="line-clamp-2 min-h-[3.5rem]">{property.name || t('property.unnamed')}</CardTitle>
                         <CardDescription className="flex items-center gap-2 mt-2">
                           <MapPin className="h-4 w-4 flex-shrink-0" />
-                          <span className="line-clamp-1">{property.address || 'No address'}</span>
+                          <span className="line-clamp-1">{property.address || t('property.noAddress')}</span>
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <p className="text-sm text-muted-foreground line-clamp-2">
-                          {property.description || 'No description available'}
+                          {property.description || t('property.noDescription')}
                         </p>
                         <div className="mt-4 flex items-center justify-between">
                           <div className="text-sm">
-                            <span className="font-semibold">{property.totalUnits || 0}</span> units
+                            <span className="font-semibold">{property.totalUnits || 0}</span> {t('property.units')}
                           </div>
                           <div className="text-sm text-green-600">
-                            <span className="font-semibold">{property.availableUnits || 0}</span> available
+                            <span className="font-semibold">{property.availableUnits || 0}</span> {t('property.available')}
                           </div>
                         </div>
                       </CardContent>
@@ -257,9 +257,9 @@ export const LandingPage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Building2 className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Property Management</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('landing.propertyManagement')}</h3>
               <p className="text-muted-foreground">
-                Comprehensive tools to manage your properties and units efficiently
+                {t('landing.propertyManagementDesc')}
               </p>
             </motion.div>
 
@@ -272,9 +272,9 @@ export const LandingPage = () => {
               <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Smart Marketplace</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('landing.smartMarketplace')}</h3>
               <p className="text-muted-foreground">
-                Find your perfect property with advanced search and 3D visualization
+                {t('landing.smartMarketplaceDesc')}
               </p>
             </motion.div>
 
@@ -287,9 +287,9 @@ export const LandingPage = () => {
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <DollarSign className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Secure Payments</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('landing.securePayments')}</h3>
               <p className="text-muted-foreground">
-                Integrated payment system for rent, fees, and property transactions
+                {t('landing.securePaymentsDesc')}
               </p>
             </motion.div>
           </div>

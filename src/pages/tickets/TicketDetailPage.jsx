@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, getDoc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
@@ -11,6 +12,7 @@ import { ArrowLeft, Clock, User, MapPin, AlertCircle, CheckCircle, Save, Message
 import { motion } from 'framer-motion';
 
 export const TicketDetailPage = () => {
+  const { t } = useTranslation();
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const { currentUser, userProfile, hasRole } = useAuth();
@@ -74,7 +76,7 @@ export const TicketDetailPage = () => {
       const ticketDoc = await getDoc(doc(db, 'tickets', ticketId));
 
       if (!ticketDoc.exists()) {
-        setError('Ticket not found');
+        setError(t('ticket.ticketNotFound'));
         setLoading(false);
         return;
       }
@@ -116,7 +118,7 @@ export const TicketDetailPage = () => {
       }
     } catch (error) {
       console.error('Error fetching ticket:', error);
-      setError('Failed to load ticket details');
+      setError(t('ticket.failedToLoad'));
     } finally {
       setLoading(false);
     }
@@ -278,7 +280,7 @@ export const TicketDetailPage = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading ticket details...</p>
+          <p className="text-muted-foreground">{t('ticket.loadingDetails')}</p>
         </div>
       </div>
     );
@@ -290,7 +292,7 @@ export const TicketDetailPage = () => {
         <div className="max-w-7xl mx-auto px-4 py-8">
           <Button variant="ghost" onClick={() => navigate('/tickets')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Tickets
+            {t('ticket.backToTickets')}
           </Button>
           <Card className="mt-6">
             <CardContent className="py-12 text-center">
@@ -309,7 +311,7 @@ export const TicketDetailPage = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/tickets')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Tickets
+            {t('ticket.backToTickets')}
           </Button>
         </div>
 
@@ -327,13 +329,13 @@ export const TicketDetailPage = () => {
                       <CardTitle className="text-2xl mb-2">{ticket?.title}</CardTitle>
                       <div className="flex gap-2 flex-wrap">
                         <span className={`text-sm px-3 py-1 rounded-full ${getStatusColor(ticket?.status)}`}>
-                          {ticket?.status}
+                          {t(`ticket.statuses.${ticket?.status}`)}
                         </span>
                         <span className={`text-sm ${getPriorityColor(ticket?.priority)}`}>
-                          {ticket?.priority} priority
+                          {t(`ticket.priorities.${ticket?.priority}`)} {t('ticket.priorityLabel')}
                         </span>
                         <span className="text-sm text-muted-foreground">
-                          {ticket?.category}
+                          {t(`ticket.categories.${ticket?.category}`)}
                         </span>
                       </div>
                     </div>
@@ -341,13 +343,13 @@ export const TicketDetailPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <h3 className="font-semibold mb-2">Description</h3>
+                    <h3 className="font-semibold mb-2">{t('ticket.description')}</h3>
                     <p className="text-muted-foreground whitespace-pre-wrap">{ticket?.description}</p>
                   </div>
 
                   {ticket?.imageUrl && (
                     <div>
-                      <h3 className="font-semibold mb-2">Attachment</h3>
+                      <h3 className="font-semibold mb-2">{t('ticket.attachment')}</h3>
                       <img
                         src={ticket.imageUrl}
                         alt="Ticket attachment"
@@ -360,12 +362,12 @@ export const TicketDetailPage = () => {
                     <div className="flex items-start gap-2">
                       <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium">Location</p>
+                        <p className="text-sm font-medium">{t('ticket.location')}</p>
                         <p className="text-sm text-muted-foreground">
-                          {property?.name || 'Unknown Property'}
+                          {property?.name || t('ticket.unknownProperty')}
                         </p>
                         {ticket?.unitNumber && (
-                          <p className="text-sm text-muted-foreground">Unit {ticket.unitNumber}</p>
+                          <p className="text-sm text-muted-foreground">{t('unit.units')} {ticket.unitNumber}</p>
                         )}
                       </div>
                     </div>
@@ -373,9 +375,9 @@ export const TicketDetailPage = () => {
                     <div className="flex items-start gap-2">
                       <User className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium">Created By</p>
+                        <p className="text-sm font-medium">{t('ticket.createdBy')}</p>
                         <p className="text-sm text-muted-foreground">
-                          {creator?.displayName || creator?.email || 'Unknown'}
+                          {creator?.displayName || creator?.email || t('ticket.unknown')}
                         </p>
                       </div>
                     </div>
@@ -383,7 +385,7 @@ export const TicketDetailPage = () => {
                     <div className="flex items-start gap-2">
                       <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium">Created</p>
+                        <p className="text-sm font-medium">{t('ticket.created')}</p>
                         <p className="text-sm text-muted-foreground">
                           {ticket?.createdAt?.toDate
                             ? new Date(ticket.createdAt.toDate()).toLocaleString()
@@ -396,7 +398,7 @@ export const TicketDetailPage = () => {
                       <div className="flex items-start gap-2">
                         <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium">Assigned To</p>
+                          <p className="text-sm font-medium">{t('ticket.assignedTo')}</p>
                           <p className="text-sm text-muted-foreground">
                             {assignedUser.displayName || assignedUser.email}
                           </p>
@@ -417,7 +419,7 @@ export const TicketDetailPage = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MessageSquare className="h-5 w-5" />
-                    Notes & Comments
+                    {t('ticket.notesComments')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -425,19 +427,19 @@ export const TicketDetailPage = () => {
                     <textarea
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
-                      placeholder="Add a comment or note..."
+                      placeholder={t('ticket.addCommentNote')}
                       className="w-full min-h-[100px] px-3 py-2 border border-input bg-background rounded-md text-sm"
                     />
                     <Button type="submit" disabled={updating || !note.trim()}>
                       <Save className="h-4 w-4 mr-2" />
-                      Add Note
+                      {t('ticket.addNote')}
                     </Button>
                   </form>
 
                   <div className="space-y-3 pt-4 border-t">
                     {notes.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        No notes yet
+                        {t('ticket.noNotesYet')}
                       </p>
                     ) : (
                       notes.map((noteItem) => (
@@ -476,19 +478,19 @@ export const TicketDetailPage = () => {
               >
                 <Card>
                   <CardHeader>
-                    <CardTitle>Assign Ticket</CardTitle>
-                    <CardDescription>Assign to a service provider</CardDescription>
+                    <CardTitle>{t('ticket.assignTicket')}</CardTitle>
+                    <CardDescription>{t('ticket.assignToProvider')}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="provider">Service Provider</Label>
+                      <Label htmlFor="provider">{t('ticket.serviceProvider')}</Label>
                       <select
                         id="provider"
                         value={selectedProvider}
                         onChange={(e) => setSelectedProvider(e.target.value)}
                         className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                       >
-                        <option value="">Select a provider</option>
+                        <option value="">{t('ticket.selectProvider')}</option>
                         {serviceProviders.map((provider) => (
                           <option key={provider.id} value={provider.id}>
                             {provider.displayName || provider.email}
@@ -501,7 +503,7 @@ export const TicketDetailPage = () => {
                       disabled={updating || !selectedProvider || selectedProvider === ticket?.assignedTo}
                       className="w-full"
                     >
-                      {updating ? 'Assigning...' : 'Assign Ticket'}
+                      {updating ? t('ticket.assigning') : t('ticket.assignTicketButton')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -516,23 +518,23 @@ export const TicketDetailPage = () => {
               >
                 <Card>
                   <CardHeader>
-                    <CardTitle>Update Status</CardTitle>
-                    <CardDescription>Change ticket status</CardDescription>
+                    <CardTitle>{t('ticket.updateStatus')}</CardTitle>
+                    <CardDescription>{t('ticket.changeTicketStatus')}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="status">Status</Label>
+                      <Label htmlFor="status">{t('ticket.status')}</Label>
                       <select
                         id="status"
                         value={newStatus}
                         onChange={(e) => setNewStatus(e.target.value)}
                         className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                       >
-                        <option value={TICKET_STATUS.OPEN}>Open</option>
-                        <option value={TICKET_STATUS.ASSIGNED}>Assigned</option>
-                        <option value={TICKET_STATUS.IN_PROGRESS}>In Progress</option>
-                        <option value={TICKET_STATUS.COMPLETED}>Completed</option>
-                        <option value={TICKET_STATUS.CLOSED}>Closed</option>
+                        <option value={TICKET_STATUS.OPEN}>{t('ticket.statuses.open')}</option>
+                        <option value={TICKET_STATUS.ASSIGNED}>{t('ticket.statuses.assigned')}</option>
+                        <option value={TICKET_STATUS.IN_PROGRESS}>{t('ticket.statuses.inProgress')}</option>
+                        <option value={TICKET_STATUS.COMPLETED}>{t('ticket.statuses.completed')}</option>
+                        <option value={TICKET_STATUS.CLOSED}>{t('ticket.statuses.closed')}</option>
                       </select>
                     </div>
                     <Button
@@ -540,7 +542,7 @@ export const TicketDetailPage = () => {
                       disabled={updating || newStatus === ticket?.status}
                       className="w-full"
                     >
-                      {updating ? 'Updating...' : 'Update Status'}
+                      {updating ? t('ticket.updating') : t('ticket.updateStatusButton')}
                     </Button>
                   </CardContent>
                 </Card>
