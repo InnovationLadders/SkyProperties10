@@ -133,6 +133,7 @@ export const Navbar = () => {
                 <Link to="/register">
                   <Button>{t('common.register')}</Button>
                 </Link>
+                <Button variant="outline">{t('common.browseAsGuest')}</Button>
               </>
             )}
 
@@ -237,6 +238,12 @@ export const Navbar = () => {
                 >
                   {t('common.register')}
                 </Link>
+                <button
+                  className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('common.browseAsGuest')}
+                </button>
               </>
             )}
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, Building2, MapPin, DollarSign, Filter, Map as MapIcon, List } from 'lucide-react';
+import { Building2, MapPin, DollarSign, Map as MapIcon, List } from 'lucide-react';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Button } from '../components/ui/Button';
@@ -18,9 +18,6 @@ export const LandingPage = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState('list');
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [hoveredPropertyId, setHoveredPropertyId] = useState(null);
@@ -71,11 +68,7 @@ export const LandingPage = () => {
     }
   };
 
-  const filteredProperties = properties.filter((property) => {
-    const matchesSearch = property.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.address?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
-  });
+  const filteredProperties = properties;
 
   const handleSeedData = async () => {
     if (window.confirm('Do you want to seed the database with sample properties and units?')) {
@@ -109,54 +102,9 @@ export const LandingPage = () => {
             <h1 className="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
               {t('landing.title')}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 drop-shadow-md">
+            <p className="text-xl md:text-2xl drop-shadow-md">
               {t('landing.subtitle')}
             </p>
-
-            <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-xl p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <Input
-                    type="text"
-                    placeholder={t('landing.searchPlaceholder')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-12 bg-white text-gray-900 placeholder:text-gray-500"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    className="h-12 px-4 rounded-md border border-input bg-white text-gray-900 text-sm"
-                  >
-                    <option value="all">All</option>
-                    <option value="sale">{t('landing.forSale')}</option>
-                    <option value="rent">{t('landing.forRent')}</option>
-                  </select>
-                  <Button size="lg" className="h-12" onClick={() => setShowFilters(!showFilters)}>
-                    <Filter className="h-5 w-5" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link to="/login">
-                <Button size="lg" variant="outline" className="bg-white text-primary hover:bg-gray-100">
-                  {t('common.login')}
-                </Button>
-              </Link>
-              <Link to="/register">
-                <Button size="lg" variant="secondary">
-                  {t('common.register')}
-                </Button>
-              </Link>
-              <Button size="lg" variant="ghost" className="text-white hover:bg-white/10">
-                {t('common.browseAsGuest')}
-              </Button>
-            </div>
           </motion.div>
         </div>
 
