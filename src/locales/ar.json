@@ -668,6 +668,22 @@
     "receiveEmail": "استلام إشعارات البريد الإلكتروني",
     "preferencesSaved": "تم حفظ التفضيلات بنجاح"
   },
+  "map": {
+    "listView": "عرض القائمة",
+    "mapView": "عرض الخريطة",
+    "splitView": "عرض مقسم",
+    "showOnMap": "عرض على الخريطة",
+    "apiKeyRequired": "مفتاح Google Maps API مطلوب",
+    "propertyLocation": "موقع العقار",
+    "latitude": "خط العرض",
+    "longitude": "خط الطول",
+    "showMap": "إظهار الخريطة",
+    "hideMap": "إخفاء الخريطة",
+    "clickToSelectLocation": "انقر على الخريطة أو اسحب العلامة لتحديد موقع العقار",
+    "selectLocation": "اختر الموقع على الخريطة",
+    "coordinates": "الإحداثيات",
+    "locationSet": "تم تعيين الموقع"
+  },
   "user": {
     "users": "المستخدمون",
     "user": "مستخدم",
