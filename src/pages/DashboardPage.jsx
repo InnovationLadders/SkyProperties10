@@ -76,6 +76,13 @@ export const DashboardPage = () => {
           link: '/billing/manage',
           color: 'from-green-500 to-green-600',
         },
+        {
+          title: t('user.users'),
+          description: t('user.manageUsers'),
+          icon: Users,
+          link: '/users',
+          color: 'from-indigo-500 to-indigo-600',
+        },
       ];
     }
 

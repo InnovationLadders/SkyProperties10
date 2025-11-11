@@ -29,6 +29,8 @@ import { MyBillsPage } from './pages/billing/MyBillsPage';
 import { BillDetailPage } from './pages/billing/BillDetailPage';
 import { PaymentCheckoutPage } from './pages/billing/PaymentCheckoutPage';
 import { BillingSettingsPage } from './pages/billing/BillingSettingsPage';
+import UsersPage from './pages/management/UsersPage';
+import UserDetailPage from './pages/management/UserDetailPage';
 import './lib/i18n';
 
 function App() {
@@ -242,6 +244,23 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <UsersPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/users/:userId"
+                element={
+                  <ProtectedRoute>
+                    <UserDetailPage />
                   </ProtectedRoute>
                 }
               />
