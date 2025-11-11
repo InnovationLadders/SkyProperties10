@@ -291,6 +291,9 @@
   "contract": {
     "contracts": "العقود",
     "createContract": "إنشاء عقد",
+    "createNewContract": "إنشاء عقد جديد",
+    "editContract": "تعديل العقد",
+    "updateContract": "تحديث العقد",
     "manageContracts": "إدارة عقود الإيجار والخدمات",
     "searchPlaceholder": "البحث عن العقود...",
     "noContractsFound": "لم يتم العثور على عقود",
@@ -326,6 +329,7 @@
     "deleteContractConfirm": "هل أنت متأكد من حذف هذا العقد؟ لا يمكن التراجع عن هذا الإجراء.",
     "deleting": "جارٍ الحذف...",
     "failedToLoad": "فشل تحميل تفاصيل العقد",
+    "saving": "جارٍ الحفظ...",
     "statuses": {
       "active": "نشط",
       "expiring": "قارب على الانتهاء",

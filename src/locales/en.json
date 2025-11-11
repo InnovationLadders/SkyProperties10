@@ -290,6 +290,9 @@
   "contract": {
     "contracts": "Contracts",
     "createContract": "Create Contract",
+    "createNewContract": "Create New Contract",
+    "editContract": "Edit Contract",
+    "updateContract": "Update Contract",
     "manageContracts": "Manage rental and service contracts",
     "searchPlaceholder": "Search contracts...",
     "noContractsFound": "No contracts found",
@@ -324,6 +327,7 @@
     "deleteContract": "Delete Contract",
     "deleteContractConfirm": "Are you sure you want to delete this contract? This action cannot be undone.",
     "deleting": "Deleting...",
+    "saving": "Saving...",
     "statuses": {
       "active": "Active",
       "expiring": "Expiring",

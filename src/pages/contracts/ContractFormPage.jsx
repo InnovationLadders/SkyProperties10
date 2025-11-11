@@ -248,7 +248,7 @@ export const ContractFormPage = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>{isEditMode ? 'Edit Contract' : 'Create New Contract'}</CardTitle>
+            <CardTitle>{isEditMode ? t('contract.editContract') : t('contract.createNewContract')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -490,7 +490,7 @@ export const ContractFormPage = () => {
               <div className="flex gap-3">
                 <Button type="submit" disabled={loading} className="flex-1">
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? 'Saving...' : isEditMode ? 'Update Contract' : 'Create Contract'}
+                  {loading ? t('contract.saving') : isEditMode ? t('contract.updateContract') : t('contract.createContract')}
                 </Button>
                 <Button
                   type="button"
