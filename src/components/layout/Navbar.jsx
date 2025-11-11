@@ -1,15 +1,35 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Globe, Menu, X, User as UserIcon, Settings, LogOut } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
 import { useAuth } from '../../contexts/AuthContext';
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation();
   const { currentUser, userProfile, logout } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userMenuOpen]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'en' ? 'ar' : 'en';
@@ -19,6 +39,13 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
+    setMobileMenuOpen(false);
+    setUserMenuOpen(false);
+  };
+
+  const navigateToProfile = () => {
+    navigate('/profile');
+    setUserMenuOpen(false);
     setMobileMenuOpen(false);
   };
 
@@ -50,9 +77,53 @@ export const Navbar = () => {
                 >
                   {t('dashboard.title')}
                 </Link>
-                <Button variant="ghost" onClick={handleLogout}>
-                  {t('common.logout')}
-                </Button>
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+                    aria-label={t('navbar.userMenu')}
+                  >
+                    <Avatar
+                      src={userProfile?.photoURL || currentUser?.photoURL}
+                      name={userProfile?.displayName || currentUser?.displayName || currentUser?.email}
+                      size="md"
+                    />
+                  </button>
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg border border-gray-200 py-1">
+                      <div className="px-4 py-3 border-b border-gray-200">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {userProfile?.displayName || currentUser?.displayName || t('navbar.user')}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {currentUser?.email}
+                        </p>
+                      </div>
+                      <button
+                        onClick={navigateToProfile}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <UserIcon className="h-4 w-4 mr-3" />
+                        {t('navbar.profile')}
+                      </button>
+                      <button
+                        onClick={navigateToProfile}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <Settings className="h-4 w-4 mr-3" />
+                        {t('navbar.settings')}
+                      </button>
+                      <hr className="my-1 border-gray-200" />
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        <LogOut className="h-4 w-4 mr-3" />
+                        {t('common.logout')}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -113,6 +184,21 @@ export const Navbar = () => {
 
             {currentUser ? (
               <>
+                <div className="flex items-center space-x-3 px-3 py-2 border-b border-gray-200">
+                  <Avatar
+                    src={userProfile?.photoURL || currentUser?.photoURL}
+                    name={userProfile?.displayName || currentUser?.displayName || currentUser?.email}
+                    size="md"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 truncate">
+                      {userProfile?.displayName || currentUser?.displayName || t('navbar.user')}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {currentUser?.email}
+                    </p>
+                  </div>
+                </div>
                 <Link
                   to="/dashboard"
                   className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
@@ -121,9 +207,17 @@ export const Navbar = () => {
                   {t('dashboard.title')}
                 </Link>
                 <button
-                  onClick={handleLogout}
-                  className="block w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                  onClick={navigateToProfile}
+                  className="flex items-center w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                 >
+                  <UserIcon className="h-4 w-4 mr-3" />
+                  {t('navbar.profile')}
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100 rounded-md"
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
                   {t('common.logout')}
                 </button>
               </>

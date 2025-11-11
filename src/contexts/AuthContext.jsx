@@ -139,6 +139,21 @@ export const AuthProvider = ({ children }) => {
     return userProfile.role === roles;
   };
 
+  const refreshUserProfile = async () => {
+    if (currentUser) {
+      try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          const profile = userDoc.data();
+          setUserProfile(profile);
+          console.log('User profile refreshed successfully');
+        }
+      } catch (error) {
+        console.error('Error refreshing user profile:', error);
+      }
+    }
+  };
+
   const value = {
     currentUser,
     userProfile,
@@ -148,6 +163,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     resetPassword,
     hasRole,
+    refreshUserProfile,
     loading,
   };
 
