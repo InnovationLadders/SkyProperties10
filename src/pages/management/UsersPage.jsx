@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Users as UsersIcon, Search, Plus, Filter } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { MainLayout } from '../../components/layout/MainLayout';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import UserCard from '../../components/management/UserCard';
@@ -152,13 +151,11 @@ const UsersPage = () => {
   if (!userProfile) {
     console.log('[UsersPage] Render - userProfile is null, showing loading state');
     return (
-      <MainLayout>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-600 dark:text-gray-400">Loading...</div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-600 dark:text-gray-400">Loading...</div>
         </div>
-      </MainLayout>
+      </div>
     );
   }
 
@@ -170,7 +167,7 @@ const UsersPage = () => {
   });
 
   return (
-    <MainLayout>
+    <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -343,7 +340,7 @@ const UsersPage = () => {
           onUserUpdated={handleUserUpdated}
         />
       )}
-    </MainLayout>
+    </>
   );
 };
 
