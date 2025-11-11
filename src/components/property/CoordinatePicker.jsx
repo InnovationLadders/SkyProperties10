@@ -48,12 +48,15 @@ export const CoordinatePicker = ({ coordinates, onCoordinatesChange, address }) 
     onCoordinatesChange(newPosition);
   };
 
-  if (!apiKey) {
+  if (!apiKey || apiKey === 'your_google_maps_api_key_here' || apiKey === 'AIzaSyDummyKeyForDevelopment') {
     return (
       <div className="w-full h-64 flex items-center justify-center bg-muted rounded-lg border">
         <div className="text-center p-6">
           <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">{t('map.apiKeyRequired')}</p>
+          <p className="text-sm font-semibold mb-1">{t('map.apiKeyRequired')}</p>
+          <p className="text-xs text-muted-foreground">
+            {t('map.apiKeyInstructions') || 'Configure Google Maps API key to use location picker'}
+          </p>
         </div>
       </div>
     );

@@ -81,12 +81,24 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
     (p) => p.coordinates && p.coordinates.lat && p.coordinates.lng
   );
 
-  if (!apiKey) {
+  if (!apiKey || apiKey === 'your_google_maps_api_key_here' || apiKey === 'AIzaSyDummyKeyForDevelopment') {
     return (
       <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
-        <div className="text-center p-6">
+        <div className="text-center p-6 max-w-md">
           <MapPin className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">{t('map.apiKeyRequired')}</p>
+          <h3 className="font-semibold text-lg mb-2">{t('map.apiKeyRequired')}</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t('map.apiKeyInstructions') || 'To enable the map view, you need to configure a valid Google Maps API key in your .env file.'}
+          </p>
+          <div className="text-xs text-left bg-background p-3 rounded border">
+            <p className="font-medium mb-2">Setup Instructions:</p>
+            <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+              <li>Visit Google Cloud Console</li>
+              <li>Enable Maps JavaScript API</li>
+              <li>Create an API key</li>
+              <li>Add key to .env file</li>
+            </ol>
+          </div>
         </div>
       </div>
     );
