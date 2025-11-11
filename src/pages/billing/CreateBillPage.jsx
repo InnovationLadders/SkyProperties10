@@ -114,7 +114,15 @@ export const CreateBillPage = () => {
         issuedByName: userProfile.displayName || userProfile.email,
       };
 
+      console.log('Bill data being sent:', {
+        recipientId: billData.recipientId,
+        recipientName: billData.recipientName,
+        amount: billData.amount,
+        issuedBy: billData.issuedBy,
+      });
+
       const newBill = await createBill(billData);
+      console.log('Bill created with ID:', newBill.id);
 
       await sendBillNotification(
         formData.recipientId,

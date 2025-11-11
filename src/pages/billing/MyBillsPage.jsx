@@ -29,14 +29,18 @@ export const MyBillsPage = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      console.log('Fetching bills for user:', currentUser.uid);
       const [billsData, statsData] = await Promise.all([
         getAllBills({ recipientId: currentUser.uid }),
         getBillingStatistics(currentUser.uid),
       ]);
+      console.log('Bills fetched successfully:', billsData.length);
       setBills(billsData);
       setStats(statsData);
     } catch (error) {
       console.error('Error fetching bills:', error);
+      console.error('Error details:', error.message);
+      alert(`Failed to load bills: ${error.message}`);
     } finally {
       setLoading(false);
     }

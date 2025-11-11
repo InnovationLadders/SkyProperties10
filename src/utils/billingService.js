@@ -25,7 +25,15 @@ export const createBill = async (billData) => {
       updatedAt: Timestamp.now(),
     };
 
+    console.log('Creating bill with data:', {
+      recipientId: bill.recipientId,
+      recipientName: bill.recipientName,
+      amount: bill.amount,
+      billType: bill.billType,
+    });
+
     const docRef = await addDoc(collection(db, 'bills'), bill);
+    console.log('Bill created successfully with ID:', docRef.id);
     return { id: docRef.id, ...bill };
   } catch (error) {
     console.error('Error creating bill:', error);
@@ -52,6 +60,7 @@ export const getAllBills = async (filters = {}) => {
     const constraints = [];
 
     if (filters.recipientId) {
+      console.log('Querying bills with recipientId:', filters.recipientId);
       constraints.push(where('recipientId', '==', filters.recipientId));
     }
 
@@ -71,16 +80,25 @@ export const getAllBills = async (filters = {}) => {
       constraints.push(where('issuedBy', '==', filters.issuedBy));
     }
 
-    constraints.push(orderBy('dueDate', 'desc'));
-
     if (constraints.length > 0) {
       q = query(q, ...constraints);
     }
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    let bills = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    console.log(`Found ${bills.length} bills matching filters:`, filters);
+
+    bills.sort((a, b) => {
+      const aDate = a.dueDate?.toDate?.() || new Date(a.dueDate);
+      const bDate = b.dueDate?.toDate?.() || new Date(b.dueDate);
+      return bDate - aDate;
+    });
+
+    return bills;
   } catch (error) {
     console.error('Error getting bills:', error);
+    console.error('Error details:', error.message, error.code);
     throw error;
   }
 };
