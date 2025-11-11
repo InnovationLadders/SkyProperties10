@@ -15,6 +15,7 @@ export const UnitsPage = () => {
   const navigate = useNavigate();
   const [units, setUnits] = useState([]);
   const [properties, setProperties] = useState({});
+  const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -26,9 +27,10 @@ export const UnitsPage = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [unitsSnapshot, propertiesSnapshot] = await Promise.all([
+      const [unitsSnapshot, propertiesSnapshot, usersSnapshot] = await Promise.all([
         getDocs(query(collection(db, 'units'), orderBy('createdAt', 'desc'))),
         getDocs(collection(db, 'properties')),
+        getDocs(collection(db, 'users')),
       ]);
 
       const unitsData = unitsSnapshot.docs.map((doc) => ({
@@ -41,8 +43,14 @@ export const UnitsPage = () => {
         propertiesData[doc.id] = doc.data();
       });
 
+      const usersData = {};
+      usersSnapshot.docs.forEach((doc) => {
+        usersData[doc.id] = doc.data();
+      });
+
       setUnits(unitsData);
       setProperties(propertiesData);
+      setUsers(usersData);
     } catch (error) {
       console.error('Error fetching units:', error);
     } finally {
@@ -233,6 +241,26 @@ export const UnitsPage = () => {
                           ${unit.price?.toLocaleString()}
                         </span>
                       </div>
+                      {(unit.ownerId || unit.tenantId) && (
+                        <div className="border-t pt-2 mt-2">
+                          {unit.ownerId && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">{t('unit.owner')}:</span>
+                              <span className="font-medium text-xs">
+                                {users[unit.ownerId]?.displayName || users[unit.ownerId]?.email || t('unit.noOwner')}
+                              </span>
+                            </div>
+                          )}
+                          {unit.tenantId && (
+                            <div className="flex justify-between mt-1">
+                              <span className="text-muted-foreground">{t('unit.tenant')}:</span>
+                              <span className="font-medium text-xs">
+                                {users[unit.tenantId]?.displayName || users[unit.tenantId]?.email || t('unit.noTenant')}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex gap-2">

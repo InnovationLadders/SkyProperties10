@@ -27,6 +27,7 @@ export const UnitFormPage = () => {
   const [loading, setLoading] = useState(false);
   const [properties, setProperties] = useState([]);
   const [users, setUsers] = useState([]);
+  const [tenants, setTenants] = useState([]);
   const [formData, setFormData] = useState({
     propertyId: '',
     unitNumber: '',
@@ -40,6 +41,7 @@ export const UnitFormPage = () => {
     description: '',
     coordinates: [0, 0, 0],
     ownerId: '',
+    tenantId: '',
     media: [],
   });
   const [error, setError] = useState('');
@@ -52,6 +54,7 @@ export const UnitFormPage = () => {
   useEffect(() => {
     fetchProperties();
     fetchUsers();
+    fetchTenants();
     if (isEditMode) {
       fetchUnit();
     }
@@ -91,6 +94,23 @@ export const UnitFormPage = () => {
       setUsers(usersData);
     } catch (error) {
       console.error('Error fetching users:', error);
+    }
+  };
+
+  const fetchTenants = async () => {
+    try {
+      const tenantsQuery = query(
+        collection(db, 'users'),
+        where('role', '==', USER_ROLES.TENANT)
+      );
+      const snapshot = await getDocs(tenantsQuery);
+      const tenantsData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTenants(tenantsData);
+    } catch (error) {
+      console.error('Error fetching tenants:', error);
     }
   };
 
@@ -433,26 +453,53 @@ export const UnitFormPage = () => {
                 />
               </div>
 
-              {hasRole(USER_ROLES.ADMIN) && (
-                <div className="space-y-2">
-                  <Label htmlFor="ownerId">{t('unit.unitOwner')}</Label>
-                  <select
-                    id="ownerId"
-                    name="ownerId"
-                    value={formData.ownerId}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="">{t('unit.noOwnerAssigned')}</option>
-                    {users.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.displayName || user.email} ({user.role})
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-muted-foreground">
-                    {t('unit.ownerHelp')}
-                  </p>
+              {(hasRole(USER_ROLES.ADMIN) || hasRole(USER_ROLES.PROPERTY_MANAGER)) && (
+                <div className="space-y-4">
+                  <div className="text-sm font-semibold text-foreground border-b pb-2">
+                    {t('unit.ownerAndTenant')}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ownerId">{t('unit.unitOwner')}</Label>
+                    <select
+                      id="ownerId"
+                      name="ownerId"
+                      value={formData.ownerId}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    >
+                      <option value="">{t('unit.noOwnerAssigned')}</option>
+                      {users.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.displayName || user.email} ({user.role})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-muted-foreground">
+                      {t('unit.ownerHelp')}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="tenantId">{t('unit.unitTenant')}</Label>
+                    <select
+                      id="tenantId"
+                      name="tenantId"
+                      value={formData.tenantId}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    >
+                      <option value="">{t('unit.noTenantAssigned')}</option>
+                      {tenants.map((tenant) => (
+                        <option key={tenant.id} value={tenant.id}>
+                          {tenant.displayName || tenant.email}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-muted-foreground">
+                      {t('unit.tenantHelp')}
+                    </p>
+                  </div>
                 </div>
               )}
 
