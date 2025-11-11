@@ -69,7 +69,7 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
           exit={{ opacity: 0, scale: 0.95 }}
           className="w-full max-w-md"
         >
-          <Card>
+          <Card className="bg-white">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>{t('contactModal.requestContact')}</CardTitle>
