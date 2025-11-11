@@ -298,6 +298,7 @@ export const LandingPage = () => {
                 {(viewMode === 'map' || viewMode === 'split') && (
                   <div className={`${viewMode === 'map' ? 'w-full' : ''} ${viewMode === 'split' ? 'hidden lg:block' : ''} h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0`}>
                     <PropertiesMap
+                      key={`map-${viewMode}`}
                       properties={filteredProperties}
                       selectedPropertyId={hoveredPropertyId || selectedPropertyId}
                       onMarkerClick={(propertyId) => {

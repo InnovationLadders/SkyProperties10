@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { DollarSign } from 'lucide-react';
@@ -22,12 +22,21 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
   const navigate = useNavigate();
   const [mapCenter, setMapCenter] = useState([24.7136, 46.6753]);
   const [mapZoom, setMapZoom] = useState(12);
+  const [mapKey, setMapKey] = useState(0);
+  const mapInitialized = useRef(false);
 
   const propertiesWithCoordinates = useMemo(() => {
     return properties.filter(
       (p) => p.coordinates && p.coordinates.lat && p.coordinates.lng
     );
   }, [properties]);
+
+  useEffect(() => {
+    if (!mapInitialized.current && propertiesWithCoordinates.length > 0) {
+      mapInitialized.current = true;
+      setMapKey(prev => prev + 1);
+    }
+  }, [propertiesWithCoordinates.length]);
 
   useEffect(() => {
     if (propertiesWithCoordinates.length > 0) {
@@ -88,6 +97,7 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
 
   return (
     <MapContainer
+      key={mapKey}
       center={mapCenter}
       zoom={mapZoom}
       className="w-full h-full rounded-lg"
