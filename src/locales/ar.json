@@ -330,12 +330,42 @@
     "deleting": "جارٍ الحذف...",
     "failedToLoad": "فشل تحميل تفاصيل العقد",
     "saving": "جارٍ الحفظ...",
+    "failedToLoadFormData": "فشل تحميل بيانات النموذج",
+    "uploadPdfOnly": "الرجاء تحميل ملف PDF فقط",
+    "fileSizeTooLarge": "يجب أن يكون حجم الملف أقل من 10 ميجابايت",
+    "selectTenantAndProperty": "الرجاء اختيار مستأجر وعقار",
+    "selectDates": "الرجاء اختيار تاريخي البدء والانتهاء",
+    "endDateAfterStart": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+    "rentAmountGreaterThanZero": "يجب أن تكون قيمة الإيجار أكبر من صفر",
+    "failedToSave": "فشل حفظ العقد. الرجاء المحاولة مرة أخرى.",
+    "tenant": "المستأجر",
+    "selectTenant": "اختر مستأجراً",
+    "selectUnitOptional": "اختر وحدة (اختياري)",
+    "contractType": "نوع العقد",
+    "rentAmountLabel": "قيمة الإيجار (دولار)",
+    "depositAmountLabel": "قيمة التأمين (دولار)",
+    "termsPlaceholder": "أدخل شروط العقد والأحكام والملاحظات الإضافية...",
+    "contractDocumentPdf": "وثيقة العقد (PDF)",
+    "currentDocumentUploaded": "تم تحميل المستند الحالي",
+    "changeDocument": "تغيير المستند",
+    "uploadDocument": "تحميل مستند",
+    "pdfOnlyMax10MB": "PDF فقط، الحد الأقصى 10 ميجابايت",
     "statuses": {
       "active": "نشط",
       "expiring": "قارب على الانتهاء",
       "expired": "منتهي",
       "draft": "مسودة",
       "terminated": "منتهي"
+    },
+    "types": {
+      "rent": "إيجار",
+      "operations": "عمليات",
+      "maintenance": "صيانة"
+    },
+    "frequencies": {
+      "monthly": "شهري",
+      "quarterly": "ربع سنوي",
+      "annually": "سنوي"
     }
   },
   "payment": {

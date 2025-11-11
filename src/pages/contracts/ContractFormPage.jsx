@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../lib/firebase';
@@ -12,6 +13,7 @@ import { CONTRACT_TYPES, CONTRACT_STATUS, USER_ROLES } from '../../utils/constan
 import { useAuth } from '../../contexts/AuthContext';
 
 export const ContractFormPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { contractId } = useParams();
   const { hasRole } = useAuth();
@@ -90,7 +92,7 @@ export const ContractFormPage = () => {
       setTenants(tenantsData);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError('Failed to load form data');
+      setError(t('contract.failedToLoadFormData'));
     }
   };
 
@@ -107,7 +109,7 @@ export const ContractFormPage = () => {
       }
     } catch (error) {
       console.error('Error fetching contract:', error);
-      setError('Failed to load contract');
+      setError(t('contract.failedToLoad'));
     }
   };
 
@@ -150,11 +152,11 @@ export const ContractFormPage = () => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.type !== 'application/pdf') {
-        setError('Please upload a PDF file');
+        setError(t('contract.uploadPdfOnly'));
         return;
       }
       if (file.size > 10 * 1024 * 1024) {
-        setError('File size must be less than 10MB');
+        setError(t('contract.fileSizeTooLarge'));
         return;
       }
       setDocumentFile(file);
@@ -168,22 +170,22 @@ export const ContractFormPage = () => {
 
   const validateForm = () => {
     if (!formData.tenantId || !formData.propertyId) {
-      setError('Please select a tenant and property');
+      setError(t('contract.selectTenantAndProperty'));
       return false;
     }
 
     if (!formData.startDate || !formData.endDate) {
-      setError('Please select start and end dates');
+      setError(t('contract.selectDates'));
       return false;
     }
 
     if (new Date(formData.endDate) <= new Date(formData.startDate)) {
-      setError('End date must be after start date');
+      setError(t('contract.endDateAfterStart'));
       return false;
     }
 
     if (formData.rentAmount <= 0) {
-      setError('Rent amount must be greater than 0');
+      setError(t('contract.rentAmountGreaterThanZero'));
       return false;
     }
 
@@ -230,7 +232,7 @@ export const ContractFormPage = () => {
       navigate('/contracts');
     } catch (error) {
       console.error('Error saving contract:', error);
-      setError('Failed to save contract. Please try again.');
+      setError(t('contract.failedToSave'));
     } finally {
       setLoading(false);
     }
@@ -242,7 +244,7 @@ export const ContractFormPage = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/contracts')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Contracts
+            {t('contract.backToContracts')}
           </Button>
         </div>
 
@@ -253,7 +255,7 @@ export const ContractFormPage = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="tenantId">Tenant *</Label>
+                <Label htmlFor="tenantId">{t('contract.tenant')} *</Label>
                 <select
                   id="tenantId"
                   name="tenantId"
@@ -262,7 +264,7 @@ export const ContractFormPage = () => {
                   required
                   className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                 >
-                  <option value="">Select a tenant</option>
+                  <option value="">{t('contract.selectTenant')}</option>
                   {tenants.map((tenant) => (
                     <option key={tenant.id} value={tenant.id}>
                       {tenant.displayName || tenant.email}
@@ -273,7 +275,7 @@ export const ContractFormPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="propertyId">Property *</Label>
+                  <Label htmlFor="propertyId">{t('unit.property')} *</Label>
                   <select
                     id="propertyId"
                     name="propertyId"
@@ -282,7 +284,7 @@ export const ContractFormPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="">Select a property</option>
+                    <option value="">{t('unit.selectProperty')}</option>
                     {properties.map((property) => (
                       <option key={property.id} value={property.id}>
                         {property.name}
@@ -292,7 +294,7 @@ export const ContractFormPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="unitId">Unit</Label>
+                  <Label htmlFor="unitId">{t('billing.unit')}</Label>
                   <select
                     id="unitId"
                     name="unitId"
@@ -301,10 +303,10 @@ export const ContractFormPage = () => {
                     disabled={!formData.propertyId}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm disabled:opacity-50"
                   >
-                    <option value="">Select a unit (optional)</option>
+                    <option value="">{t('contract.selectUnitOptional')}</option>
                     {filteredUnits.map((unit) => (
                       <option key={unit.id} value={unit.id}>
-                        Unit {unit.unitNumber} - Floor {unit.floor}
+                        {t('unit.unitNumber')} {unit.unitNumber} - {t('unit.floor')} {unit.floor}
                       </option>
                     ))}
                   </select>
@@ -313,7 +315,7 @@ export const ContractFormPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Contract Type *</Label>
+                  <Label htmlFor="type">{t('contract.contractType')} *</Label>
                   <select
                     id="type"
                     name="type"
@@ -322,14 +324,14 @@ export const ContractFormPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value={CONTRACT_TYPES.RENT}>Rent</option>
-                    <option value={CONTRACT_TYPES.OPERATIONS}>Operations</option>
-                    <option value={CONTRACT_TYPES.MAINTENANCE}>Maintenance</option>
+                    <option value={CONTRACT_TYPES.RENT}>{t('contract.types.rent')}</option>
+                    <option value={CONTRACT_TYPES.OPERATIONS}>{t('contract.types.operations')}</option>
+                    <option value={CONTRACT_TYPES.MAINTENANCE}>{t('contract.types.maintenance')}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status">Status *</Label>
+                  <Label htmlFor="status">{t('billing.status')} *</Label>
                   <select
                     id="status"
                     name="status"
@@ -338,18 +340,18 @@ export const ContractFormPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value={CONTRACT_STATUS.DRAFT}>Draft</option>
-                    <option value={CONTRACT_STATUS.ACTIVE}>Active</option>
-                    <option value={CONTRACT_STATUS.EXPIRING}>Expiring</option>
-                    <option value={CONTRACT_STATUS.EXPIRED}>Expired</option>
-                    <option value={CONTRACT_STATUS.TERMINATED}>Terminated</option>
+                    <option value={CONTRACT_STATUS.DRAFT}>{t('contract.statuses.draft')}</option>
+                    <option value={CONTRACT_STATUS.ACTIVE}>{t('contract.statuses.active')}</option>
+                    <option value={CONTRACT_STATUS.EXPIRING}>{t('contract.statuses.expiring')}</option>
+                    <option value={CONTRACT_STATUS.EXPIRED}>{t('contract.statuses.expired')}</option>
+                    <option value={CONTRACT_STATUS.TERMINATED}>{t('contract.statuses.terminated')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="startDate">Start Date *</Label>
+                  <Label htmlFor="startDate">{t('contract.startDate')} *</Label>
                   <Input
                     id="startDate"
                     name="startDate"
@@ -361,7 +363,7 @@ export const ContractFormPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="endDate">End Date *</Label>
+                  <Label htmlFor="endDate">{t('contract.endDate')} *</Label>
                   <Input
                     id="endDate"
                     name="endDate"
@@ -375,7 +377,7 @@ export const ContractFormPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="rentAmount">Rent Amount ($) *</Label>
+                  <Label htmlFor="rentAmount">{t('contract.rentAmountLabel')} *</Label>
                   <Input
                     id="rentAmount"
                     name="rentAmount"
@@ -389,7 +391,7 @@ export const ContractFormPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="depositAmount">Deposit Amount ($)</Label>
+                  <Label htmlFor="depositAmount">{t('contract.depositAmountLabel')}</Label>
                   <Input
                     id="depositAmount"
                     name="depositAmount"
@@ -402,7 +404,7 @@ export const ContractFormPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="paymentFrequency">Payment Frequency</Label>
+                  <Label htmlFor="paymentFrequency">{t('contract.paymentFrequency')}</Label>
                   <select
                     id="paymentFrequency"
                     name="paymentFrequency"
@@ -410,38 +412,38 @@ export const ContractFormPage = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="annually">Annually</option>
+                    <option value="monthly">{t('contract.frequencies.monthly')}</option>
+                    <option value="quarterly">{t('contract.frequencies.quarterly')}</option>
+                    <option value="annually">{t('contract.frequencies.annually')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="terms">Terms and Notes</Label>
+                <Label htmlFor="terms">{t('contract.termsAndNotes')}</Label>
                 <textarea
                   id="terms"
                   name="terms"
                   value={formData.terms}
                   onChange={handleChange}
                   className="w-full min-h-[120px] px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  placeholder="Enter contract terms, conditions, and additional notes..."
+                  placeholder={t('contract.termsPlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="document">Contract Document (PDF)</Label>
+                <Label htmlFor="document">{t('contract.contractDocumentPdf')}</Label>
                 {formData.documentUrl && !documentFile && (
                   <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md">
                     <FileText className="h-5 w-5 text-primary" />
-                    <span className="text-sm flex-1">Current document uploaded</span>
+                    <span className="text-sm flex-1">{t('contract.currentDocumentUploaded')}</span>
                     <a
                       href={formData.documentUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-primary hover:underline"
                     >
-                      View
+                      {t('common.view')}
                     </a>
                   </div>
                 )}
@@ -473,10 +475,10 @@ export const ContractFormPage = () => {
                     onClick={() => document.getElementById('document').click()}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    {documentFile || formData.documentUrl ? 'Change Document' : 'Upload Document'}
+                    {documentFile || formData.documentUrl ? t('contract.changeDocument') : t('contract.uploadDocument')}
                   </Button>
                   <span className="text-xs text-muted-foreground">
-                    PDF only, max 10MB
+                    {t('contract.pdfOnlyMax10MB')}
                   </span>
                 </div>
               </div>
@@ -498,7 +500,7 @@ export const ContractFormPage = () => {
                   onClick={() => navigate('/contracts')}
                   disabled={loading}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </form>
