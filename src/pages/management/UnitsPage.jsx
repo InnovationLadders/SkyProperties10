@@ -214,6 +214,16 @@ export const UnitsPage = () => {
                         <span className="font-medium">{unit.type || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="text-muted-foreground">View:</span>
+                        <span className={`text-xs px-2 py-0.5 rounded font-medium ${
+                          unit.viewType === 'external'
+                            ? 'bg-orange-100 text-orange-800'
+                            : 'bg-purple-100 text-purple-800'
+                        }`}>
+                          {unit.viewType === 'external' ? 'External' : 'Internal'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="text-muted-foreground">Size:</span>
                         <span className="font-medium">{unit.size} sqm</span>
                       </div>

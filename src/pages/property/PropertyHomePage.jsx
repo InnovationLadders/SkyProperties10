@@ -372,6 +372,16 @@ export const PropertyHomePage = () => {
                           </span>
                         </div>
                         <div className="flex justify-between">
+                          <span className="text-muted-foreground">View Type</span>
+                          <span className={`font-medium px-2 py-1 rounded text-sm ${
+                            selectedUnit.viewType === 'external'
+                              ? 'bg-orange-100 text-orange-800'
+                              : 'bg-purple-100 text-purple-800'
+                          }`}>
+                            {selectedUnit.viewType === 'external' ? 'External View' : 'Internal View'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
                           <span className="text-muted-foreground">Type</span>
                           <span className="font-medium">{selectedUnit.type}</span>
                         </div>
