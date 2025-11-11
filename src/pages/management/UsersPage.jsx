@@ -11,9 +11,16 @@ import EditUserModal from '../../components/management/EditUserModal';
 import { getAllUsers, getPropertyManagerUsers, deleteUser } from '../../utils/userService';
 import { USER_ROLES } from '../../utils/constants';
 
+console.log('[UsersPage] Module loaded successfully');
+
 const UsersPage = () => {
+  console.log('[UsersPage] Component rendering started');
   const { t } = useTranslation();
   const { currentUser, userProfile } = useAuth();
+  console.log('[UsersPage] Auth context values:', {
+    currentUser: currentUser ? { uid: currentUser.uid, email: currentUser.email } : null,
+    userProfile: userProfile ? { uid: userProfile.uid, role: userProfile.role } : null
+  });
 
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -25,38 +32,62 @@ const UsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
+    console.log('[UsersPage] useEffect for fetchUsers triggered', { userProfile: userProfile ? 'exists' : 'null' });
     if (userProfile) {
+      console.log('[UsersPage] Calling fetchUsers with role:', userProfile.role);
       fetchUsers();
+    } else {
+      console.log('[UsersPage] userProfile is null, skipping fetchUsers');
     }
   }, [userProfile]);
 
   useEffect(() => {
+    console.log('[UsersPage] useEffect for filterUsers triggered', {
+      usersCount: users.length,
+      searchTerm,
+      roleFilter
+    });
     filterUsers();
   }, [users, searchTerm, roleFilter]);
 
   const fetchUsers = async () => {
     try {
+      console.log('[UsersPage] fetchUsers - Starting, role:', userProfile.role);
       setLoading(true);
       let fetchedUsers = [];
 
       if (userProfile.role === USER_ROLES.ADMIN) {
+        console.log('[UsersPage] fetchUsers - User is ADMIN, fetching all users');
         fetchedUsers = await getAllUsers();
+        console.log('[UsersPage] fetchUsers - Retrieved users:', fetchedUsers.length);
       } else if (userProfile.role === USER_ROLES.PROPERTY_MANAGER) {
+        console.log('[UsersPage] fetchUsers - User is PROPERTY_MANAGER, fetching managed users');
         fetchedUsers = await getPropertyManagerUsers(userProfile.uid);
+        console.log('[UsersPage] fetchUsers - Retrieved users:', fetchedUsers.length);
+      } else {
+        console.log('[UsersPage] fetchUsers - User role not authorized:', userProfile.role);
       }
 
+      console.log('[UsersPage] fetchUsers - Setting users state:', fetchedUsers);
       setUsers(fetchedUsers);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('[UsersPage] Error fetching users:', error);
+      console.error('[UsersPage] Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
     } finally {
+      console.log('[UsersPage] fetchUsers - Setting loading to false');
       setLoading(false);
     }
   };
 
   const filterUsers = () => {
+    console.log('[UsersPage] filterUsers - Starting with users:', users.length);
     let filtered = [...users];
 
     if (searchTerm) {
+      console.log('[UsersPage] filterUsers - Applying search term:', searchTerm);
       const search = searchTerm.toLowerCase();
       filtered = filtered.filter(
         user =>
@@ -64,12 +95,16 @@ const UsersPage = () => {
           user.email?.toLowerCase().includes(search) ||
           user.phoneNumber?.includes(search)
       );
+      console.log('[UsersPage] filterUsers - After search filter:', filtered.length);
     }
 
     if (roleFilter !== 'all') {
+      console.log('[UsersPage] filterUsers - Applying role filter:', roleFilter);
       filtered = filtered.filter(user => user.role === roleFilter);
+      console.log('[UsersPage] filterUsers - After role filter:', filtered.length);
     }
 
+    console.log('[UsersPage] filterUsers - Setting filteredUsers:', filtered.length);
     setFilteredUsers(filtered);
   };
 
@@ -115,6 +150,7 @@ const UsersPage = () => {
   };
 
   if (!userProfile) {
+    console.log('[UsersPage] Render - userProfile is null, showing loading state');
     return (
       <MainLayout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -125,6 +161,13 @@ const UsersPage = () => {
       </MainLayout>
     );
   }
+
+  console.log('[UsersPage] Render - userProfile exists, proceeding to main render');
+  console.log('[UsersPage] Render states:', {
+    loading,
+    usersCount: users.length,
+    filteredUsersCount: filteredUsers.length
+  });
 
   return (
     <MainLayout>
@@ -216,8 +259,16 @@ const UsersPage = () => {
           </div>
         </div>
 
+        {(() => {
+          console.log('[UsersPage] Render - Determining which view to show', {
+            loading,
+            filteredUsersLength: filteredUsers.length
+          });
+          return null;
+        })()}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {console.log('[UsersPage] Render - Showing loading skeleton')}
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
@@ -235,6 +286,7 @@ const UsersPage = () => {
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="text-center py-16">
+            {console.log('[UsersPage] Render - Showing empty state')}
             <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
               {t('user.noUsersFound')}
@@ -247,15 +299,27 @@ const UsersPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredUsers.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                onEdit={handleEditUser}
-                onDelete={handleDeleteUser}
-                showActions={userProfile?.role === USER_ROLES.ADMIN || userProfile?.uid !== user.id}
-              />
-            ))}
+            {console.log('[UsersPage] Render - Rendering user cards, count:', filteredUsers.length)}
+            {filteredUsers.map((user, index) => {
+              console.log(`[UsersPage] Render - Rendering UserCard ${index + 1}/${filteredUsers.length}`, {
+                userId: user.id,
+                userName: user.displayName
+              });
+              try {
+                return (
+                  <UserCard
+                    key={user.id}
+                    user={user}
+                    onEdit={handleEditUser}
+                    onDelete={handleDeleteUser}
+                    showActions={userProfile?.role === USER_ROLES.ADMIN || userProfile?.uid !== user.id}
+                  />
+                );
+              } catch (error) {
+                console.error(`[UsersPage] Error rendering UserCard for user ${user.id}:`, error);
+                return null;
+              }
+            })}
           </div>
         )}
       </div>

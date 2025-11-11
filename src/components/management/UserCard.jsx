@@ -7,15 +7,24 @@ import { Card } from '../ui/Card';
 import RoleBadge from './RoleBadge';
 
 const UserCard = ({ user, onEdit, onDelete, showActions = true }) => {
+  console.log('[UserCard] Rendering for user:', {
+    userId: user?.id,
+    userName: user?.displayName,
+    userEmail: user?.email,
+    showActions
+  });
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
+    console.log('[UserCard] Navigating to user details:', user.id);
     navigate(`/users/${user.id}`);
   };
 
-  return (
-    <Card className="hover:shadow-lg transition-shadow">
+  try {
+    console.log('[UserCard] Rendering Card component for:', user.displayName || user.email);
+    return (
+      <Card className="hover:shadow-lg transition-shadow">
       <div className="p-6">
         <div className="flex items-start gap-4">
           <Avatar
@@ -97,7 +106,17 @@ const UserCard = ({ user, onEdit, onDelete, showActions = true }) => {
         </div>
       </div>
     </Card>
-  );
+    );
+  } catch (error) {
+    console.error('[UserCard] Error rendering card:', error);
+    return (
+      <Card className="hover:shadow-lg transition-shadow">
+        <div className="p-6">
+          <p className="text-red-600">Error rendering user card</p>
+        </div>
+      </Card>
+    );
+  }
 };
 
 export default UserCard;

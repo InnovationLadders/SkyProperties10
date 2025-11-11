@@ -1,16 +1,21 @@
 import { forwardRef } from 'react';
 import { cn } from '../../lib/cn';
 
-const Card = forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'rounded-lg border bg-card text-card-foreground shadow-sm bg-opacity-100',
-      className
-    )}
-    {...props}
-  />
-));
+const Card = forwardRef(({ className, children, ...props }, ref) => {
+  console.log('[Card] Rendering', { hasChildren: !!children, className });
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'rounded-lg border bg-card text-card-foreground shadow-sm bg-opacity-100',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 Card.displayName = 'Card';
 
 const CardHeader = forwardRef(({ className, ...props }, ref) => (

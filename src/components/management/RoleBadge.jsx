@@ -10,6 +10,7 @@ const roleStyles = {
 };
 
 const RoleBadge = ({ role }) => {
+  console.log('[RoleBadge] Rendering for role:', role);
   const { t } = useTranslation();
 
   const getRoleLabel = (role) => {

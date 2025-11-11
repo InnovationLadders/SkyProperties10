@@ -24,15 +24,25 @@ const PROPERTIES_COLLECTION = 'properties';
 
 export const getAllUsers = async () => {
   try {
+    console.log('[userService] getAllUsers - Starting');
     const usersRef = collection(db, USERS_COLLECTION);
     const q = query(usersRef, orderBy('createdAt', 'desc'));
+    console.log('[userService] getAllUsers - Executing query');
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    console.log('[userService] getAllUsers - Query complete, docs:', snapshot.docs.length);
+    const users = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
+    console.log('[userService] getAllUsers - Returning users:', users.length);
+    return users;
   } catch (error) {
-    console.error('Error fetching all users:', error);
+    console.error('[userService] Error fetching all users:', error);
+    console.error('[userService] Error details:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     throw error;
   }
 };
@@ -294,19 +304,25 @@ export const getUsersByRole = async (role) => {
 
 export const getPropertyManagerUsers = async (managerId) => {
   try {
+    console.log('[userService] getPropertyManagerUsers - Starting for managerId:', managerId);
     const propertiesRef = collection(db, PROPERTIES_COLLECTION);
     const propertiesQuery = query(propertiesRef, where('managerId', '==', managerId));
+    console.log('[userService] getPropertyManagerUsers - Fetching properties');
     const propertiesSnapshot = await getDocs(propertiesQuery);
 
     const propertyIds = propertiesSnapshot.docs.map(doc => doc.id);
+    console.log('[userService] getPropertyManagerUsers - Found properties:', propertyIds.length);
 
     if (propertyIds.length === 0) {
+      console.log('[userService] getPropertyManagerUsers - No properties found, returning empty array');
       return [];
     }
 
     const unitsRef = collection(db, UNITS_COLLECTION);
     const unitsQuery = query(unitsRef, where('propertyId', 'in', propertyIds));
+    console.log('[userService] getPropertyManagerUsers - Fetching units');
     const unitsSnapshot = await getDocs(unitsQuery);
+    console.log('[userService] getPropertyManagerUsers - Found units:', unitsSnapshot.docs.length);
 
     const userIds = new Set();
     unitsSnapshot.docs.forEach(doc => {
@@ -314,12 +330,15 @@ export const getPropertyManagerUsers = async (managerId) => {
       if (data.ownerId) userIds.add(data.ownerId);
       if (data.tenantId) userIds.add(data.tenantId);
     });
+    console.log('[userService] getPropertyManagerUsers - Found unique user IDs:', userIds.size);
 
     if (userIds.size === 0) {
+      console.log('[userService] getPropertyManagerUsers - No users found, returning empty array');
       return [];
     }
 
     const users = [];
+    console.log('[userService] getPropertyManagerUsers - Fetching user details');
     for (const userId of userIds) {
       const userDoc = await getDoc(doc(db, USERS_COLLECTION, userId));
       if (userDoc.exists()) {
@@ -329,10 +348,16 @@ export const getPropertyManagerUsers = async (managerId) => {
         });
       }
     }
+    console.log('[userService] getPropertyManagerUsers - Returning users:', users.length);
 
     return users;
   } catch (error) {
-    console.error('Error fetching property manager users:', error);
+    console.error('[userService] Error fetching property manager users:', error);
+    console.error('[userService] Error details:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    });
     throw error;
   }
 };
