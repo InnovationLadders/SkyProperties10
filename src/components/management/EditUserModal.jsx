@@ -10,7 +10,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const EditUserModal = ({ isOpen, onClose, user, onUserUpdated }) => {
   const { t } = useTranslation();
-  const { user: currentUser } = useAuth();
+  const { userProfile } = useAuth();
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -99,7 +99,7 @@ const EditUserModal = ({ isOpen, onClose, user, onUserUpdated }) => {
   };
 
   const canEditRole = () => {
-    return currentUser.role === USER_ROLES.ADMIN;
+    return userProfile && userProfile.role === USER_ROLES.ADMIN;
   };
 
   if (!isOpen || !user) return null;

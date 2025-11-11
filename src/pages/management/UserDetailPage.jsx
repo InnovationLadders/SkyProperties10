@@ -17,7 +17,7 @@ const UserDetailPage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user: currentUser } = useAuth();
+  const { userProfile } = useAuth();
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,16 +25,20 @@ const UserDetailPage = () => {
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
 
   useEffect(() => {
-    fetchUser();
+    if (userId) {
+      fetchUser();
+    }
   }, [userId]);
 
   const fetchUser = async () => {
     try {
       setLoading(true);
+      console.log('[UserDetailPage] Fetching user with ID:', userId);
       const userData = await getUserById(userId);
+      console.log('[UserDetailPage] User data loaded:', userData);
       setUser(userData);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('[UserDetailPage] Error fetching user:', error);
       alert(t('user.fetchError'));
       navigate('/users');
     } finally {
@@ -83,12 +87,13 @@ const UserDetailPage = () => {
   };
 
   const canManageUser = () => {
-    if (currentUser.role === USER_ROLES.ADMIN) return true;
-    if (currentUser.role === USER_ROLES.PROPERTY_MANAGER && user?.role !== USER_ROLES.ADMIN) return true;
+    if (!userProfile) return false;
+    if (userProfile.role === USER_ROLES.ADMIN) return true;
+    if (userProfile.role === USER_ROLES.PROPERTY_MANAGER && user?.role !== USER_ROLES.ADMIN) return true;
     return false;
   };
 
-  if (loading) {
+  if (!userProfile || loading) {
     return (
       <MainLayout>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
