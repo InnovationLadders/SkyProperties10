@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Box, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { Button } from '../ui/Button';
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, RotateCcw, RotateCw } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, RotateCcw, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
 
 const Hotspot = ({ position, type, onClick, label }) => {
   const [hovered, setHovered] = useState(false);
@@ -199,6 +199,29 @@ export const BuildingModel3D = ({ modelUrl, hotspots = [], onHotspotClick }) => 
     controls.update();
   };
 
+  const zoomCamera = (direction) => {
+    if (!cameraRef.current || !controlsRef.current) return;
+
+    const camera = cameraRef.current;
+    const controls = controlsRef.current;
+    const center = controls.target.clone();
+    const zoomAmount = 1.5;
+
+    const offset = camera.position.clone().sub(center);
+    const currentDistance = offset.length();
+
+    if (direction === 'in') {
+      const newDistance = Math.max(currentDistance - zoomAmount, 5);
+      offset.normalize().multiplyScalar(newDistance);
+    } else {
+      const newDistance = Math.min(currentDistance + zoomAmount, 20);
+      offset.normalize().multiplyScalar(newDistance);
+    }
+
+    camera.position.copy(center.clone().add(offset));
+    controls.update();
+  };
+
   return (
     <div className="w-full h-full relative">
       <Canvas>
@@ -295,6 +318,30 @@ export const BuildingModel3D = ({ modelUrl, hotspots = [], onHotspotClick }) => 
                 title="Rotate Right"
               >
                 <RotateCw className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-2 mt-1">
+            <div className="text-xs text-gray-600 text-center mb-1">Zoom</div>
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 flex-1"
+                onClick={() => zoomCamera('in')}
+                title="Zoom In"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 flex-1"
+                onClick={() => zoomCamera('out')}
+                title="Zoom Out"
+              >
+                <ZoomOut className="h-4 w-4" />
               </Button>
             </div>
           </div>
