@@ -21,7 +21,7 @@ export const LandingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
-  const [viewMode, setViewMode] = useState('split');
+  const [viewMode, setViewMode] = useState('list');
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [hoveredPropertyId, setHoveredPropertyId] = useState(null);
 
@@ -194,15 +194,6 @@ export const LandingPage = () => {
                   <MapIcon className="h-4 w-4 mr-2" />
                   {t('map.mapView')}
                 </Button>
-                <Button
-                  variant={viewMode === 'split' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('split')}
-                  className="hidden lg:flex"
-                >
-                  <Building2 className="h-4 w-4 mr-2" />
-                  {t('map.splitView')}
-                </Button>
               </div>
             </div>
 
@@ -227,9 +218,9 @@ export const LandingPage = () => {
                 </p>
               </div>
             ) : (
-              <div className={`${viewMode === 'split' ? 'lg:grid lg:grid-cols-2 lg:gap-6' : ''}`}>
-                <div className={`${viewMode === 'map' ? 'hidden' : viewMode === 'split' ? 'overflow-y-auto max-h-[800px] pr-2' : ''}`}>
-                  <div className={`grid grid-cols-1 ${viewMode === 'list' ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-6`}>
+              <div>
+                <div className={`${viewMode === 'map' ? 'hidden' : ''}`}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredProperties.map((property, index) => (
                       <motion.div
                         key={property.id}
@@ -295,8 +286,8 @@ export const LandingPage = () => {
                   </div>
                 </div>
 
-                {(viewMode === 'map' || viewMode === 'split') && (
-                  <div className={`${viewMode === 'map' ? 'w-full' : ''} ${viewMode === 'split' ? 'hidden lg:block' : ''} h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0`}>
+                {viewMode === 'map' && (
+                  <div className="w-full h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0">
                     <PropertiesMap
                       key={`map-${viewMode}`}
                       properties={filteredProperties}

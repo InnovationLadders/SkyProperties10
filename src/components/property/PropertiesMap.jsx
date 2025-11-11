@@ -114,7 +114,8 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
         const isSelected = selectedPropertyId === property.id;
         const icon = createCustomIcon(
           isSelected ? '#f97316' : '#3b82f6',
-          isSelected
+          isSelected,
+          property.name || 'Unnamed Property'
         );
 
         return (
