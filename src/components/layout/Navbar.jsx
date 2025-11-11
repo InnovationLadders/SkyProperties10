@@ -48,7 +48,7 @@ export const Navbar = () => {
                   to="/dashboard"
                   className="text-gray-700 hover:text-primary"
                 >
-                  Dashboard
+                  {t('dashboard.title')}
                 </Link>
                 <Button variant="ghost" onClick={handleLogout}>
                   {t('common.logout')}
@@ -118,7 +118,7 @@ export const Navbar = () => {
                   className="block px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  {t('dashboard.title')}
                 </Link>
                 <button
                   onClick={handleLogout}

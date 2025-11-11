@@ -15,10 +15,22 @@
     "browseAsGuest": "تصفح كزائر",
     "language": "اللغة",
     "darkMode": "الوضع الداكن",
-    "lightMode": "الوضع الفاتح"
+    "lightMode": "الوضع الفاتح",
+    "back": "رجوع",
+    "create": "إنشاء",
+    "add": "إضافة",
+    "view": "عرض",
+    "viewDetails": "عرض التفاصيل",
+    "welcome": "مرحباً",
+    "welcomeBack": "مرحباً بعودتك",
+    "no": "لا",
+    "yes": "نعم",
+    "confirm": "تأكيد",
+    "optional": "اختياري",
+    "required": "مطلوب"
   },
   "landing": {
-    "title": "مرحبًا بك في سكاي بروبرتيز",
+    "title": "مرحباً بك في سكاي بروبرتيز",
     "subtitle": "منصة إدارة العقارات والسوق الرائدة",
     "searchPlaceholder": "ابحث عن العقارات حسب الموقع أو النوع أو السعر...",
     "featuredProperties": "العقارات المميزة",
@@ -44,6 +56,28 @@
       "serviceProvider": "مزود الخدمة"
     }
   },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "role": "الدور",
+    "manageProperties": "إدارة عقاراتك",
+    "manageUnits": "إدارة وحدات العقار",
+    "maintenanceTickets": "تذاكر الصيانة",
+    "maintenanceRequests": "طلبات الصيانة",
+    "manageContracts": "إدارة العقود",
+    "viewContracts": "عرض العقود",
+    "myUnits": "وحداتي",
+    "myRental": "إيجاري",
+    "viewRentalDetails": "عرض تفاصيل الإيجار",
+    "submitRequests": "تقديم الطلبات",
+    "payments": "المدفوعات",
+    "viewPayments": "عرض المدفوعات",
+    "myServices": "خدماتي",
+    "manageServices": "إدارة الخدمات",
+    "assignedTickets": "التذاكر المخصصة",
+    "workTickets": "تذاكر العمل",
+    "welcomeMessage": "مرحباً بك في سكاي بروبرتيز",
+    "welcomeDescription": "سيتم تعبئة لوحة التحكم الخاصة بك بناءً على دورك ونشاطاتك"
+  },
   "property": {
     "properties": "العقارات",
     "addProperty": "إضافة عقار",
@@ -52,7 +86,18 @@
     "description": "الوصف",
     "units": "الوحدات",
     "availableUnits": "الوحدات المتاحة",
-    "totalUnits": "إجمالي الوحدات"
+    "totalUnits": "إجمالي الوحدات",
+    "manageAll": "إدارة جميع العقارات في النظام",
+    "searchPlaceholder": "البحث عن العقارات...",
+    "noPropertiesFound": "لم يتم العثور على عقارات",
+    "tryAdjustingSearch": "حاول تعديل بحثك",
+    "getStarted": "ابدأ بإضافة عقارك الأول",
+    "unnamed": "عقار بدون اسم",
+    "noAddress": "لا يوجد عنوان",
+    "noDescription": "لا يوجد وصف متاح",
+    "available": "متاحة",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا العقار؟",
+    "deleteFailed": "فشل حذف العقار"
   },
   "unit": {
     "units": "الوحدات",
@@ -77,6 +122,26 @@
     "status": "الحالة",
     "priority": "الأولوية",
     "assignedTo": "مخصص لـ",
+    "maintenanceTickets": "تذاكر الصيانة",
+    "ticketsAssignedToYou": "التذاكر المخصصة لك",
+    "manageRequests": "إدارة طلبات الصيانة",
+    "searchPlaceholder": "البحث عن التذاكر...",
+    "allStatus": "جميع الحالات",
+    "noTicketsFound": "لم يتم العثور على تذاكر",
+    "tryAdjustingFilters": "حاول تعديل الفلاتر",
+    "createFirstTicket": "أنشئ تذكرة الصيانة الأولى",
+    "unknownProperty": "عقار غير معروف",
+    "category": "الفئة",
+    "created": "تاريخ الإنشاء",
+    "backToTickets": "العودة إلى التذاكر",
+    "createMaintenance": "إنشاء تذكرة صيانة",
+    "briefDescription": "وصف مختصر للمشكلة",
+    "detailedDescription": "قدم معلومات تفصيلية عن المشكلة...",
+    "selectProperty": "اختر عقاراً",
+    "unitNumberPlaceholder": "مثال: A101",
+    "attachImage": "إرفاق صورة",
+    "uploadPhoto": "تحميل صورة للمشكلة (اختياري)",
+    "creating": "جارٍ الإنشاء...",
     "statuses": {
       "open": "مفتوح",
       "assigned": "مخصص",
@@ -84,6 +149,83 @@
       "completed": "مكتمل",
       "rated": "مقيّم",
       "closed": "مغلق"
+    },
+    "priorities": {
+      "low": "منخفضة",
+      "medium": "متوسطة",
+      "high": "عالية",
+      "urgent": "عاجلة",
+      "normal": "عادية"
+    },
+    "categories": {
+      "general": "عام",
+      "plumbing": "سباكة",
+      "electrical": "كهرباء",
+      "hvac": "تكييف وتدفئة",
+      "appliance": "أجهزة",
+      "structural": "إنشائي",
+      "other": "أخرى"
     }
+  },
+  "contract": {
+    "contracts": "العقود",
+    "createContract": "إنشاء عقد",
+    "manageContracts": "إدارة عقود الإيجار والخدمات",
+    "searchPlaceholder": "البحث عن العقود...",
+    "noContractsFound": "لم يتم العثور على عقود",
+    "tryAdjustingSearch": "حاول تعديل بحثك",
+    "createFirstContract": "أنشئ عقدك الأول",
+    "unnamedContract": "عقد بدون اسم",
+    "startDate": "تاريخ البدء",
+    "endDate": "تاريخ الانتهاء",
+    "rentAmount": "قيمة الإيجار",
+    "type": "النوع",
+    "tenantName": "اسم المستأجر",
+    "statuses": {
+      "active": "نشط",
+      "expiring": "قارب على الانتهاء",
+      "expired": "منتهي",
+      "draft": "مسودة"
+    }
+  },
+  "payment": {
+    "payments": "المدفوعات",
+    "paymentHistory": "سجل المدفوعات",
+    "viewHistory": "عرض مدفوعات الإيجار والفواتير",
+    "searchPlaceholder": "البحث عن المدفوعات...",
+    "noPaymentsFound": "لم يتم العثور على مدفوعات",
+    "tryAdjustingSearch": "حاول تعديل بحثك",
+    "noRecords": "لا توجد سجلات مدفوعات متاحة",
+    "receipt": "إيصال",
+    "dueDate": "تاريخ الاستحقاق",
+    "paidDate": "تاريخ الدفع",
+    "paymentMethod": "طريقة الدفع",
+    "amount": "المبلغ",
+    "statuses": {
+      "paid": "مدفوع",
+      "pending": "معلق",
+      "overdue": "متأخر"
+    }
+  },
+  "profile": {
+    "profile": "الملف الشخصي",
+    "manageInfo": "إدارة معلوماتك الشخصية",
+    "personalInfo": "المعلومات الشخصية",
+    "profilePhoto": "صورة الملف الشخصي",
+    "emailCannotChange": "لا يمكن تغيير البريد الإلكتروني",
+    "displayName": "الاسم المعروض",
+    "phoneNumber": "رقم الهاتف",
+    "bio": "نبذة عنك",
+    "role": "الدور",
+    "yourName": "اسمك",
+    "phonePlaceholder": "+966 55 123 4567",
+    "bioPlaceholder": "أخبرنا عن نفسك...",
+    "saving": "جارٍ الحفظ...",
+    "saveChanges": "حفظ التغييرات",
+    "updateSuccess": "تم تحديث الملف الشخصي بنجاح!",
+    "updateFailed": "فشل تحديث الملف الشخصي"
+  },
+  "navbar": {
+    "skyProperties": "سكاي بروبرتيز"
   }
 }

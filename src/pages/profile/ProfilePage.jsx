@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { updateProfile } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -11,6 +12,7 @@ import { User, Save, Upload } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export const ProfilePage = () => {
+  const { t } = useTranslation();
   const { currentUser, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -60,10 +62,10 @@ export const ProfilePage = () => {
         photoURL,
       });
 
-      setSuccess('Profile updated successfully!');
+      setSuccess(t('profile.updateSuccess'));
     } catch (error) {
       console.error('Error updating profile:', error);
-      setError('Failed to update profile');
+      setError(t('profile.updateFailed'));
     } finally {
       setLoading(false);
     }
@@ -73,13 +75,13 @@ export const ProfilePage = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Profile</h1>
-          <p className="text-muted-foreground">Manage your personal information</p>
+          <h1 className="text-3xl font-bold mb-2">{t('profile.profile')}</h1>
+          <p className="text-muted-foreground">{t('profile.manageInfo')}</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
+            <CardTitle>{t('profile.personalInfo')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -96,7 +98,7 @@ export const ProfilePage = () => {
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="photo">Profile Photo</Label>
+                  <Label htmlFor="photo">{t('profile.profilePhoto')}</Label>
                   <Input
                     id="photo"
                     type="file"
@@ -108,7 +110,7 @@ export const ProfilePage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('auth.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -116,46 +118,46 @@ export const ProfilePage = () => {
                   disabled
                   className="bg-muted"
                 />
-                <p className="text-sm text-muted-foreground">Email cannot be changed</p>
+                <p className="text-sm text-muted-foreground">{t('profile.emailCannotChange')}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="displayName">Display Name</Label>
+                <Label htmlFor="displayName">{t('profile.displayName')}</Label>
                 <Input
                   id="displayName"
                   name="displayName"
                   value={formData.displayName}
                   onChange={handleChange}
-                  placeholder="Your name"
+                  placeholder={t('profile.yourName')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Label htmlFor="phoneNumber">{t('profile.phoneNumber')}</Label>
                 <Input
                   id="phoneNumber"
                   name="phoneNumber"
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  placeholder="+1 (555) 123-4567"
+                  placeholder={t('profile.phonePlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="bio">{t('profile.bio')}</Label>
                 <textarea
                   id="bio"
                   name="bio"
                   value={formData.bio}
                   onChange={handleChange}
                   className="w-full min-h-[100px] px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  placeholder="Tell us about yourself..."
+                  placeholder={t('profile.bioPlaceholder')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label>{t('profile.role')}</Label>
                 <Input value={userProfile?.role || 'N/A'} disabled className="bg-muted capitalize" />
               </div>
 
@@ -173,7 +175,7 @@ export const ProfilePage = () => {
 
               <Button type="submit" disabled={loading} className="w-full">
                 <Save className="h-4 w-4 mr-2" />
-                {loading ? 'Saving...' : 'Save Changes'}
+                {loading ? t('profile.saving') : t('profile.saveChanges')}
               </Button>
             </form>
           </CardContent>

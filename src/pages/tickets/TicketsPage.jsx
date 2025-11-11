@@ -119,16 +119,16 @@ export const TicketsPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Maintenance Tickets</h1>
+            <h1 className="text-3xl font-bold mb-2">{t('ticket.maintenanceTickets')}</h1>
             <p className="text-muted-foreground">
               {userProfile?.role === USER_ROLES.SERVICE_PROVIDER
-                ? 'Tickets assigned to you'
-                : 'Manage maintenance requests'}
+                ? t('ticket.ticketsAssignedToYou')
+                : t('ticket.manageRequests')}
             </p>
           </div>
           <Button onClick={() => navigate('/tickets/create')}>
             <Plus className="h-4 w-4 mr-2" />
-            Create Ticket
+            {t('ticket.createTicket')}
           </Button>
         </div>
 
@@ -137,7 +137,7 @@ export const TicketsPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               type="text"
-              placeholder="Search tickets..."
+              placeholder={t('ticket.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -148,12 +148,12 @@ export const TicketsPage = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 rounded-md border border-input bg-background text-sm"
           >
-            <option value="all">All Status</option>
-            <option value={TICKET_STATUS.OPEN}>Open</option>
-            <option value={TICKET_STATUS.ASSIGNED}>Assigned</option>
-            <option value={TICKET_STATUS.IN_PROGRESS}>In Progress</option>
-            <option value={TICKET_STATUS.COMPLETED}>Completed</option>
-            <option value={TICKET_STATUS.CLOSED}>Closed</option>
+            <option value="all">{t('ticket.allStatus')}</option>
+            <option value={TICKET_STATUS.OPEN}>{t('ticket.statuses.open')}</option>
+            <option value={TICKET_STATUS.ASSIGNED}>{t('ticket.statuses.assigned')}</option>
+            <option value={TICKET_STATUS.IN_PROGRESS}>{t('ticket.statuses.inProgress')}</option>
+            <option value={TICKET_STATUS.COMPLETED}>{t('ticket.statuses.completed')}</option>
+            <option value={TICKET_STATUS.CLOSED}>{t('ticket.statuses.closed')}</option>
           </select>
         </div>
 
@@ -172,16 +172,16 @@ export const TicketsPage = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Ticket className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No tickets found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('ticket.noTicketsFound')}</h3>
               <p className="text-muted-foreground mb-4">
                 {searchTerm || statusFilter !== 'all'
-                  ? 'Try adjusting your filters'
-                  : 'Create your first maintenance ticket'}
+                  ? t('ticket.tryAdjustingFilters')
+                  : t('ticket.createFirstTicket')}
               </p>
               {!searchTerm && statusFilter === 'all' && (
                 <Button onClick={() => navigate('/tickets/create')}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Create Ticket
+                  {t('ticket.createTicket')}
                 </Button>
               )}
             </CardContent>
@@ -205,12 +205,12 @@ export const TicketsPage = () => {
                         <CardTitle className="flex items-center gap-2">
                           {ticket.title}
                           <span className={`text-sm font-normal ${getPriorityColor(ticket.priority)}`}>
-                            ({ticket.priority || 'normal'} priority)
+                            ({t(`ticket.priorities.${ticket.priority || 'normal'}`)} {t('ticket.priority').toLowerCase()})
                           </span>
                         </CardTitle>
                         <CardDescription className="mt-2">
-                          {properties[ticket.propertyId]?.name || 'Unknown Property'}
-                          {ticket.unitNumber && ` - Unit ${ticket.unitNumber}`}
+                          {properties[ticket.propertyId]?.name || t('ticket.unknownProperty')}
+                          {ticket.unitNumber && ` - ${t('unit.unitNumber')} ${ticket.unitNumber}`}
                         </CardDescription>
                       </div>
                       <span className={`text-xs px-3 py-1 rounded-full ${getStatusColor(ticket.status)}`}>
@@ -223,9 +223,9 @@ export const TicketsPage = () => {
                       {ticket.description}
                     </p>
                     <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                      <span>Category: {ticket.category || 'General'}</span>
+                      <span>{t('ticket.category')}: {t(`ticket.categories.${ticket.category || 'general'}`)}</span>
                       <span>
-                        Created:{' '}
+                        {t('ticket.created')}:{' '}
                         {ticket.createdAt?.toDate
                           ? new Date(ticket.createdAt.toDate()).toLocaleDateString()
                           : 'N/A'}

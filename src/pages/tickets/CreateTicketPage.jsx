@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, setDoc, serverTimestamp, collection, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../lib/firebase';
@@ -12,6 +13,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { TICKET_STATUS } from '../../utils/constants';
 
 export const CreateTicketPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -94,30 +96,30 @@ export const CreateTicketPage = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/tickets')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Tickets
+            {t('ticket.backToTickets')}
           </Button>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Create Maintenance Ticket</CardTitle>
+            <CardTitle>{t('ticket.createMaintenance')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Title *</Label>
+                <Label htmlFor="title">{t('ticket.ticketTitle')} *</Label>
                 <Input
                   id="title"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
                   required
-                  placeholder="Brief description of the issue"
+                  placeholder={t('ticket.briefDescription')}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description *</Label>
+                <Label htmlFor="description">{t('ticket.description')} *</Label>
                 <textarea
                   id="description"
                   name="description"
@@ -125,13 +127,13 @@ export const CreateTicketPage = () => {
                   onChange={handleChange}
                   required
                   className="w-full min-h-[120px] px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  placeholder="Provide detailed information about the issue..."
+                  placeholder={t('ticket.detailedDescription')}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="propertyId">Property *</Label>
+                  <Label htmlFor="propertyId">{t('property.propertyName')} *</Label>
                   <select
                     id="propertyId"
                     name="propertyId"
@@ -140,7 +142,7 @@ export const CreateTicketPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="">Select a property</option>
+                    <option value="">{t('ticket.selectProperty')}</option>
                     {properties.map((property) => (
                       <option key={property.id} value={property.id}>
                         {property.name}
@@ -150,20 +152,20 @@ export const CreateTicketPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="unitNumber">Unit Number</Label>
+                  <Label htmlFor="unitNumber">{t('unit.unitNumber')}</Label>
                   <Input
                     id="unitNumber"
                     name="unitNumber"
                     value={formData.unitNumber}
                     onChange={handleChange}
-                    placeholder="e.g., A101"
+                    placeholder={t('ticket.unitNumberPlaceholder')}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
+                  <Label htmlFor="category">{t('ticket.category')} *</Label>
                   <select
                     id="category"
                     name="category"
@@ -172,18 +174,18 @@ export const CreateTicketPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="general">General</option>
-                    <option value="plumbing">Plumbing</option>
-                    <option value="electrical">Electrical</option>
-                    <option value="hvac">HVAC</option>
-                    <option value="appliance">Appliance</option>
-                    <option value="structural">Structural</option>
-                    <option value="other">Other</option>
+                    <option value="general">{t('ticket.categories.general')}</option>
+                    <option value="plumbing">{t('ticket.categories.plumbing')}</option>
+                    <option value="electrical">{t('ticket.categories.electrical')}</option>
+                    <option value="hvac">{t('ticket.categories.hvac')}</option>
+                    <option value="appliance">{t('ticket.categories.appliance')}</option>
+                    <option value="structural">{t('ticket.categories.structural')}</option>
+                    <option value="other">{t('ticket.categories.other')}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="priority">Priority *</Label>
+                  <Label htmlFor="priority">{t('ticket.priority')} *</Label>
                   <select
                     id="priority"
                     name="priority"
@@ -192,19 +194,19 @@ export const CreateTicketPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
+                    <option value="low">{t('ticket.priorities.low')}</option>
+                    <option value="medium">{t('ticket.priorities.medium')}</option>
+                    <option value="high">{t('ticket.priorities.high')}</option>
+                    <option value="urgent">{t('ticket.priorities.urgent')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">Attach Image</Label>
+                <Label htmlFor="image">{t('ticket.attachImage')}</Label>
                 <Input id="image" type="file" accept="image/*" onChange={handleImageChange} />
                 <p className="text-sm text-muted-foreground">
-                  Upload a photo of the issue (optional)
+                  {t('ticket.uploadPhoto')}
                 </p>
               </div>
 
@@ -217,7 +219,7 @@ export const CreateTicketPage = () => {
               <div className="flex gap-3">
                 <Button type="submit" disabled={loading} className="flex-1">
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? 'Creating...' : 'Create Ticket'}
+                  {loading ? t('ticket.creating') : t('ticket.createTicket')}
                 </Button>
                 <Button
                   type="button"
@@ -225,7 +227,7 @@ export const CreateTicketPage = () => {
                   onClick={() => navigate('/tickets')}
                   disabled={loading}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </form>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { DollarSign, Search, Download } from 'lucide-react';
 import { collection, getDocs, query, orderBy, where } from 'firebase/firestore';
@@ -9,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { useAuth } from '../../contexts/AuthContext';
 
 export const PaymentsPage = () => {
+  const { t } = useTranslation();
   const { currentUser } = useAuth();
   const [payments, setPayments] = useState([]);
   const [properties, setProperties] = useState({});
@@ -73,8 +75,8 @@ export const PaymentsPage = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Payment History</h1>
-          <p className="text-muted-foreground">View your rent payments and invoices</p>
+          <h1 className="text-3xl font-bold mb-2">{t('payment.paymentHistory')}</h1>
+          <p className="text-muted-foreground">{t('payment.viewHistory')}</p>
         </div>
 
         <div className="mb-6">
@@ -82,7 +84,7 @@ export const PaymentsPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               type="text"
-              placeholder="Search payments..."
+              placeholder={t('payment.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -105,9 +107,9 @@ export const PaymentsPage = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <DollarSign className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No payments found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('payment.noPaymentsFound')}</h3>
               <p className="text-muted-foreground">
-                {searchTerm ? 'Try adjusting your search' : 'No payment records available'}
+                {searchTerm ? t('payment.tryAdjustingSearch') : t('payment.noRecords')}
               </p>
             </CardContent>
           </Card>
@@ -127,18 +129,18 @@ export const PaymentsPage = () => {
                         <CardTitle className="flex items-center gap-2">
                           ${payment.amount?.toLocaleString()}
                           <span className={`text-sm px-3 py-1 rounded-full ${getStatusColor(payment.status)}`}>
-                            {payment.status}
+                            {t(`payment.statuses.${payment.status}`)}
                           </span>
                         </CardTitle>
                         <CardDescription className="mt-2">
-                          {properties[payment.propertyId]?.name || 'Unknown Property'}
-                          {payment.unitNumber && ` - Unit ${payment.unitNumber}`}
+                          {properties[payment.propertyId]?.name || t('ticket.unknownProperty')}
+                          {payment.unitNumber && ` - ${t('unit.unitNumber')} ${payment.unitNumber}`}
                         </CardDescription>
                       </div>
                       {payment.status === 'paid' && (
                         <Button variant="outline" size="sm">
                           <Download className="h-4 w-4 mr-2" />
-                          Receipt
+                          {t('payment.receipt')}
                         </Button>
                       )}
                     </div>
@@ -146,21 +148,21 @@ export const PaymentsPage = () => {
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                       <div>
-                        <p className="text-muted-foreground">Due Date</p>
+                        <p className="text-muted-foreground">{t('payment.dueDate')}</p>
                         <p className="font-medium">
                           {payment.dueDate ? new Date(payment.dueDate).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
                       {payment.paidDate && (
                         <div>
-                          <p className="text-muted-foreground">Paid Date</p>
+                          <p className="text-muted-foreground">{t('payment.paidDate')}</p>
                           <p className="font-medium">
                             {new Date(payment.paidDate).toLocaleDateString()}
                           </p>
                         </div>
                       )}
                       <div>
-                        <p className="text-muted-foreground">Payment Method</p>
+                        <p className="text-muted-foreground">{t('payment.paymentMethod')}</p>
                         <p className="font-medium capitalize">{payment.method || 'N/A'}</p>
                       </div>
                     </div>

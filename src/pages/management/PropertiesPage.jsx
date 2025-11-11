@@ -65,7 +65,7 @@ export const PropertiesPage = () => {
   };
 
   const handleDelete = async (propertyId) => {
-    if (!window.confirm('Are you sure you want to delete this property?')) {
+    if (!window.confirm(t('property.deleteConfirm'))) {
       return;
     }
 
@@ -74,7 +74,7 @@ export const PropertiesPage = () => {
       setProperties(properties.filter((p) => p.id !== propertyId));
     } catch (error) {
       console.error('Error deleting property:', error);
-      alert('Failed to delete property');
+      alert(t('property.deleteFailed'));
     }
   };
 
@@ -88,14 +88,14 @@ export const PropertiesPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Properties</h1>
+            <h1 className="text-3xl font-bold mb-2">{t('property.properties')}</h1>
             <p className="text-muted-foreground">
-              Manage all properties in the system
+              {t('property.manageAll')}
             </p>
           </div>
           <Button onClick={() => navigate('/properties/create')}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Property
+            {t('property.addProperty')}
           </Button>
         </div>
 
@@ -104,7 +104,7 @@ export const PropertiesPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               type="text"
-              placeholder="Search properties..."
+              placeholder={t('property.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -128,14 +128,14 @@ export const PropertiesPage = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No properties found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('property.noPropertiesFound')}</h3>
               <p className="text-muted-foreground mb-4">
-                {searchTerm ? 'Try adjusting your search' : 'Get started by adding your first property'}
+                {searchTerm ? t('property.tryAdjustingSearch') : t('property.getStarted')}
               </p>
               {!searchTerm && (
                 <Button onClick={() => navigate('/properties/create')}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Property
+                  {t('property.addProperty')}
                 </Button>
               )}
             </CardContent>
@@ -165,21 +165,21 @@ export const PropertiesPage = () => {
                     )}
                   </div>
                   <CardHeader>
-                    <CardTitle className="line-clamp-1">{property.name || 'Unnamed Property'}</CardTitle>
+                    <CardTitle className="line-clamp-1">{property.name || t('property.unnamed')}</CardTitle>
                     <CardDescription className="line-clamp-1">
-                      {property.address || 'No address'}
+                      {property.address || t('property.noAddress')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-2">
-                      {property.description || 'No description available'}
+                      {property.description || t('property.noDescription')}
                     </p>
                     <div className="mt-4 flex items-center justify-between text-sm">
                       <div>
-                        <span className="font-semibold">{property.totalUnits || 0}</span> units
+                        <span className="font-semibold">{property.totalUnits || 0}</span> {t('property.units').toLowerCase()}
                       </div>
                       <div className="text-green-600">
-                        <span className="font-semibold">{property.availableUnits || 0}</span> available
+                        <span className="font-semibold">{property.availableUnits || 0}</span> {t('property.available')}
                       </div>
                     </div>
                   </CardContent>
@@ -190,7 +190,7 @@ export const PropertiesPage = () => {
                       onClick={() => navigate(`/properties/edit/${property.id}`)}
                     >
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      {t('common.edit')}
                     </Button>
                     <Button
                       variant="outline"
@@ -198,7 +198,7 @@ export const PropertiesPage = () => {
                       onClick={() => handleDelete(property.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {t('common.delete')}
                     </Button>
                   </CardFooter>
                 </Card>

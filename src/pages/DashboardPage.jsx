@@ -18,28 +18,28 @@ export const DashboardPage = () => {
       return [
         {
           title: t('property.properties'),
-          description: 'Manage your properties',
+          description: t('dashboard.manageProperties'),
           icon: Building2,
           link: '/properties',
           color: 'from-primary to-primary-600',
         },
         {
           title: t('unit.units'),
-          description: 'Manage property units',
+          description: t('dashboard.manageUnits'),
           icon: Building2,
           link: '/units',
           color: 'from-secondary to-secondary-700',
         },
         {
           title: t('ticket.tickets'),
-          description: 'Maintenance tickets',
+          description: t('dashboard.maintenanceTickets'),
           icon: Ticket,
           link: '/tickets',
           color: 'from-blue-500 to-blue-600',
         },
         {
-          title: 'Contracts',
-          description: 'Manage contracts',
+          title: t('contract.contracts'),
+          description: t('dashboard.manageContracts'),
           icon: FileText,
           link: '/contracts',
           color: 'from-purple-500 to-purple-600',
@@ -50,22 +50,22 @@ export const DashboardPage = () => {
     if (role === USER_ROLES.UNIT_OWNER) {
       return [
         {
-          title: 'My Units',
-          description: 'Manage your units',
+          title: t('dashboard.myUnits'),
+          description: t('dashboard.manageUnits'),
           icon: Building2,
           link: '/my-units',
           color: 'from-primary to-primary-600',
         },
         {
           title: t('ticket.tickets'),
-          description: 'Maintenance requests',
+          description: t('dashboard.maintenanceRequests'),
           icon: Ticket,
           link: '/tickets',
           color: 'from-blue-500 to-blue-600',
         },
         {
-          title: 'Contracts',
-          description: 'View contracts',
+          title: t('contract.contracts'),
+          description: t('dashboard.viewContracts'),
           icon: FileText,
           link: '/contracts',
           color: 'from-purple-500 to-purple-600',
@@ -76,22 +76,22 @@ export const DashboardPage = () => {
     if (role === USER_ROLES.TENANT) {
       return [
         {
-          title: 'My Rental',
-          description: 'View rental details',
+          title: t('dashboard.myRental'),
+          description: t('dashboard.viewRentalDetails'),
           icon: Building2,
           link: '/my-rental',
           color: 'from-primary to-primary-600',
         },
         {
           title: t('ticket.tickets'),
-          description: 'Submit requests',
+          description: t('dashboard.submitRequests'),
           icon: Ticket,
           link: '/tickets',
           color: 'from-blue-500 to-blue-600',
         },
         {
-          title: 'Payments',
-          description: 'View payments',
+          title: t('payment.payments'),
+          description: t('dashboard.viewPayments'),
           icon: FileText,
           link: '/payments',
           color: 'from-green-500 to-green-600',
@@ -102,15 +102,15 @@ export const DashboardPage = () => {
     if (role === USER_ROLES.SERVICE_PROVIDER) {
       return [
         {
-          title: 'My Services',
-          description: 'Manage services',
+          title: t('dashboard.myServices'),
+          description: t('dashboard.manageServices'),
           icon: Building2,
           link: '/services',
           color: 'from-primary to-primary-600',
         },
         {
-          title: 'Assigned Tickets',
-          description: 'Work tickets',
+          title: t('dashboard.assignedTickets'),
+          description: t('dashboard.workTickets'),
           icon: Ticket,
           link: '/tickets',
           color: 'from-blue-500 to-blue-600',
@@ -133,10 +133,10 @@ export const DashboardPage = () => {
         >
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">
-              Welcome back, {userProfile?.displayName || userProfile?.email}
+              {t('common.welcomeBack')}, {userProfile?.displayName || userProfile?.email}
             </h1>
             <p className="text-muted-foreground">
-              Role: {userProfile?.role}
+              {t('dashboard.role')}: {userProfile?.role}
             </p>
           </div>
 
@@ -161,7 +161,7 @@ export const DashboardPage = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-primary hover:underline">
-                      View details →
+                      {t('common.viewDetails')} →
                     </p>
                   </CardContent>
                 </Card>
@@ -173,9 +173,9 @@ export const DashboardPage = () => {
             <Card>
               <CardContent className="py-12 text-center">
                 <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Welcome to SkyProperties</h3>
+                <h3 className="text-xl font-semibold mb-2">{t('dashboard.welcomeMessage')}</h3>
                 <p className="text-muted-foreground">
-                  Your dashboard will be populated based on your role and activities
+                  {t('dashboard.welcomeDescription')}
                 </p>
               </CardContent>
             </Card>
