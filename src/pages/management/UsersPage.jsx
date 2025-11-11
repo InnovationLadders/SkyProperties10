@@ -13,7 +13,7 @@ import { USER_ROLES } from '../../utils/constants';
 
 const UsersPage = () => {
   const { t } = useTranslation();
-  const { user: currentUser } = useAuth();
+  const { currentUser, userProfile } = useAuth();
 
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -25,8 +25,10 @@ const UsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    fetchUsers();
-  }, [currentUser]);
+    if (userProfile) {
+      fetchUsers();
+    }
+  }, [userProfile]);
 
   useEffect(() => {
     filterUsers();
@@ -37,10 +39,10 @@ const UsersPage = () => {
       setLoading(true);
       let fetchedUsers = [];
 
-      if (currentUser.role === USER_ROLES.ADMIN) {
+      if (userProfile.role === USER_ROLES.ADMIN) {
         fetchedUsers = await getAllUsers();
-      } else if (currentUser.role === USER_ROLES.PROPERTY_MANAGER) {
-        fetchedUsers = await getPropertyManagerUsers(currentUser.uid);
+      } else if (userProfile.role === USER_ROLES.PROPERTY_MANAGER) {
+        fetchedUsers = await getPropertyManagerUsers(userProfile.uid);
       }
 
       setUsers(fetchedUsers);
@@ -112,6 +114,18 @@ const UsersPage = () => {
     return users.filter(u => u.role === role).length;
   };
 
+  if (!userProfile) {
+    return (
+      <MainLayout>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -131,7 +145,7 @@ const UsersPage = () => {
               </div>
             </div>
 
-            {currentUser.role === USER_ROLES.ADMIN && (
+            {userProfile?.role === USER_ROLES.ADMIN && (
               <Button onClick={handleCreateUser}>
                 <Plus className="w-5 h-5 mr-2" />
                 {t('user.createUser')}
@@ -239,7 +253,7 @@ const UsersPage = () => {
                 user={user}
                 onEdit={handleEditUser}
                 onDelete={handleDeleteUser}
-                showActions={currentUser.role === USER_ROLES.ADMIN || currentUser.uid !== user.id}
+                showActions={userProfile?.role === USER_ROLES.ADMIN || userProfile?.uid !== user.id}
               />
             ))}
           </div>
