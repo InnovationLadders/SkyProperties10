@@ -1,98 +1,122 @@
-import { useState, useEffect } from 'react';
-import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { MapPin } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { useTranslation } from 'react-i18next';
+import { createPinIcon } from '../../utils/mapIcons';
+import { geocodeAddress } from '../../utils/geocoding';
+
+const DraggableMarker = ({ position, onPositionChange }) => {
+  const [markerPosition, setMarkerPosition] = useState(position);
+  const markerRef = useRef(null);
+
+  useEffect(() => {
+    setMarkerPosition(position);
+  }, [position]);
+
+  const eventHandlers = useMemo(
+    () => ({
+      dragend() {
+        const marker = markerRef.current;
+        if (marker != null) {
+          const newPos = marker.getLatLng();
+          setMarkerPosition([newPos.lat, newPos.lng]);
+          onPositionChange({ lat: newPos.lat, lng: newPos.lng });
+        }
+      },
+    }),
+    [onPositionChange]
+  );
+
+  return (
+    <Marker
+      draggable={true}
+      eventHandlers={eventHandlers}
+      position={markerPosition}
+      ref={markerRef}
+      icon={createPinIcon('#3b82f6')}
+    />
+  );
+};
+
+const MapClickHandler = ({ onMapClick }) => {
+  useMapEvents({
+    click(e) {
+      onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
+    },
+  });
+  return null;
+};
 
 export const CoordinatePicker = ({ coordinates, onCoordinatesChange, address }) => {
   const { t } = useTranslation();
   const [markerPosition, setMarkerPosition] = useState(
-    coordinates || { lat: 24.7136, lng: 46.6753 }
+    coordinates ? [coordinates.lat, coordinates.lng] : [24.7136, 46.6753]
   );
-  const [mapCenter, setMapCenter] = useState(
-    coordinates || { lat: 24.7136, lng: 46.6753 }
-  );
-
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const geocodingTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (coordinates) {
-      setMarkerPosition(coordinates);
-      setMapCenter(coordinates);
+      setMarkerPosition([coordinates.lat, coordinates.lng]);
     }
   }, [coordinates]);
 
   useEffect(() => {
-    if (address && window.google && window.google.maps) {
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === 'OK' && results[0]) {
-          const location = results[0].geometry.location;
-          const newPosition = {
-            lat: location.lat(),
-            lng: location.lng(),
-          };
-          setMarkerPosition(newPosition);
-          setMapCenter(newPosition);
-          onCoordinatesChange(newPosition);
-        }
-      });
-    }
-  }, [address]);
+    if (address && address.trim() !== '') {
+      if (geocodingTimeoutRef.current) {
+        clearTimeout(geocodingTimeoutRef.current);
+      }
 
-  const handleMapClick = (event) => {
-    const newPosition = {
-      lat: event.detail.latLng.lat,
-      lng: event.detail.latLng.lng,
+      geocodingTimeoutRef.current = setTimeout(async () => {
+        setIsGeocoding(true);
+        const result = await geocodeAddress(address);
+        setIsGeocoding(false);
+
+        if (result) {
+          const newPosition = [result.lat, result.lng];
+          setMarkerPosition(newPosition);
+          onCoordinatesChange({ lat: result.lat, lng: result.lng });
+        }
+      }, 1500);
+    }
+
+    return () => {
+      if (geocodingTimeoutRef.current) {
+        clearTimeout(geocodingTimeoutRef.current);
+      }
     };
-    setMarkerPosition(newPosition);
-    onCoordinatesChange(newPosition);
+  }, [address, onCoordinatesChange]);
+
+  const handleMapClick = (coords) => {
+    setMarkerPosition([coords.lat, coords.lng]);
+    onCoordinatesChange(coords);
   };
 
-  if (!apiKey || apiKey === 'your_google_maps_api_key_here' || apiKey === 'AIzaSyDummyKeyForDevelopment') {
-    return (
-      <div className="w-full h-64 flex items-center justify-center bg-muted rounded-lg border">
-        <div className="text-center p-6">
-          <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-          <p className="text-sm font-semibold mb-1">{t('map.apiKeyRequired')}</p>
-          <p className="text-xs text-muted-foreground">
-            {t('map.apiKeyInstructions') || 'Configure Google Maps API key to use location picker'}
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const handleMarkerDragEnd = (coords) => {
+    setMarkerPosition([coords.lat, coords.lng]);
+    onCoordinatesChange(coords);
+  };
 
   return (
-    <div className="w-full h-64 rounded-lg overflow-hidden border">
-      <APIProvider apiKey={apiKey}>
-        <Map
-          mapId="coordinate-picker-map"
-          center={mapCenter}
-          zoom={13}
-          className="w-full h-full"
-          gestureHandling="greedy"
-          disableDefaultUI={false}
-          zoomControl={true}
-          onClick={handleMapClick}
-        >
-          <AdvancedMarker
-            position={markerPosition}
-            draggable={true}
-            onDragEnd={(event) => {
-              const newPosition = {
-                lat: event.latLng.lat,
-                lng: event.latLng.lng,
-              };
-              setMarkerPosition(newPosition);
-              onCoordinatesChange(newPosition);
-            }}
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary shadow-lg">
-              <MapPin className="h-5 w-5 text-white" />
-            </div>
-          </AdvancedMarker>
-        </Map>
-      </APIProvider>
+    <div className="w-full h-64 rounded-lg overflow-hidden border relative">
+      {isGeocoding && (
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-[1000] bg-white px-4 py-2 rounded shadow-lg text-sm">
+          {t('map.searchingLocation') || 'Searching location...'}
+        </div>
+      )}
+      <MapContainer
+        center={markerPosition}
+        zoom={13}
+        className="w-full h-full"
+        zoomControl={true}
+        scrollWheelZoom={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <MapClickHandler onMapClick={handleMapClick} />
+        <DraggableMarker position={markerPosition} onPositionChange={handleMarkerDragEnd} />
+      </MapContainer>
     </div>
   );
 };
