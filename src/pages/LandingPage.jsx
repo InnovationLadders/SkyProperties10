@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Building2, MapPin, DollarSign, Map as MapIcon, List } from 'lucide-react';
+import { Building2, MapPin, DollarSign, Map as MapIcon, List, Search } from 'lucide-react';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Button } from '../components/ui/Button';
