@@ -1,15 +1,40 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Building2, Users, Ticket, FileText } from 'lucide-react';
+import { Building2, Users, Ticket, FileText, DollarSign } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
+import { BillingStats } from '../components/billing/BillingStats';
 import { USER_ROLES } from '../utils/constants';
+import { getBillingStatistics } from '../utils/billingService';
 
 export const DashboardPage = () => {
-  const { userProfile } = useAuth();
+  const { userProfile, currentUser } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [billingStats, setBillingStats] = useState(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchBillingStats();
+    }
+  }, [currentUser]);
+
+  const fetchBillingStats = async () => {
+    try {
+      const role = userProfile?.role;
+      if (role === USER_ROLES.ADMIN || role === USER_ROLES.PROPERTY_MANAGER) {
+        const stats = await getBillingStatistics();
+        setBillingStats(stats);
+      } else {
+        const stats = await getBillingStatistics(currentUser.uid);
+        setBillingStats(stats);
+      }
+    } catch (error) {
+      console.error('Error fetching billing stats:', error);
+    }
+  };
 
   const getDashboardCards = () => {
     const role = userProfile?.role;
@@ -44,6 +69,13 @@ export const DashboardPage = () => {
           link: '/contracts',
           color: 'from-purple-500 to-purple-600',
         },
+        {
+          title: t('billing.bills'),
+          description: t('billing.manageBills'),
+          icon: DollarSign,
+          link: '/billing/manage',
+          color: 'from-green-500 to-green-600',
+        },
       ];
     }
 
@@ -69,6 +101,13 @@ export const DashboardPage = () => {
           icon: FileText,
           link: '/contracts',
           color: 'from-purple-500 to-purple-600',
+        },
+        {
+          title: t('billing.myBills'),
+          description: t('billing.viewAllBills'),
+          icon: DollarSign,
+          link: '/billing/my-bills',
+          color: 'from-green-500 to-green-600',
         },
       ];
     }
@@ -96,6 +135,13 @@ export const DashboardPage = () => {
           link: '/payments',
           color: 'from-green-500 to-green-600',
         },
+        {
+          title: t('billing.myBills'),
+          description: t('billing.viewAllBills'),
+          icon: DollarSign,
+          link: '/billing/my-bills',
+          color: 'from-emerald-500 to-emerald-600',
+        },
       ];
     }
 
@@ -114,6 +160,13 @@ export const DashboardPage = () => {
           icon: Ticket,
           link: '/tickets',
           color: 'from-blue-500 to-blue-600',
+        },
+        {
+          title: t('billing.myBills'),
+          description: t('billing.viewAllBills'),
+          icon: DollarSign,
+          link: '/billing/my-bills',
+          color: 'from-green-500 to-green-600',
         },
       ];
     }
@@ -139,6 +192,12 @@ export const DashboardPage = () => {
               {t('dashboard.role')}: {userProfile?.role}
             </p>
           </div>
+
+          {billingStats && (
+            <div className="mb-8">
+              <BillingStats stats={billingStats} />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {cards.map((card, index) => (

@@ -23,6 +23,12 @@ import { ContractFormPage } from './pages/contracts/ContractFormPage';
 import { ContractDetailPage } from './pages/contracts/ContractDetailPage';
 import { PaymentsPage } from './pages/payments/PaymentsPage';
 import { ProfilePage } from './pages/profile/ProfilePage';
+import { BillsManagementPage } from './pages/billing/BillsManagementPage';
+import { CreateBillPage } from './pages/billing/CreateBillPage';
+import { MyBillsPage } from './pages/billing/MyBillsPage';
+import { BillDetailPage } from './pages/billing/BillDetailPage';
+import { PaymentCheckoutPage } from './pages/billing/PaymentCheckoutPage';
+import { BillingSettingsPage } from './pages/billing/BillingSettingsPage';
 import './lib/i18n';
 
 function App() {
@@ -178,6 +184,55 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <PaymentsPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/billing/manage"
+                element={
+                  <ProtectedRoute>
+                    <BillsManagementPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing/create"
+                element={
+                  <ProtectedRoute>
+                    <CreateBillPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing/my-bills"
+                element={
+                  <ProtectedRoute>
+                    <MyBillsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing/:billId"
+                element={
+                  <ProtectedRoute>
+                    <BillDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing/payment/:billId"
+                element={
+                  <ProtectedRoute>
+                    <PaymentCheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing/settings"
+                element={
+                  <ProtectedRoute>
+                    <BillingSettingsPage />
                   </ProtectedRoute>
                 }
               />

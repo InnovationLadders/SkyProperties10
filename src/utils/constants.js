@@ -50,3 +50,55 @@ export const CONTRACT_STATUS = {
   EXPIRED: 'expired',
   TERMINATED: 'terminated',
 };
+
+export const BILL_TYPES = {
+  RENT: 'rent',
+  COMMISSION: 'commission',
+  SERVICE_FEES: 'serviceFees',
+  OTHER: 'other',
+};
+
+export const BILL_STATUS = {
+  UNPAID: 'unpaid',
+  PENDING: 'pending',
+  PAID: 'paid',
+  OVERDUE: 'overdue',
+  CANCELLED: 'cancelled',
+  REFUNDED: 'refunded',
+};
+
+export const PAYMENT_STATUS = {
+  PENDING: 'pending',
+  PROCESSING: 'processing',
+  COMPLETED: 'completed',
+  FAILED: 'failed',
+  REFUNDED: 'refunded',
+};
+
+export const NOTIFICATION_CHANNELS = {
+  SMS: 'sms',
+  WHATSAPP: 'whatsapp',
+  EMAIL: 'email',
+};
+
+export const NOTIFICATION_TYPES = {
+  BILL_ISSUED: 'billIssued',
+  PAYMENT_REMINDER: 'paymentReminder',
+  PAYMENT_CONFIRMED: 'paymentConfirmed',
+  PAYMENT_FAILED: 'paymentFailed',
+  OVERDUE_NOTICE: 'overdueNotice',
+};
+
+export const PAYMENT_METHODS = {
+  VISA: 'visa',
+  MASTERCARD: 'mastercard',
+  MADA: 'mada',
+  CASH: 'cash',
+  BANK_TRANSFER: 'bankTransfer',
+};
+
+export const CURRENCY = {
+  USD: 'USD',
+  SAR: 'SAR',
+  AED: 'AED',
+};
