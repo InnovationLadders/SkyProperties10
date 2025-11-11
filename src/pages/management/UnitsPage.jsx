@@ -51,7 +51,7 @@ export const UnitsPage = () => {
   };
 
   const handleDelete = async (unitId) => {
-    if (!window.confirm('Are you sure you want to delete this unit?')) {
+    if (!window.confirm(t('unit.deleteUnitConfirm'))) {
       return;
     }
 
@@ -60,7 +60,7 @@ export const UnitsPage = () => {
       setUnits(units.filter((u) => u.id !== unitId));
     } catch (error) {
       console.error('Error deleting unit:', error);
-      alert('Failed to delete unit');
+      alert(t('unit.deleteUnitFailed'));
     }
   };
 
@@ -92,17 +92,17 @@ export const UnitsPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Units</h1>
-            <p className="text-muted-foreground">Manage all units across properties</p>
+            <h1 className="text-3xl font-bold mb-2">{t('unit.units')}</h1>
+            <p className="text-muted-foreground">{t('unit.manageAllUnits')}</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => navigate('/units/visualizer')}>
               <Eye className="h-4 w-4 mr-2" />
-              3D Visualizer
+              {t('unit.visualizer3D')}
             </Button>
             <Button onClick={() => navigate('/units/create')}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Unit
+              {t('unit.addUnit')}
             </Button>
           </div>
         </div>
@@ -112,7 +112,7 @@ export const UnitsPage = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Input
               type="text"
-              placeholder="Search units..."
+              placeholder={t('unit.searchUnits')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -123,11 +123,11 @@ export const UnitsPage = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 rounded-md border border-input bg-background text-sm"
           >
-            <option value="all">All Status</option>
-            <option value={UNIT_STATUS.AVAILABLE}>Available</option>
-            <option value={UNIT_STATUS.RESERVED}>Reserved</option>
-            <option value={UNIT_STATUS.SOLD}>Sold</option>
-            <option value={UNIT_STATUS.RENTED}>Rented</option>
+            <option value="all">{t('unit.allStatus')}</option>
+            <option value={UNIT_STATUS.AVAILABLE}>{t('unit.available')}</option>
+            <option value={UNIT_STATUS.RESERVED}>{t('unit.reserved')}</option>
+            <option value={UNIT_STATUS.SOLD}>{t('unit.sold')}</option>
+            <option value={UNIT_STATUS.RENTED}>{t('unit.rented')}</option>
           </select>
         </div>
 
@@ -146,16 +146,16 @@ export const UnitsPage = () => {
           <Card>
             <CardContent className="py-12 text-center">
               <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No units found</h3>
+              <h3 className="text-xl font-semibold mb-2">{t('unit.noUnitsFound')}</h3>
               <p className="text-muted-foreground mb-4">
                 {searchTerm || statusFilter !== 'all'
-                  ? 'Try adjusting your filters'
-                  : 'Get started by adding your first unit'}
+                  ? t('unit.tryAdjustingFilters')
+                  : t('unit.getStartedUnit')}
               </p>
               {!searchTerm && statusFilter === 'all' && (
                 <Button onClick={() => navigate('/units/create')}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Unit
+                  {t('unit.addUnit')}
                 </Button>
               )}
             </CardContent>
@@ -194,41 +194,41 @@ export const UnitsPage = () => {
                   )}
                   <CardHeader>
                     <div className="flex justify-between items-start">
-                      <CardTitle>Unit {unit.unitNumber}</CardTitle>
+                      <CardTitle>{t('unit.units')} {unit.unitNumber}</CardTitle>
                       <span className={`text-xs px-2 py-1 rounded ${getStatusColor(unit.status)}`}>
-                        {unit.status}
+                        {t(`unit.${unit.status}`)}
                       </span>
                     </div>
                     <CardDescription>
-                      {properties[unit.propertyId]?.name || 'Unknown Property'}
+                      {properties[unit.propertyId]?.name || t('unit.unknownProperty')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Floor:</span>
+                        <span className="text-muted-foreground">{t('unit.floor')}:</span>
                         <span className="font-medium">{unit.floor}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Type:</span>
-                        <span className="font-medium">{unit.type || 'N/A'}</span>
+                        <span className="text-muted-foreground">{t('unit.type')}:</span>
+                        <span className="font-medium">{unit.type || t('unit.na')}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">View:</span>
+                        <span className="text-muted-foreground">{t('unit.view')}:</span>
                         <span className={`text-xs px-2 py-0.5 rounded font-medium ${
                           unit.viewType === 'external'
                             ? 'bg-orange-100 text-orange-800'
                             : 'bg-purple-100 text-purple-800'
                         }`}>
-                          {unit.viewType === 'external' ? 'External' : 'Internal'}
+                          {unit.viewType === 'external' ? t('property.external') : t('property.internal')}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Size:</span>
+                        <span className="text-muted-foreground">{t('unit.size')}:</span>
                         <span className="font-medium">{unit.size} sqm</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Price:</span>
+                        <span className="text-muted-foreground">{t('unit.price')}:</span>
                         <span className="font-medium text-primary">
                           ${unit.price?.toLocaleString()}
                         </span>
@@ -242,7 +242,7 @@ export const UnitsPage = () => {
                       onClick={() => navigate(`/units/edit/${unit.id}`)}
                     >
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      {t('common.edit')}
                     </Button>
                     <Button
                       variant="outline"
@@ -250,7 +250,7 @@ export const UnitsPage = () => {
                       onClick={() => handleDelete(unit.id)}
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {t('common.delete')}
                     </Button>
                   </CardFooter>
                 </Card>

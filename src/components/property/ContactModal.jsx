@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { doc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../ui/Button';
@@ -9,6 +10,7 @@ import { X, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const ContactModal = ({ isOpen, onClose, property, unit }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -50,7 +52,7 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
       }, 2000);
     } catch (error) {
       console.error('Error submitting inquiry:', error);
-      setError('Failed to submit inquiry. Please try again.');
+      setError(t('contactModal.inquiryError'));
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,7 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>Request Contact</CardTitle>
+                <CardTitle>{t('contactModal.requestContact')}</CardTitle>
                 <Button variant="ghost" size="icon" onClick={onClose}>
                   <X className="h-4 w-4" />
                 </Button>
@@ -85,27 +87,27 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Send className="w-8 h-8 text-green-600" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">Inquiry Sent!</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('contactModal.inquirySent')}</h3>
                   <p className="text-muted-foreground">
-                    We'll get back to you as soon as possible.
+                    {t('contactModal.inquirySuccess')}
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name *</Label>
+                    <Label htmlFor="name">{t('contactModal.name')} *</Label>
                     <Input
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      placeholder="Your full name"
+                      placeholder={t('contactModal.namePlaceholder')}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">{t('contactModal.email')} *</Label>
                     <Input
                       id="email"
                       name="email"
@@ -113,12 +115,12 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      placeholder="your@email.com"
+                      placeholder={t('contactModal.emailPlaceholder')}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Label htmlFor="phone">{t('contactModal.phoneNumber')} *</Label>
                     <Input
                       id="phone"
                       name="phone"
@@ -126,19 +128,19 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
                       value={formData.phone}
                       onChange={handleChange}
                       required
-                      placeholder="+1 (555) 123-4567"
+                      placeholder={t('contactModal.phonePlaceholder')}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
+                    <Label htmlFor="message">{t('contactModal.message')}</Label>
                     <textarea
                       id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
                       className="w-full min-h-[100px] px-3 py-2 border border-input bg-background rounded-md text-sm"
-                      placeholder="I'm interested in this property..."
+                      placeholder={t('contactModal.messagePlaceholder')}
                     />
                   </div>
 
@@ -151,10 +153,10 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
                   <div className="flex gap-3">
                     <Button type="submit" disabled={loading} className="flex-1">
                       <Send className="h-4 w-4 mr-2" />
-                      {loading ? 'Sending...' : 'Send Inquiry'}
+                      {loading ? t('contactModal.sending') : t('contactModal.sendInquiry')}
                     </Button>
                     <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
-                      Cancel
+                      {t('common.cancel')}
                     </Button>
                   </div>
                 </form>

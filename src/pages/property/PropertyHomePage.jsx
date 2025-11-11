@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { BuildingModel3D } from '../../components/property/BuildingModel3D';
@@ -11,6 +12,7 @@ import { Building2, MapPin, X, DollarSign, Ruler, ChevronLeft, ChevronRight, Pla
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const PropertyHomePage = () => {
+  const { t } = useTranslation();
   const { propertyId } = useParams();
   const [property, setProperty] = useState(null);
   const [units, setUnits] = useState([]);
@@ -91,7 +93,7 @@ export const PropertyHomePage = () => {
         <Card>
           <CardContent className="py-12">
             <Building2 className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold text-center">Property not found</h3>
+            <h3 className="text-xl font-semibold text-center">{t('property.propertyNotFound')}</h3>
           </CardContent>
         </Card>
       </div>
@@ -113,7 +115,7 @@ export const PropertyHomePage = () => {
           <div className="lg:col-span-2">
             <div className="mb-3 px-1">
               <p className="text-sm text-muted-foreground">
-                Click on a unit hotspot in the 3D model to view details
+                {t('property.clickHotspot')}
               </p>
             </div>
             <Card className="overflow-hidden">
@@ -125,23 +127,23 @@ export const PropertyHomePage = () => {
                     onHotspotClick={handleHotspotClick}
                   />
                   <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200">
-                    <h4 className="text-xs font-semibold mb-2 text-gray-700">Legend</h4>
+                    <h4 className="text-xs font-semibold mb-2 text-gray-700">{t('property.legend')}</h4>
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-green-500 rounded"></div>
-                        <span className="text-xs text-gray-700">For Sale (External)</span>
+                        <span className="text-xs text-gray-700">{t('property.forSaleExternal')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span className="text-xs text-gray-700">For Sale (Internal)</span>
+                        <span className="text-xs text-gray-700">{t('property.forSaleInternal')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                        <span className="text-xs text-gray-700">For Rent (External)</span>
+                        <span className="text-xs text-gray-700">{t('property.forRentExternal')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        <span className="text-xs text-gray-700">For Rent (Internal)</span>
+                        <span className="text-xs text-gray-700">{t('property.forRentInternal')}</span>
                       </div>
                     </div>
                   </div>
@@ -151,9 +153,9 @@ export const PropertyHomePage = () => {
 
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Available Units</CardTitle>
+                <CardTitle>{t('property.availableUnits')}</CardTitle>
                 <CardDescription>
-                  {units.length} units total, {units.filter(u => u.status === 'available').length} available
+                  {units.length} {t('property.unitsTotal')}, {units.filter(u => u.status === 'available').length} {t('property.available')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -181,7 +183,7 @@ export const PropertyHomePage = () => {
                                   : 'bg-blue-500 text-white'
                               }`}
                             >
-                              {unit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                              {unit.listingType === 'sale' ? t('property.forSale') : t('property.forRent')}
                             </span>
                           </div>
                         </div>
@@ -196,14 +198,14 @@ export const PropertyHomePage = () => {
                                   : 'bg-blue-500 text-white'
                               }`}
                             >
-                              {unit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                              {unit.listingType === 'sale' ? t('property.forSale') : t('property.forRent')}
                             </span>
                           </div>
                         </div>
                       )}
                       <div className="p-4">
                         <div className="flex justify-between items-start mb-3">
-                          <h4 className="font-semibold text-lg">Unit {unit.unitNumber}</h4>
+                          <h4 className="font-semibold text-lg">{t('unit.units')} {unit.unitNumber}</h4>
                           <span
                             className={`text-xs px-2 py-1 rounded ${
                               unit.status === 'available'
@@ -211,16 +213,16 @@ export const PropertyHomePage = () => {
                                 : 'bg-gray-100 text-gray-800'
                             }`}
                           >
-                            {unit.status}
+                            {t(`unit.${unit.status}`)}
                           </span>
                         </div>
                         <div className="text-sm text-muted-foreground space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="flex items-center">
                               <Ruler className="h-3 w-3 mr-1" />
-                              {unit.size} sqm
+                              {unit.size} {t('unit.size')}
                             </span>
-                            <span className="font-medium">Floor {unit.floor}</span>
+                            <span className="font-medium">{t('unit.floor')} {unit.floor}</span>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="flex items-center font-semibold text-primary">
@@ -232,7 +234,7 @@ export const PropertyHomePage = () => {
                                 ? 'bg-orange-100 text-orange-800'
                                 : 'bg-purple-100 text-purple-800'
                             }`}>
-                              {unit.viewType === 'external' ? 'External' : 'Internal'}
+                              {unit.viewType === 'external' ? t('property.external') : t('property.internal')}
                             </span>
                           </div>
                         </div>
@@ -258,8 +260,8 @@ export const PropertyHomePage = () => {
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div>
-                          <CardTitle>Unit {selectedUnit.unitNumber}</CardTitle>
-                          <CardDescription>Floor {selectedUnit.floor}</CardDescription>
+                          <CardTitle>{t('unit.units')} {selectedUnit.unitNumber}</CardTitle>
+                          <CardDescription>{t('unit.floor')} {selectedUnit.floor}</CardDescription>
                         </div>
                         <Button
                           variant="ghost"
@@ -362,41 +364,41 @@ export const PropertyHomePage = () => {
 
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Listing Type</span>
+                          <span className="text-muted-foreground">{t('property.listingType')}</span>
                           <span className={`font-medium px-2 py-1 rounded text-sm ${
                             selectedUnit.listingType === 'sale'
                               ? 'bg-green-100 text-green-800'
                               : 'bg-blue-100 text-blue-800'
                           }`}>
-                            {selectedUnit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                            {selectedUnit.listingType === 'sale' ? t('property.forSale') : t('property.forRent')}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">View Type</span>
+                          <span className="text-muted-foreground">{t('property.viewType')}</span>
                           <span className={`font-medium px-2 py-1 rounded text-sm ${
                             selectedUnit.viewType === 'external'
                               ? 'bg-orange-100 text-orange-800'
                               : 'bg-purple-100 text-purple-800'
                           }`}>
-                            {selectedUnit.viewType === 'external' ? 'External View' : 'Internal View'}
+                            {selectedUnit.viewType === 'external' ? t('property.externalView') : t('property.internalView')}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Type</span>
+                          <span className="text-muted-foreground">{t('unit.type')}</span>
                           <span className="font-medium">{selectedUnit.type}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Size</span>
+                          <span className="text-muted-foreground">{t('unit.size')}</span>
                           <span className="font-medium">{selectedUnit.size} sqm</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Price</span>
+                          <span className="text-muted-foreground">{t('unit.price')}</span>
                           <span className="font-medium text-primary">
                             ${selectedUnit.price?.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Status</span>
+                          <span className="text-muted-foreground">{t('unit.status')}</span>
                           <span
                             className={`font-medium ${
                               selectedUnit.status === 'available'
@@ -404,14 +406,14 @@ export const PropertyHomePage = () => {
                                 : 'text-gray-600'
                             }`}
                           >
-                            {selectedUnit.status}
+                            {t(`unit.${selectedUnit.status}`)}
                           </span>
                         </div>
                       </div>
 
                       {selectedUnit.description && (
                         <div>
-                          <h4 className="font-semibold mb-2">Description</h4>
+                          <h4 className="font-semibold mb-2">{t('property.description')}</h4>
                           <p className="text-sm text-muted-foreground">
                             {selectedUnit.description}
                           </p>
@@ -424,7 +426,7 @@ export const PropertyHomePage = () => {
                           size="lg"
                           onClick={() => setShowContactModal(true)}
                         >
-                          Request Contact
+                          {t('property.requestContact')}
                         </Button>
                       </div>
                     </CardContent>
@@ -441,7 +443,7 @@ export const PropertyHomePage = () => {
                     <CardContent className="py-12 text-center">
                       <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <p className="text-muted-foreground">
-                        Select a unit to view details
+                        {t('property.selectUnitToView')}
                       </p>
                     </CardContent>
                   </Card>

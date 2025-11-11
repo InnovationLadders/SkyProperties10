@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Button } from '../../components/ui/Button';
@@ -17,6 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { deleteUnitMedia, setPrimaryMedia, updateMediaMetadata } from '../../utils/mediaUpload';
 
 export const UnitFormPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { unitId } = useParams();
   const { currentUser, userProfile, hasRole } = useAuth();
@@ -267,18 +269,18 @@ export const UnitFormPage = () => {
         <div className="mb-6">
           <Button variant="ghost" onClick={() => navigate('/units')}>
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Units
+            {t('unit.backToUnits')}
           </Button>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>{isEditMode ? 'Edit Unit' : 'Create New Unit'}</CardTitle>
+            <CardTitle>{isEditMode ? t('unit.editUnit') : t('unit.createUnit')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="propertyId">Property *</Label>
+                <Label htmlFor="propertyId">{t('unit.property')} *</Label>
                 <select
                   id="propertyId"
                   name="propertyId"
@@ -287,7 +289,7 @@ export const UnitFormPage = () => {
                   required
                   className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                 >
-                  <option value="">Select a property</option>
+                  <option value="">{t('unit.selectProperty')}</option>
                   {properties.map((property) => (
                     <option key={property.id} value={property.id}>
                       {property.name}
@@ -298,33 +300,33 @@ export const UnitFormPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="unitNumber">Unit Number *</Label>
+                  <Label htmlFor="unitNumber">{t('unit.unitNumber')} *</Label>
                   <Input
                     id="unitNumber"
                     name="unitNumber"
                     value={formData.unitNumber}
                     onChange={handleChange}
                     required
-                    placeholder="e.g., A101"
+                    placeholder={t('unit.unitNumberPlaceholder')}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="floor">Floor *</Label>
+                  <Label htmlFor="floor">{t('unit.floor')} *</Label>
                   <Input
                     id="floor"
                     name="floor"
                     value={formData.floor}
                     onChange={handleChange}
                     required
-                    placeholder="e.g., 5"
+                    placeholder={t('unit.floorPlaceholder')}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Unit Type</Label>
+                  <Label htmlFor="type">{t('unit.unitType')}</Label>
                   <select
                     id="type"
                     name="type"
@@ -332,17 +334,17 @@ export const UnitFormPage = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="">Select type</option>
-                    <option value="apartment">Apartment</option>
-                    <option value="studio">Studio</option>
-                    <option value="penthouse">Penthouse</option>
-                    <option value="office">Office</option>
-                    <option value="retail">Retail</option>
+                    <option value="">{t('unit.selectType')}</option>
+                    <option value="apartment">{t('unit.apartment')}</option>
+                    <option value="studio">{t('unit.studio')}</option>
+                    <option value="penthouse">{t('unit.penthouse')}</option>
+                    <option value="office">{t('unit.office')}</option>
+                    <option value="retail">{t('unit.retail')}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status">Status *</Label>
+                  <Label htmlFor="status">{t('unit.status')} *</Label>
                   <select
                     id="status"
                     name="status"
@@ -351,17 +353,17 @@ export const UnitFormPage = () => {
                     required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value={UNIT_STATUS.AVAILABLE}>Available</option>
-                    <option value={UNIT_STATUS.RESERVED}>Reserved</option>
-                    <option value={UNIT_STATUS.SOLD}>Sold</option>
-                    <option value={UNIT_STATUS.RENTED}>Rented</option>
+                    <option value={UNIT_STATUS.AVAILABLE}>{t('unit.available')}</option>
+                    <option value={UNIT_STATUS.RESERVED}>{t('unit.reserved')}</option>
+                    <option value={UNIT_STATUS.SOLD}>{t('unit.sold')}</option>
+                    <option value={UNIT_STATUS.RENTED}>{t('unit.rented')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="size">Size (sqm) *</Label>
+                  <Label htmlFor="size">{t('unit.sizeSqm')} *</Label>
                   <Input
                     id="size"
                     name="size"
@@ -375,7 +377,7 @@ export const UnitFormPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price ($) *</Label>
+                  <Label htmlFor="price">{t('unit.priceUsd')} *</Label>
                   <Input
                     id="price"
                     name="price"
@@ -391,7 +393,7 @@ export const UnitFormPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="listingType">Listing Type</Label>
+                  <Label htmlFor="listingType">{t('unit.listingType')}</Label>
                   <select
                     id="listingType"
                     name="listingType"
@@ -399,13 +401,13 @@ export const UnitFormPage = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="sale">For Sale</option>
-                    <option value="rent">For Rent</option>
+                    <option value="sale">{t('unit.forSale')}</option>
+                    <option value="rent">{t('unit.forRent')}</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="viewType">View Type</Label>
+                  <Label htmlFor="viewType">{t('unit.viewType')}</Label>
                   <select
                     id="viewType"
                     name="viewType"
@@ -413,27 +415,27 @@ export const UnitFormPage = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="external">External View</option>
-                    <option value="internal">Internal View</option>
+                    <option value="external">{t('unit.externalView')}</option>
+                    <option value="internal">{t('unit.internalView')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t('property.description')}</Label>
                 <textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   className="w-full min-h-[100px] px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  placeholder="Describe the unit..."
+                  placeholder={t('unit.descriptionPlaceholder')}
                 />
               </div>
 
               {hasRole(USER_ROLES.ADMIN) && (
                 <div className="space-y-2">
-                  <Label htmlFor="ownerId">Unit Owner</Label>
+                  <Label htmlFor="ownerId">{t('unit.unitOwner')}</Label>
                   <select
                     id="ownerId"
                     name="ownerId"
@@ -441,7 +443,7 @@ export const UnitFormPage = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="">No owner assigned</option>
+                    <option value="">{t('unit.noOwnerAssigned')}</option>
                     {users.map((user) => (
                       <option key={user.id} value={user.id}>
                         {user.displayName || user.email} ({user.role})
@@ -449,7 +451,7 @@ export const UnitFormPage = () => {
                     ))}
                   </select>
                   <p className="text-xs text-muted-foreground">
-                    Assign an owner to this unit for access control
+                    {t('unit.ownerHelp')}
                   </p>
                 </div>
               )}
@@ -457,9 +459,9 @@ export const UnitFormPage = () => {
               <div className="space-y-4 border-t pt-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-base font-semibold">3D Model Hotspot Position</Label>
+                    <Label className="text-base font-semibold">{t('unit.hotspotPosition')}</Label>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Set the coordinates for this unit on the 3D building model
+                      {t('unit.hotspotDescription')}
                     </p>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -469,7 +471,7 @@ export const UnitFormPage = () => {
                       onChange={toggleCoordinates}
                       className="w-4 h-4 rounded border-gray-300"
                     />
-                    <span className="text-sm">Enable</span>
+                    <span className="text-sm">{t('unit.enable')}</span>
                   </label>
                 </div>
 
@@ -483,7 +485,7 @@ export const UnitFormPage = () => {
                         className="flex-1"
                       >
                         <Wand2 className="h-4 w-4 mr-2" />
-                        {showCoordinatePicker ? 'Hide' : 'Show'} Interactive Picker
+                        {showCoordinatePicker ? t('unit.hideInteractivePicker') : t('unit.showInteractivePicker')}
                       </Button>
                       <Button
                         type="button"
@@ -492,7 +494,7 @@ export const UnitFormPage = () => {
                         disabled={!formData.floor || !formData.unitNumber}
                       >
                         <Calculator className="h-4 w-4 mr-2" />
-                        Auto Calculate
+                        {t('unit.autoCalculate')}
                       </Button>
                     </div>
 
@@ -500,11 +502,11 @@ export const UnitFormPage = () => {
                       <>
                         {!formData.propertyId ? (
                           <div className="p-4 bg-yellow-50 rounded-md text-sm text-yellow-800">
-                            Please select a property first to use the 3D coordinate picker.
+                            {t('unit.selectPropertyFirst')}
                           </div>
                         ) : !selectedProperty?.modelUrl ? (
                           <div className="p-4 bg-yellow-50 rounded-md text-sm text-yellow-800">
-                            The selected property does not have a 3D model uploaded. Please upload a GLB model file to the property first.
+                            {t('unit.noModelAvailable')}
                           </div>
                         ) : (
                           <CoordinatePicker3D
@@ -525,7 +527,7 @@ export const UnitFormPage = () => {
                     <div className="grid grid-cols-3 gap-4 bg-muted/50 p-4 rounded-lg">
                       <div className="space-y-2">
                         <Label htmlFor="coordX" className="text-sm font-medium">
-                          X Position
+                          {t('unit.xPosition')}
                         </Label>
                         <Input
                           id="coordX"
@@ -536,13 +538,13 @@ export const UnitFormPage = () => {
                           className="text-center"
                         />
                         <p className="text-xs text-muted-foreground text-center">
-                          Left (-) / Right (+)
+                          {t('unit.leftRight')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="coordY" className="text-sm font-medium">
-                          Y Position
+                          {t('unit.yPosition')}
                         </Label>
                         <Input
                           id="coordY"
@@ -553,13 +555,13 @@ export const UnitFormPage = () => {
                           className="text-center"
                         />
                         <p className="text-xs text-muted-foreground text-center">
-                          Down (-) / Up (+)
+                          {t('unit.downUp')}
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="coordZ" className="text-sm font-medium">
-                          Z Position
+                          {t('unit.zPosition')}
                         </Label>
                         <Input
                           id="coordZ"
@@ -570,13 +572,13 @@ export const UnitFormPage = () => {
                           className="text-center"
                         />
                         <p className="text-xs text-muted-foreground text-center">
-                          Back (-) / Front (+)
+                          {t('unit.backFront')}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-xs text-muted-foreground bg-blue-50 p-3 rounded-md">
-                      <strong>Current Position:</strong> {coordinateCalculator.formatCoordinate(formData.coordinates)}
+                      <strong>{t('unit.currentPosition')}:</strong> {coordinateCalculator.formatCoordinate(formData.coordinates)}
                       {formData.floor && (
                         <div className="mt-1">
                           Floor {formData.floor} typical Y range: {coordinateCalculator.calculateFloorY(formData.floor).toFixed(1)}
@@ -593,16 +595,16 @@ export const UnitFormPage = () => {
                     <div>
                       <Label className="text-base font-semibold flex items-center gap-2">
                         <Images className="h-5 w-5" />
-                        Unit Media
+                        {t('unit.unitMedia')}
                       </Label>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Upload images and videos to showcase this unit
+                        {t('unit.unitMediaDescription')}
                       </p>
                     </div>
                     {formData.media && formData.media.length > 0 && (
                       <span className="text-sm text-muted-foreground">
-                        {formData.media.filter(m => m.type === 'image').length} photos •{' '}
-                        {formData.media.filter(m => m.type === 'video').length} videos
+                        {formData.media.filter(m => m.type === 'image').length} {t('unit.photos')} •{' '}
+                        {formData.media.filter(m => m.type === 'video').length} {t('unit.videos')}
                       </span>
                     )}
                   </div>
@@ -618,7 +620,7 @@ export const UnitFormPage = () => {
 
                       {formData.media && formData.media.length > 0 && (
                         <div className="mt-6">
-                          <h3 className="text-sm font-medium mb-3">Uploaded Media</h3>
+                          <h3 className="text-sm font-medium mb-3">{t('unit.uploadedMedia')}</h3>
                           <MediaGallery
                             media={formData.media}
                             onDelete={handleDeleteMedia}
@@ -633,7 +635,7 @@ export const UnitFormPage = () => {
                   ) : (
                     <div className="p-4 bg-muted/30 rounded-lg text-center">
                       <p className="text-sm text-muted-foreground">
-                        You don't have permission to manage media for this unit
+                        {t('unit.noPermissionMedia')}
                       </p>
                       {formData.media && formData.media.length > 0 && (
                         <div className="mt-4">
@@ -651,7 +653,7 @@ export const UnitFormPage = () => {
 
               {!isEditMode && (
                 <div className="p-4 bg-blue-50 rounded-md text-sm text-blue-800">
-                  <strong>Note:</strong> You can upload images and videos after creating the unit.
+                  <strong>{t('unit.note')}:</strong> {t('unit.mediaUploadNote')}
                 </div>
               )}
 
@@ -664,7 +666,7 @@ export const UnitFormPage = () => {
               <div className="flex gap-3">
                 <Button type="submit" disabled={loading} className="flex-1">
                   <Save className="h-4 w-4 mr-2" />
-                  {loading ? 'Saving...' : isEditMode ? 'Update Unit' : 'Create Unit'}
+                  {loading ? t('unit.saving') : isEditMode ? t('unit.updateUnit') : t('unit.createUnitButton')}
                 </Button>
                 <Button
                   type="button"
@@ -672,7 +674,7 @@ export const UnitFormPage = () => {
                   onClick={() => navigate('/units')}
                   disabled={loading}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </form>

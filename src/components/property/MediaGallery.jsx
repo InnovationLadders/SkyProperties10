@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image as ImageIcon, Video, Star, Trash2, Edit2, GripVertical } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { motion } from 'framer-motion';
@@ -12,6 +13,7 @@ export const MediaGallery = ({
   onMediaClick,
   canEdit = false,
 }) => {
+  const { t } = useTranslation();
   const [editingCaption, setEditingCaption] = useState(null);
   const [captionValue, setCaptionValue] = useState('');
 
@@ -42,10 +44,10 @@ export const MediaGallery = ({
     return (
       <div className="text-center py-12 bg-muted/30 rounded-lg">
         <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground">No media uploaded yet</p>
+        <p className="text-sm text-muted-foreground">{t('media.noMediaYet')}</p>
         {canEdit && (
           <p className="text-xs text-muted-foreground mt-1">
-            Upload images and videos to showcase this unit
+            {t('media.uploadMediaDescription')}
           </p>
         )}
       </div>
@@ -98,7 +100,7 @@ export const MediaGallery = ({
             {item.isPrimary && (
               <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-md text-xs font-medium flex items-center gap-1">
                 <Star className="h-3 w-3 fill-current" />
-                Primary
+                {t('media.primary')}
               </div>
             )}
 
@@ -136,7 +138,7 @@ export const MediaGallery = ({
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (window.confirm('Are you sure you want to delete this media?')) {
+                      if (window.confirm(t('media.deleteMediaConfirm'))) {
                         onDelete(item);
                       }
                     }}
@@ -155,7 +157,7 @@ export const MediaGallery = ({
                 type="text"
                 value={captionValue}
                 onChange={(e) => setCaptionValue(e.target.value)}
-                placeholder="Add a caption..."
+                placeholder={t('media.addCaption')}
                 className="w-full px-2 py-1 text-xs border border-input bg-background rounded"
                 autoFocus
                 onKeyDown={(e) => {
@@ -172,7 +174,7 @@ export const MediaGallery = ({
                   onClick={() => handleSaveCaption(item)}
                   className="flex-1 h-6 text-xs"
                 >
-                  Save
+                  {t('common.save')}
                 </Button>
                 <Button
                   size="sm"
@@ -180,7 +182,7 @@ export const MediaGallery = ({
                   onClick={handleCancelEdit}
                   className="flex-1 h-6 text-xs"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </div>
@@ -199,7 +201,7 @@ export const MediaGallery = ({
               ) : (
                 <Video className="h-3 w-3 inline mr-1" />
               )}
-              {item.type}
+              {t(`media.${item.type}`)}
             </span>
             {canEdit && onReorder && (
               <GripVertical className="h-3 w-3 cursor-move" />
