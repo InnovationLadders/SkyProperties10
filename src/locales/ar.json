@@ -27,7 +27,8 @@
     "yes": "نعم",
     "confirm": "تأكيد",
     "optional": "اختياري",
-    "required": "مطلوب"
+    "required": "مطلوب",
+    "name": "الاسم"
   },
   "landing": {
     "title": "مرحباً بك في سكاي بروبرتيز",
@@ -244,23 +245,23 @@
     "addNote": "إضافة ملاحظة",
     "noNotesYet": "لا توجد ملاحظات بعد",
     "assignTicket": "تخصيص التذكرة",
-    "assignToProvider": "خصص لمزود الخدمة",
+    "assignToProvider": "خصص لمزود خدمة",
     "serviceProvider": "مزود الخدمة",
     "selectProvider": "اختر مزود الخدمة",
     "assigning": "جارٍ التخصيص...",
-    "assignTicketButton": "خصص التذكرة",
+    "assignTicketButton": "تخصيص التذكرة",
     "updateStatus": "تحديث الحالة",
     "changeTicketStatus": "تغيير حالة التذكرة",
     "updating": "جارٍ التحديث...",
     "updateStatusButton": "تحديث الحالة",
-    "priorityLabel": "الأولوية",
+    "priorityLabel": "أولوية",
     "statuses": {
-      "open": "مفتوح",
-      "assigned": "مخصص",
+      "open": "مفتوحة",
+      "assigned": "مخصصة",
       "inProgress": "قيد التنفيذ",
-      "completed": "مكتمل",
-      "rated": "مقيّم",
-      "closed": "مغلق"
+      "completed": "مكتملة",
+      "rated": "مقيّمة",
+      "closed": "مغلقة"
     },
     "priorities": {
       "low": "منخفضة",
@@ -306,7 +307,7 @@
     "months": "أشهر",
     "financialDetails": "التفاصيل المالية",
     "depositAmount": "قيمة التأمين",
-    "paymentFrequency": "تكرار الدفع",
+    "paymentFrequency": "دورية الدفع",
     "monthly": "شهري",
     "contractDetails": "تفاصيل العقد",
     "termsAndNotes": "الشروط والملاحظات",
@@ -316,11 +317,13 @@
     "deleteContract": "حذف العقد",
     "deleteContractConfirm": "هل أنت متأكد من حذف هذا العقد؟ لا يمكن التراجع عن هذا الإجراء.",
     "deleting": "جارٍ الحذف...",
+    "failedToLoad": "فشل تحميل تفاصيل العقد",
     "statuses": {
       "active": "نشط",
       "expiring": "قارب على الانتهاء",
       "expired": "منتهي",
-      "draft": "مسودة"
+      "draft": "مسودة",
+      "terminated": "منتهي"
     }
   },
   "payment": {
