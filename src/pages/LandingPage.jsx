@@ -180,19 +180,19 @@ export const LandingPage = () => {
                   variant={viewMode === 'list' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className="hidden md:flex"
+                  className="flex items-center"
                 >
-                  <List className="h-4 w-4 mr-2" />
-                  {t('map.listView')}
+                  <List className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t('map.listView')}</span>
                 </Button>
                 <Button
                   variant={viewMode === 'map' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setViewMode('map')}
-                  className="hidden md:flex"
+                  className="flex items-center"
                 >
-                  <MapIcon className="h-4 w-4 mr-2" />
-                  {t('map.mapView')}
+                  <MapIcon className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t('map.mapView')}</span>
                 </Button>
               </div>
             </div>
@@ -287,7 +287,7 @@ export const LandingPage = () => {
                 </div>
 
                 {viewMode === 'map' && (
-                  <div className="w-full h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0">
+                  <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0">
                     <PropertiesMap
                       key={`map-${viewMode}`}
                       properties={filteredProperties}

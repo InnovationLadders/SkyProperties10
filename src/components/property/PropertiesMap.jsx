@@ -130,9 +130,12 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
     <MapContainer
       center={mapCenter}
       zoom={12}
-      className="w-full h-full rounded-lg"
+      className="w-full h-full rounded-lg touch-manipulation"
       zoomControl={true}
       scrollWheelZoom={true}
+      dragging={true}
+      tap={true}
+      touchZoom={true}
       maxBounds={maxBounds}
       maxBoundsViscosity={1.0}
       minZoom={minZoom}
@@ -166,7 +169,7 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
             }}
           >
             <Popup>
-              <div className="p-2 min-w-[200px]">
+              <div className="p-2 min-w-[180px] sm:min-w-[200px]">
                 <h3 className="font-semibold text-sm mb-1 text-gray-900">
                   {property.name || t('property.unnamed')}
                 </h3>
@@ -191,7 +194,7 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
                 </div>
                 <button
                   onClick={() => handleViewDetails(property.id)}
-                  className="w-full mt-2 px-3 py-1.5 bg-primary text-white text-xs rounded hover:bg-primary/90 transition-colors"
+                  className="w-full mt-2 px-3 py-2 sm:py-1.5 bg-primary text-white text-xs rounded hover:bg-primary/90 transition-colors touch-manipulation"
                 >
                   {t('landing.viewDetails')}
                 </button>

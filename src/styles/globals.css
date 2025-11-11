@@ -74,6 +74,13 @@ html[dir="ltr"] {
 
 .leaflet-container {
   font-family: inherit;
+  touch-action: pan-x pan-y;
+}
+
+@media (max-width: 640px) {
+  .leaflet-container {
+    font-size: 14px;
+  }
 }
 
 .custom-map-marker,
@@ -85,11 +92,25 @@ html[dir="ltr"] {
 .leaflet-popup-content-wrapper {
   border-radius: 0.5rem;
   padding: 0;
+  max-width: 280px;
+}
+
+@media (max-width: 640px) {
+  .leaflet-popup-content-wrapper {
+    max-width: 240px;
+  }
 }
 
 .leaflet-popup-content {
   margin: 0;
   width: auto !important;
+  min-width: 180px;
+}
+
+@media (min-width: 640px) {
+  .leaflet-popup-content {
+    min-width: 200px;
+  }
 }
 
 .leaflet-popup-tip-container {
@@ -105,13 +126,26 @@ html[dir="ltr"] {
 .leaflet-control-zoom a {
   color: hsl(222.2 84% 4.9%) !important;
   border: none !important;
-  width: 32px !important;
-  height: 32px !important;
-  line-height: 32px !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  touch-action: manipulation;
+}
+
+@media (min-width: 640px) {
+  .leaflet-control-zoom a {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+  }
 }
 
 .leaflet-control-zoom a:hover {
   background-color: hsl(210 40% 96.1%) !important;
+}
+
+.leaflet-control-zoom a:active {
+  background-color: hsl(210 40% 92%) !important;
 }
 
 .leaflet-control-attribution {
