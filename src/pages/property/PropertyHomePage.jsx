@@ -118,36 +118,33 @@ export const PropertyHomePage = () => {
             </div>
             <Card className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="h-[600px] bg-gray-100">
+                <div className="h-[600px] bg-gray-100 relative">
                   <BuildingModel3D
                     modelUrl={property.modelUrl}
                     hotspots={hotspots}
                     onHotspotClick={handleHotspotClick}
                   />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>Legend</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
-                  <span className="text-sm">For Sale (External)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                  <span className="text-sm">For Sale (Internal)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                  <span className="text-sm">For Rent (External)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm">For Rent (Internal)</span>
+                  <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200">
+                    <h4 className="text-xs font-semibold mb-2 text-gray-700">Legend</h4>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded"></div>
+                        <span className="text-xs text-gray-700">For Sale (External)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="text-xs text-gray-700">For Sale (Internal)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                        <span className="text-xs text-gray-700">For Rent (External)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="text-xs text-gray-700">For Rent (Internal)</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -165,29 +162,79 @@ export const PropertyHomePage = () => {
                     <motion.div
                       key={unit.id}
                       whileHover={{ scale: 1.02 }}
-                      className="p-4 border rounded-lg cursor-pointer hover:border-primary transition-colors"
+                      className="border rounded-lg cursor-pointer hover:border-primary transition-colors overflow-hidden"
                       onClick={() => setSelectedUnit(unit)}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-semibold">Unit {unit.unitNumber}</h4>
-                        <span
-                          className={`text-xs px-2 py-1 rounded ${
-                            unit.status === 'available'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {unit.status}
-                        </span>
-                      </div>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        <div className="flex items-center">
-                          <Ruler className="h-3 w-3 mr-1" />
-                          {unit.size} sqm
+                      {unit.media && unit.media.length > 0 ? (
+                        <div className="relative aspect-video bg-gray-100 overflow-hidden">
+                          <img
+                            src={(unit.media.find(m => m.isPrimary) || unit.media[0]).url}
+                            alt={`Unit ${unit.unitNumber}`}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                          <div className="absolute top-2 right-2 flex gap-1">
+                            <span
+                              className={`text-xs px-2 py-1 rounded font-medium ${
+                                unit.listingType === 'sale'
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-blue-500 text-white'
+                              }`}
+                            >
+                              {unit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <DollarSign className="h-3 w-3 mr-1" />
-                          ${unit.price?.toLocaleString()}
+                      ) : (
+                        <div className="relative aspect-video bg-gray-100 flex items-center justify-center">
+                          <Building2 className="h-12 w-12 text-muted-foreground" />
+                          <div className="absolute top-2 right-2 flex gap-1">
+                            <span
+                              className={`text-xs px-2 py-1 rounded font-medium ${
+                                unit.listingType === 'sale'
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-blue-500 text-white'
+                              }`}
+                            >
+                              {unit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="p-4">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-semibold text-lg">Unit {unit.unitNumber}</h4>
+                          <span
+                            className={`text-xs px-2 py-1 rounded ${
+                              unit.status === 'available'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
+                            {unit.status}
+                          </span>
+                        </div>
+                        <div className="text-sm text-muted-foreground space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="flex items-center">
+                              <Ruler className="h-3 w-3 mr-1" />
+                              {unit.size} sqm
+                            </span>
+                            <span className="font-medium">Floor {unit.floor}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="flex items-center font-semibold text-primary">
+                              <DollarSign className="h-3 w-3 mr-1" />
+                              ${unit.price?.toLocaleString()}
+                            </span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${
+                              unit.viewType === 'external'
+                                ? 'bg-orange-100 text-orange-800'
+                                : 'bg-purple-100 text-purple-800'
+                            }`}>
+                              {unit.viewType === 'external' ? 'External' : 'Internal'}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </motion.div>
@@ -315,6 +362,16 @@ export const PropertyHomePage = () => {
 
                       <div className="space-y-2">
                         <div className="flex justify-between">
+                          <span className="text-muted-foreground">Listing Type</span>
+                          <span className={`font-medium px-2 py-1 rounded text-sm ${
+                            selectedUnit.listingType === 'sale'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}>
+                            {selectedUnit.listingType === 'sale' ? 'For Sale' : 'For Rent'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
                           <span className="text-muted-foreground">Type</span>
                           <span className="font-medium">{selectedUnit.type}</span>
                         </div>
@@ -351,21 +408,13 @@ export const PropertyHomePage = () => {
                         </div>
                       )}
 
-                      <div className="space-y-2 pt-4">
+                      <div className="pt-4">
                         <Button
                           className="w-full"
                           size="lg"
                           onClick={() => setShowContactModal(true)}
                         >
-                          Contact for Sale
-                        </Button>
-                        <Button
-                          className="w-full"
-                          variant="outline"
-                          size="lg"
-                          onClick={() => setShowContactModal(true)}
-                        >
-                          Schedule Viewing
+                          Request Contact
                         </Button>
                       </div>
                     </CardContent>

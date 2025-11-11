@@ -70,7 +70,7 @@ export const ContactModal = ({ isOpen, onClose, property, unit }) => {
           <Card>
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>Contact for Sale</CardTitle>
+                <CardTitle>Request Contact</CardTitle>
                 <Button variant="ghost" size="icon" onClick={onClose}>
                   <X className="h-4 w-4" />
                 </Button>
