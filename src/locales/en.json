@@ -667,6 +667,22 @@
     "receiveEmail": "Receive email notifications",
     "preferencesSaved": "Preferences saved successfully"
   },
+  "map": {
+    "listView": "List View",
+    "mapView": "Map View",
+    "splitView": "Split View",
+    "showOnMap": "Show on Map",
+    "apiKeyRequired": "Google Maps API key is required",
+    "propertyLocation": "Property Location",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "showMap": "Show Map",
+    "hideMap": "Hide Map",
+    "clickToSelectLocation": "Click on the map or drag the marker to select the property location",
+    "selectLocation": "Select Location on Map",
+    "coordinates": "Coordinates",
+    "locationSet": "Location has been set"
+  },
   "user": {
     "users": "Users",
     "user": "User",

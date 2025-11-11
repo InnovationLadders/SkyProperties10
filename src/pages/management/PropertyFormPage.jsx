@@ -8,7 +8,8 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { CoordinatePicker } from '../../components/property/CoordinatePicker';
+import { ArrowLeft, Save, Upload, MapPin } from 'lucide-react';
 
 export const PropertyFormPage = () => {
   const { t } = useTranslation();
@@ -23,12 +24,14 @@ export const PropertyFormPage = () => {
     description: '',
     totalUnits: 0,
     availableUnits: 0,
+    coordinates: { lat: 24.7136, lng: 46.6753 },
   });
   const [error, setError] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [glbFile, setGlbFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [showCoordinatePicker, setShowCoordinatePicker] = useState(false);
 
   useEffect(() => {
     if (isEditMode) {
@@ -248,6 +251,82 @@ export const PropertyFormPage = () => {
                 )}
                 {formData.modelUrl && !glbFile && (
                   <p className="text-sm text-muted-foreground">Current 3D model uploaded</p>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    {t('map.propertyLocation')}
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowCoordinatePicker(!showCoordinatePicker)}
+                  >
+                    {showCoordinatePicker ? t('map.hideMap') : t('map.showMap')}
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="latitude">{t('map.latitude')}</Label>
+                    <Input
+                      id="latitude"
+                      type="number"
+                      step="0.000001"
+                      value={formData.coordinates?.lat || ''}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          coordinates: {
+                            ...prev.coordinates,
+                            lat: parseFloat(e.target.value) || 0,
+                          },
+                        }))
+                      }
+                      placeholder="24.7136"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="longitude">{t('map.longitude')}</Label>
+                    <Input
+                      id="longitude"
+                      type="number"
+                      step="0.000001"
+                      value={formData.coordinates?.lng || ''}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          coordinates: {
+                            ...prev.coordinates,
+                            lng: parseFloat(e.target.value) || 0,
+                          },
+                        }))
+                      }
+                      placeholder="46.6753"
+                    />
+                  </div>
+                </div>
+
+                {showCoordinatePicker && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      {t('map.clickToSelectLocation')}
+                    </p>
+                    <CoordinatePicker
+                      coordinates={formData.coordinates}
+                      onCoordinatesChange={(coords) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          coordinates: coords,
+                        }))
+                      }
+                      address={formData.address}
+                    />
+                  </div>
                 )}
               </div>
 

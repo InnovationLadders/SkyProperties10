@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Search, Building2, MapPin, DollarSign, Filter } from 'lucide-react';
+import { Search, Building2, MapPin, DollarSign, Filter, Map as MapIcon, List } from 'lucide-react';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Button } from '../components/ui/Button';
@@ -10,6 +10,7 @@ import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { UNIT_STATUS } from '../utils/constants';
 import { seedDatabase } from '../utils/seedData';
+import { PropertiesMap } from '../components/property/PropertiesMap';
 import bannerImage from '../assets/building1.jpg';
 
 export const LandingPage = () => {
@@ -20,6 +21,9 @@ export const LandingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState('split');
+  const [selectedPropertyId, setSelectedPropertyId] = useState(null);
+  const [hoveredPropertyId, setHoveredPropertyId] = useState(null);
 
   useEffect(() => {
     fetchProperties();
@@ -166,9 +170,41 @@ export const LandingPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="text-3xl font-bold text-center mb-12">
-              {t('landing.featuredProperties')}
-            </h2>
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold">
+                {t('landing.featuredProperties')}
+              </h2>
+
+              <div className="flex gap-2">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="hidden md:flex"
+                >
+                  <List className="h-4 w-4 mr-2" />
+                  {t('map.listView')}
+                </Button>
+                <Button
+                  variant={viewMode === 'map' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('map')}
+                  className="hidden md:flex"
+                >
+                  <MapIcon className="h-4 w-4 mr-2" />
+                  {t('map.mapView')}
+                </Button>
+                <Button
+                  variant={viewMode === 'split' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('split')}
+                  className="hidden lg:flex"
+                >
+                  <Building2 className="h-4 w-4 mr-2" />
+                  {t('map.splitView')}
+                </Button>
+              </div>
+            </div>
 
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -191,54 +227,89 @@ export const LandingPage = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProperties.map((property, index) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                  >
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(`/property/${property.id}`)}>
-                      <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center overflow-hidden">
-                        {property.imageUrl ? (
-                          <img
-                            src={property.imageUrl}
-                            alt={property.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Building2 className="h-24 w-24 text-primary opacity-50" />
-                        )}
-                      </div>
-                      <CardHeader className="space-y-3">
-                        <CardTitle className="line-clamp-2 min-h-[3.5rem]">{property.name || t('property.unnamed')}</CardTitle>
-                        <CardDescription className="flex items-center gap-2 mt-2">
-                          <MapPin className="h-4 w-4 flex-shrink-0" />
-                          <span className="line-clamp-1">{property.address || t('property.noAddress')}</span>
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {property.description || t('property.noDescription')}
-                        </p>
-                        <div className="mt-4 flex items-center justify-between">
-                          <div className="text-sm">
-                            <span className="font-semibold">{property.totalUnits || 0}</span> {t('property.units')}
+              <div className={`${viewMode === 'split' ? 'lg:grid lg:grid-cols-2 lg:gap-6' : ''}`}>
+                <div className={`${viewMode === 'map' ? 'hidden' : viewMode === 'split' ? 'overflow-y-auto max-h-[800px] pr-2' : ''}`}>
+                  <div className={`grid grid-cols-1 ${viewMode === 'list' ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-6`}>
+                    {filteredProperties.map((property, index) => (
+                      <motion.div
+                        key={property.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        onMouseEnter={() => setHoveredPropertyId(property.id)}
+                        onMouseLeave={() => setHoveredPropertyId(null)}
+                      >
+                        <Card
+                          className={`overflow-hidden transition-all cursor-pointer ${
+                            hoveredPropertyId === property.id || selectedPropertyId === property.id
+                              ? 'shadow-xl ring-2 ring-primary'
+                              : 'hover:shadow-lg'
+                          }`}
+                          onClick={() => {
+                            setSelectedPropertyId(property.id);
+                            navigate(`/property/${property.id}`);
+                          }}
+                        >
+                          <div className="h-48 bg-gradient-to-br from-primary-100 to-secondary-100 flex items-center justify-center overflow-hidden">
+                            {property.imageUrl ? (
+                              <img
+                                src={property.imageUrl}
+                                alt={property.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <Building2 className="h-24 w-24 text-primary opacity-50" />
+                            )}
                           </div>
-                          <div className="text-sm text-green-600">
-                            <span className="font-semibold">{property.availableUnits || 0}</span> {t('property.available')}
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button className="w-full" onClick={() => navigate(`/property/${property.id}`)}>
-                          {t('landing.viewDetails')}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                ))}
+                          <CardHeader className="space-y-3">
+                            <CardTitle className="line-clamp-2 min-h-[3.5rem]">{property.name || t('property.unnamed')}</CardTitle>
+                            <CardDescription className="flex items-center gap-2 mt-2">
+                              <MapPin className="h-4 w-4 flex-shrink-0" />
+                              <span className="line-clamp-1">{property.address || t('property.noAddress')}</span>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                              {property.description || t('property.noDescription')}
+                            </p>
+                            <div className="mt-4 flex items-center justify-between">
+                              <div className="text-sm">
+                                <span className="font-semibold">{property.totalUnits || 0}</span> {t('property.units')}
+                              </div>
+                              <div className="text-sm text-green-600">
+                                <span className="font-semibold">{property.availableUnits || 0}</span> {t('property.available')}
+                              </div>
+                            </div>
+                          </CardContent>
+                          <CardFooter>
+                            <Button className="w-full" onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/property/${property.id}`);
+                            }}>
+                              {t('landing.viewDetails')}
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {(viewMode === 'map' || viewMode === 'split') && (
+                  <div className={`${viewMode === 'map' ? 'w-full' : ''} ${viewMode === 'split' ? 'hidden lg:block' : ''} h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0`}>
+                    <PropertiesMap
+                      properties={filteredProperties}
+                      selectedPropertyId={hoveredPropertyId || selectedPropertyId}
+                      onMarkerClick={(propertyId) => {
+                        setSelectedPropertyId(propertyId);
+                        const element = document.getElementById(`property-${propertyId}`);
+                        if (element) {
+                          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
