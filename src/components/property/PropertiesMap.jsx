@@ -4,15 +4,62 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { DollarSign } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createCustomIcon } from '../../utils/mapIcons';
+import { latLngBounds } from 'leaflet';
 
-const MapUpdater = ({ center, zoom }) => {
+const BoundsHandler = ({ properties, selectedPropertyId }) => {
   const map = useMap();
+  const initialBoundsSet = useRef(false);
+  const previousPropertiesCount = useRef(0);
 
   useEffect(() => {
-    if (center && center.lat && center.lng) {
-      map.setView([center.lat, center.lng], zoom, { animate: true });
+    if (!properties || properties.length === 0) return;
+
+    const propertiesChanged = properties.length !== previousPropertiesCount.current;
+    previousPropertiesCount.current = properties.length;
+
+    if (selectedPropertyId) {
+      const selectedProperty = properties.find(p => p.id === selectedPropertyId);
+      if (selectedProperty && selectedProperty.coordinates) {
+        map.setView(
+          [selectedProperty.coordinates.lat, selectedProperty.coordinates.lng],
+          15,
+          { animate: true, duration: 0.5 }
+        );
+        return;
+      }
     }
-  }, [center, zoom, map]);
+
+    if (!initialBoundsSet.current || propertiesChanged) {
+      const validCoordinates = properties
+        .filter(p => p.coordinates && p.coordinates.lat && p.coordinates.lng)
+        .map(p => [p.coordinates.lat, p.coordinates.lng]);
+
+      if (validCoordinates.length === 0) return;
+
+      if (validCoordinates.length === 1) {
+        map.setView(validCoordinates[0], 14, { animate: true });
+      } else {
+        const bounds = latLngBounds(validCoordinates);
+
+        const areAllPointsSame = validCoordinates.every(
+          coord => coord[0] === validCoordinates[0][0] && coord[1] === validCoordinates[0][1]
+        );
+
+        if (areAllPointsSame) {
+          map.setView(validCoordinates[0], 14, { animate: true });
+        } else {
+          map.fitBounds(bounds, {
+            padding: [50, 50],
+            maxZoom: 16,
+            animate: true,
+            duration: 0.5
+          });
+        }
+      }
+
+      initialBoundsSet.current = true;
+    }
+  }, [properties, selectedPropertyId, map]);
 
   return null;
 };
@@ -20,10 +67,6 @@ const MapUpdater = ({ center, zoom }) => {
 export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [mapCenter, setMapCenter] = useState([24.7136, 46.6753]);
-  const [mapZoom, setMapZoom] = useState(12);
-  const [mapKey, setMapKey] = useState(0);
-  const mapInitialized = useRef(false);
 
   const propertiesWithCoordinates = useMemo(() => {
     return properties.filter(
@@ -31,55 +74,43 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
     );
   }, [properties]);
 
-  useEffect(() => {
-    if (!mapInitialized.current && propertiesWithCoordinates.length > 0) {
-      mapInitialized.current = true;
-      setMapKey(prev => prev + 1);
-    }
-  }, [propertiesWithCoordinates.length]);
-
-  useEffect(() => {
-    if (propertiesWithCoordinates.length > 0) {
-      const lats = propertiesWithCoordinates.map((p) => p.coordinates.lat);
-      const lngs = propertiesWithCoordinates.map((p) => p.coordinates.lng);
-
-      const bounds = {
-        north: Math.max(...lats),
-        south: Math.min(...lats),
-        east: Math.max(...lngs),
-        west: Math.min(...lngs),
+  const { mapCenter, maxBounds, minZoom, maxZoom } = useMemo(() => {
+    if (propertiesWithCoordinates.length === 0) {
+      return {
+        mapCenter: [24.7136, 46.6753],
+        maxBounds: null,
+        minZoom: 3,
+        maxZoom: 18
       };
-
-      const centerLat = (bounds.north + bounds.south) / 2;
-      const centerLng = (bounds.east + bounds.west) / 2;
-
-      setMapCenter([centerLat, centerLng]);
-
-      const latDiff = bounds.north - bounds.south;
-      const lngDiff = bounds.east - bounds.west;
-      const maxDiff = Math.max(latDiff, lngDiff);
-
-      if (maxDiff < 0.01) {
-        setMapZoom(14);
-      } else if (maxDiff < 0.05) {
-        setMapZoom(12);
-      } else if (maxDiff < 0.1) {
-        setMapZoom(11);
-      } else {
-        setMapZoom(10);
-      }
     }
+
+    const lats = propertiesWithCoordinates.map((p) => p.coordinates.lat);
+    const lngs = propertiesWithCoordinates.map((p) => p.coordinates.lng);
+
+    const bounds = {
+      north: Math.max(...lats),
+      south: Math.min(...lats),
+      east: Math.max(...lngs),
+      west: Math.min(...lngs),
+    };
+
+    const centerLat = (bounds.north + bounds.south) / 2;
+    const centerLng = (bounds.east + bounds.west) / 2;
+
+    const padding = 0.1;
+    const latPadding = Math.max((bounds.north - bounds.south) * padding, 0.05);
+    const lngPadding = Math.max((bounds.east - bounds.west) * padding, 0.05);
+
+    return {
+      mapCenter: [centerLat, centerLng],
+      maxBounds: [
+        [bounds.south - latPadding, bounds.west - lngPadding],
+        [bounds.north + latPadding, bounds.east + lngPadding]
+      ],
+      minZoom: 3,
+      maxZoom: 18
+    };
   }, [propertiesWithCoordinates]);
-
-  useEffect(() => {
-    if (selectedPropertyId) {
-      const property = properties.find((p) => p.id === selectedPropertyId);
-      if (property && property.coordinates) {
-        setMapCenter([property.coordinates.lat, property.coordinates.lng]);
-        setMapZoom(15);
-      }
-    }
-  }, [selectedPropertyId, properties]);
 
   const handleViewDetails = (propertyId) => {
     navigate(`/property/${propertyId}`);
@@ -97,18 +128,21 @@ export const PropertiesMap = ({ properties, selectedPropertyId, onMarkerClick })
 
   return (
     <MapContainer
-      key={mapKey}
       center={mapCenter}
-      zoom={mapZoom}
+      zoom={12}
       className="w-full h-full rounded-lg"
       zoomControl={true}
       scrollWheelZoom={true}
+      maxBounds={maxBounds}
+      maxBoundsViscosity={1.0}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <MapUpdater center={{ lat: mapCenter[0], lng: mapCenter[1] }} zoom={mapZoom} />
+      <BoundsHandler properties={propertiesWithCoordinates} selectedPropertyId={selectedPropertyId} />
 
       {propertiesWithCoordinates.map((property) => {
         const isSelected = selectedPropertyId === property.id;
