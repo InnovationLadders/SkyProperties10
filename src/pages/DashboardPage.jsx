@@ -83,6 +83,13 @@ export const DashboardPage = () => {
           link: '/users',
           color: 'from-indigo-500 to-indigo-600',
         },
+        {
+          title: t('permit.permits'),
+          description: t('permit.managePermits'),
+          icon: FileText,
+          link: '/permits',
+          color: 'from-orange-500 to-orange-600',
+        },
       ];
     }
 
@@ -115,6 +122,13 @@ export const DashboardPage = () => {
           icon: DollarSign,
           link: '/billing/my-bills',
           color: 'from-green-500 to-green-600',
+        },
+        {
+          title: t('permit.myPermits'),
+          description: t('permit.viewMyPermits'),
+          icon: FileText,
+          link: '/permits',
+          color: 'from-orange-500 to-orange-600',
         },
       ];
     }
@@ -149,6 +163,13 @@ export const DashboardPage = () => {
           link: '/billing/my-bills',
           color: 'from-emerald-500 to-emerald-600',
         },
+        {
+          title: t('permit.myPermits'),
+          description: t('permit.viewMyPermits'),
+          icon: FileText,
+          link: '/permits',
+          color: 'from-orange-500 to-orange-600',
+        },
       ];
     }
 
@@ -174,6 +195,13 @@ export const DashboardPage = () => {
           icon: DollarSign,
           link: '/billing/my-bills',
           color: 'from-green-500 to-green-600',
+        },
+        {
+          title: t('permit.myPermits'),
+          description: t('permit.viewMyPermits'),
+          icon: FileText,
+          link: '/permits',
+          color: 'from-orange-500 to-orange-600',
         },
       ];
     }

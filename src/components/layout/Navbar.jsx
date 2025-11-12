@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Menu, X, User as UserIcon, Settings, LogOut } from 'lucide-react';
+import { Globe, Menu, X, User as UserIcon, Settings, LogOut, FileText } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Avatar } from '../ui/Avatar';
@@ -105,6 +105,16 @@ export const Navbar = () => {
                       >
                         <UserIcon className="h-4 w-4 mr-3" />
                         {t('navbar.profile')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate('/permits');
+                          setUserMenuOpen(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <FileText className="h-4 w-4 mr-3" />
+                        {t('permit.myPermits')}
                       </button>
                       <button
                         onClick={navigateToProfile}
@@ -212,6 +222,16 @@ export const Navbar = () => {
                 >
                   <UserIcon className="h-4 w-4 mr-3" />
                   {t('navbar.profile')}
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/permits');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                >
+                  <FileText className="h-4 w-4 mr-3" />
+                  {t('permit.myPermits')}
                 </button>
                 <button
                   onClick={handleLogout}
