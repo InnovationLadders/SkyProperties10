@@ -4,6 +4,7 @@ export const USER_ROLES = {
   UNIT_OWNER: 'unitOwner',
   TENANT: 'tenant',
   SERVICE_PROVIDER: 'serviceProvider',
+  GUEST: 'guest',
   PUBLIC: 'public',
 };
 
@@ -112,4 +113,26 @@ export const CURRENCY = {
   USD: 'USD',
   SAR: 'SAR',
   AED: 'AED',
+};
+
+export const PERMIT_TYPES = {
+  MAIN_BUILDING: 'mainBuilding',
+  PARKING: 'parking',
+  UTILITY: 'utility',
+};
+
+export const PERMIT_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+  ACTIVE: 'active',
+  EXPIRED: 'expired',
+  REVOKED: 'revoked',
+};
+
+export const CONTACT_REQUEST_STATUS = {
+  NEW: 'new',
+  READ: 'read',
+  RESPONDED: 'responded',
+  CLOSED: 'closed',
 };

@@ -117,6 +117,7 @@ export const RegisterPage = () => {
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   required
                 >
+                  <option value={USER_ROLES.GUEST}>{t('auth.roles.guest')}</option>
                   <option value={USER_ROLES.UNIT_OWNER}>{t('auth.roles.unitOwner')}</option>
                   <option value={USER_ROLES.TENANT}>{t('auth.roles.tenant')}</option>
                   <option value={USER_ROLES.SERVICE_PROVIDER}>{t('auth.roles.serviceProvider')}</option>
