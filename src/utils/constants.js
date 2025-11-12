@@ -7,6 +7,17 @@ export const USER_ROLES = {
   PUBLIC: 'public',
 };
 
+export const UNIT_CATEGORY = {
+  NORMAL: 'normal',
+  FACILITY: 'facility',
+};
+
+export const FACILITY_TYPES = {
+  CAR_PARKING: 'carParking',
+  OUTDOOR_PARK: 'outdoorPark',
+  KIOSK: 'kiosk',
+};
+
 export const UNIT_STATUS = {
   AVAILABLE: 'available',
   RESERVED: 'reserved',

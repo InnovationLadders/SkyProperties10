@@ -8,7 +8,7 @@ import { Input } from '../../components/ui/Input';
 import { Label } from '../../components/ui/Label';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
 import { ArrowLeft, Save, Calculator, Wand2, Images } from 'lucide-react';
-import { UNIT_STATUS, USER_ROLES } from '../../utils/constants';
+import { UNIT_STATUS, USER_ROLES, UNIT_CATEGORY, FACILITY_TYPES } from '../../utils/constants';
 import { CoordinatePicker3D } from '../../components/property/CoordinatePicker3D';
 import { coordinateCalculator } from '../../utils/coordinateCalculator';
 import { MediaUploader } from '../../components/property/MediaUploader';
@@ -43,6 +43,8 @@ export const UnitFormPage = () => {
     ownerId: '',
     tenantId: '',
     media: [],
+    category: UNIT_CATEGORY.NORMAL,
+    facilityType: '',
   });
   const [error, setError] = useState('');
   const [coordinatesEnabled, setCoordinatesEnabled] = useState(false);
@@ -344,24 +346,60 @@ export const UnitFormPage = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="category">{t('unit.category')} *</Label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                >
+                  <option value={UNIT_CATEGORY.NORMAL}>{t('unit.normalUnit')}</option>
+                  <option value={UNIT_CATEGORY.FACILITY}>{t('unit.facilityUnit')}</option>
+                </select>
+              </div>
+
+              {formData.category === UNIT_CATEGORY.FACILITY && (
                 <div className="space-y-2">
-                  <Label htmlFor="type">{t('unit.unitType')}</Label>
+                  <Label htmlFor="facilityType">{t('unit.facilityType')} *</Label>
                   <select
-                    id="type"
-                    name="type"
-                    value={formData.type}
+                    id="facilityType"
+                    name="facilityType"
+                    value={formData.facilityType}
                     onChange={handleChange}
+                    required
                     className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
                   >
-                    <option value="">{t('unit.selectType')}</option>
-                    <option value="apartment">{t('unit.apartment')}</option>
-                    <option value="studio">{t('unit.studio')}</option>
-                    <option value="penthouse">{t('unit.penthouse')}</option>
-                    <option value="office">{t('unit.office')}</option>
-                    <option value="retail">{t('unit.retail')}</option>
+                    <option value="">{t('unit.selectFacilityType')}</option>
+                    <option value={FACILITY_TYPES.CAR_PARKING}>{t('unit.carParking')}</option>
+                    <option value={FACILITY_TYPES.OUTDOOR_PARK}>{t('unit.outdoorPark')}</option>
+                    <option value={FACILITY_TYPES.KIOSK}>{t('unit.kiosk')}</option>
                   </select>
                 </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {formData.category === UNIT_CATEGORY.NORMAL && (
+                  <div className="space-y-2">
+                    <Label htmlFor="type">{t('unit.unitType')}</Label>
+                    <select
+                      id="type"
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                    >
+                      <option value="">{t('unit.selectType')}</option>
+                      <option value="apartment">{t('unit.apartment')}</option>
+                      <option value="studio">{t('unit.studio')}</option>
+                      <option value="penthouse">{t('unit.penthouse')}</option>
+                      <option value="office">{t('unit.office')}</option>
+                      <option value="retail">{t('unit.retail')}</option>
+                    </select>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="status">{t('unit.status')} *</Label>
