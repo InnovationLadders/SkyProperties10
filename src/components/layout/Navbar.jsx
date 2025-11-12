@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Globe, Menu, X, User as UserIcon, Settings, LogOut, FileText } from 'lucide-react';
+import { Globe, Menu, X, User as UserIcon, Settings, LogOut, FileText, Shield } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Avatar } from '../ui/Avatar';
 import { useAuth } from '../../contexts/AuthContext';
+import { USER_ROLES } from '../../utils/constants';
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation();
@@ -116,6 +117,18 @@ export const Navbar = () => {
                         <FileText className="h-4 w-4 mr-3" />
                         {t('permit.myPermits')}
                       </button>
+                      {(userProfile?.role === USER_ROLES.ADMIN || userProfile?.role === USER_ROLES.PROPERTY_MANAGER) && (
+                        <button
+                          onClick={() => {
+                            navigate('/permits/manage');
+                            setUserMenuOpen(false);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <Shield className="h-4 w-4 mr-3" />
+                          {t('permit.managePermits')}
+                        </button>
+                      )}
                       <button
                         onClick={navigateToProfile}
                         className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -233,6 +246,18 @@ export const Navbar = () => {
                   <FileText className="h-4 w-4 mr-3" />
                   {t('permit.myPermits')}
                 </button>
+                {(userProfile?.role === USER_ROLES.ADMIN || userProfile?.role === USER_ROLES.PROPERTY_MANAGER) && (
+                  <button
+                    onClick={() => {
+                      navigate('/permits/manage');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center w-full text-left px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
+                  >
+                    <Shield className="h-4 w-4 mr-3" />
+                    {t('permit.managePermits')}
+                  </button>
+                )}
                 <button
                   onClick={handleLogout}
                   className="flex items-center w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100 rounded-md"

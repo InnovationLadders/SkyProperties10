@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, User, Eye } from 'lucide-react';
+import { Calendar, MapPin, User, Eye, QrCode } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { PermitStatusBadge } from './PermitStatusBadge';
 import { AccessTypeBadge } from './AccessTypeBadge';
+import { PermitQRCode } from './PermitQRCode';
 import { isPermitActive } from '../../utils/permitsService';
+import { PERMIT_STATUS } from '../../utils/constants';
 
 export const PermitCard = ({ permit }) => {
   const { t } = useTranslation();
@@ -20,6 +22,8 @@ export const PermitCard = ({ permit }) => {
   const handleViewDetails = () => {
     navigate(`/permits/${permit.id}`);
   };
+
+  const showQRCode = permit.status === 'approved' && permit.qrCode;
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -39,6 +43,18 @@ export const PermitCard = ({ permit }) => {
             )}
           </div>
         </div>
+
+        {showQRCode && (
+          <div className="mb-4 flex justify-center p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="text-center">
+              <PermitQRCode value={permit.qrCode} size={150} />
+              <p className="text-xs text-gray-500 mt-2 flex items-center justify-center gap-1">
+                <QrCode className="w-3 h-3" />
+                {t('permit.scanQRCode')}
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-3 mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">

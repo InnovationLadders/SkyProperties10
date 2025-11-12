@@ -32,7 +32,11 @@
     "creating": "جارٍ الإنشاء...",
     "saving": "جارٍ الحفظ...",
     "close": "إغلاق",
-    "unknown": "غير معروف"
+    "unknown": "غير معروف",
+    "actions": "الإجراءات",
+    "details": "التفاصيل",
+    "history": "السجل",
+    "submitting": "جارٍ الإرسال..."
   },
   "landing": {
     "title": "مرحباً بك في SkyProperties",

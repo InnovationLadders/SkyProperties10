@@ -31,7 +31,11 @@
     "creating": "Creating...",
     "saving": "Saving...",
     "close": "Close",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "actions": "Actions",
+    "details": "Details",
+    "history": "History",
+    "submitting": "Submitting..."
   },
   "landing": {
     "title": "Welcome to SkyProperties",

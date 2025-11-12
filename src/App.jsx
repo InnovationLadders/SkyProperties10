@@ -33,6 +33,8 @@ import UsersPage from './pages/management/UsersPage';
 import UserDetailPage from './pages/management/UserDetailPage';
 import MyPermitsPage from './pages/permits/MyPermitsPage';
 import RequestPermitPage from './pages/permits/RequestPermitPage';
+import ManagePermitsPage from './pages/permits/ManagePermitsPage';
+import PermitDetailPage from './pages/permits/PermitDetailPage';
 import './lib/i18n';
 
 function App() {
@@ -280,6 +282,22 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <RequestPermitPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/permits/manage"
+                element={
+                  <ProtectedRoute>
+                    <ManagePermitsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/permits/:permitId"
+                element={
+                  <ProtectedRoute>
+                    <PermitDetailPage />
                   </ProtectedRoute>
                 }
               />
