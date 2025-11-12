@@ -35,7 +35,7 @@
     "unknown": "غير معروف"
   },
   "landing": {
-    "title": "مرحباً بك في سكاي بروبرتيز",
+    "title": "مرحباً بك في SkyProperties",
     "subtitle": "منصة إدارة وتسويق العقارات والمشاريع الرائدة",
     "searchPlaceholder": "ابحث عن العقارات حسب الموقع أو النوع أو السعر...",
     "featuredProperties": "الرئيسية",
@@ -86,7 +86,7 @@
     "manageServices": "إدارة الخدمات",
     "assignedTickets": "التذاكر المخصصة",
     "workTickets": "تذاكر العمل",
-    "welcomeMessage": "مرحباً بك في سكاي بروبرتيز",
+    "welcomeMessage": "مرحباً بك في SkyProperties",
     "welcomeDescription": "سيتم تعبئة لوحة التحكم الخاصة بك بناءً على دورك ونشاطاتك"
   },
   "property": {
@@ -419,7 +419,7 @@
     "updateFailed": "فشل تحديث الملف الشخصي"
   },
   "navbar": {
-    "skyProperties": "سكاي بروبرتيز",
+    "skyProperties": "SkyProperties",
     "userMenu": "قائمة المستخدم",
     "profile": "الملف الشخصي",
     "settings": "الإعدادات",
