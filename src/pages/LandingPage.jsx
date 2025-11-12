@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -10,8 +10,9 @@ import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { UNIT_STATUS } from '../utils/constants';
 import { seedDatabase } from '../utils/seedData';
-import { PropertiesMap } from '../components/property/PropertiesMap';
 import bannerImage from '../assets/building1.jpg';
+
+const PropertiesMap = lazy(() => import('../components/property/PropertiesMap').then(module => ({ default: module.PropertiesMap })));
 
 export const LandingPage = () => {
   const { t } = useTranslation();
@@ -236,18 +237,27 @@ export const LandingPage = () => {
 
                 {viewMode === 'map' && (
                   <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] rounded-lg overflow-hidden mt-6 lg:mt-0">
-                    <PropertiesMap
-                      key={`map-${viewMode}`}
-                      properties={filteredProperties}
-                      selectedPropertyId={hoveredPropertyId || selectedPropertyId}
-                      onMarkerClick={(propertyId) => {
-                        setSelectedPropertyId(propertyId);
-                        const element = document.getElementById(`property-${propertyId}`);
-                        if (element) {
-                          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                      }}
-                    />
+                    <Suspense fallback={
+                      <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                          <p className="text-muted-foreground">{t('map.loadingMap')}</p>
+                        </div>
+                      </div>
+                    }>
+                      <PropertiesMap
+                        key={`map-${viewMode}`}
+                        properties={filteredProperties}
+                        selectedPropertyId={hoveredPropertyId || selectedPropertyId}
+                        onMarkerClick={(propertyId) => {
+                          setSelectedPropertyId(propertyId);
+                          const element = document.getElementById(`property-${propertyId}`);
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }
+                        }}
+                      />
+                    </Suspense>
                   </div>
                 )}
               </div>
