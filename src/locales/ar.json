@@ -917,7 +917,45 @@
       "active": "نشط",
       "expired": "منتهي",
       "revoked": "ملغي"
-    }
+    },
+    "form": {
+      "property": "العقار",
+      "selectProperty": "اختر عقاراً",
+      "unit": "الوحدة (اختياري)",
+      "selectUnit": "اختر وحدة (اختياري)",
+      "accessTypes": "أنواع الوصول",
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "governmentId": "الهوية الحكومية",
+      "governmentIdPlaceholder": "أدخل رقم الهوية الحكومية",
+      "passportNumber": "رقم جواز السفر",
+      "passportNumberPlaceholder": "أدخل رقم جواز السفر",
+      "carPlateNumber": "رقم لوحة السيارة",
+      "carPlateNumberPlaceholder": "مثال: أ ب ج 1234",
+      "mobileNumber": "رقم الجوال",
+      "mobileNumberPlaceholder": "+966 50 123 4567",
+      "purpose": "الغرض من الطلب",
+      "purposePlaceholder": "يرجى وصف الغرض من زيارتك..."
+    },
+    "validation": {
+      "propertyRequired": "اختيار العقار مطلوب",
+      "accessTypeRequired": "يرجى اختيار نوع وصول واحد على الأقل",
+      "startDateRequired": "تاريخ البدء مطلوب",
+      "endDateRequired": "تاريخ الانتهاء مطلوب",
+      "invalidDateRange": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+      "identificationRequired": "الهوية الحكومية أو رقم جواز السفر مطلوب",
+      "mobileRequired": "رقم الجوال مطلوب",
+      "purposeRequired": "الغرض من الطلب مطلوب"
+    },
+    "accessTypes": {
+      "mainBuilding": "الوصول إلى المبنى الرئيسي",
+      "parking": "الوصول إلى منطقة الموقف",
+      "utility": "الوصول إلى منطقة المرافق"
+    },
+    "backToPermits": "العودة إلى التصاريح",
+    "submitRequest": "تقديم الطلب",
+    "fetchPropertiesError": "فشل تحميل العقارات",
+    "fetchUnitsError": "فشل تحميل الوحدات"
   },
   "contactRequest": {
     "requestContact": "طلب اتصال",

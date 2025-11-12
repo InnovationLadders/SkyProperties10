@@ -916,7 +916,45 @@
       "active": "Active",
       "expired": "Expired",
       "revoked": "Revoked"
-    }
+    },
+    "form": {
+      "property": "Property",
+      "selectProperty": "Select a property",
+      "unit": "Unit (Optional)",
+      "selectUnit": "Select a unit (optional)",
+      "accessTypes": "Access Types",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "governmentId": "Government ID",
+      "governmentIdPlaceholder": "Enter government ID number",
+      "passportNumber": "Passport Number",
+      "passportNumberPlaceholder": "Enter passport number",
+      "carPlateNumber": "Car Plate Number",
+      "carPlateNumberPlaceholder": "e.g., ABC 1234",
+      "mobileNumber": "Mobile Number",
+      "mobileNumberPlaceholder": "+1 (555) 123-4567",
+      "purpose": "Purpose of Request",
+      "purposePlaceholder": "Please describe the purpose of your visit..."
+    },
+    "validation": {
+      "propertyRequired": "Property selection is required",
+      "accessTypeRequired": "Please select at least one access type",
+      "startDateRequired": "Start date is required",
+      "endDateRequired": "End date is required",
+      "invalidDateRange": "End date must be after start date",
+      "identificationRequired": "Either Government ID or Passport Number is required",
+      "mobileRequired": "Mobile number is required",
+      "purposeRequired": "Purpose of request is required"
+    },
+    "accessTypes": {
+      "mainBuilding": "Main Building Access",
+      "parking": "Parking Area Access",
+      "utility": "Utility Area Access"
+    },
+    "backToPermits": "Back to Permits",
+    "submitRequest": "Submit Request",
+    "fetchPropertiesError": "Failed to load properties",
+    "fetchUnitsError": "Failed to load units"
   },
   "contactRequest": {
     "requestContact": "Request Contact",

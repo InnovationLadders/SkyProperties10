@@ -32,6 +32,7 @@ import { BillingSettingsPage } from './pages/billing/BillingSettingsPage';
 import UsersPage from './pages/management/UsersPage';
 import UserDetailPage from './pages/management/UserDetailPage';
 import MyPermitsPage from './pages/permits/MyPermitsPage';
+import RequestPermitPage from './pages/permits/RequestPermitPage';
 import './lib/i18n';
 
 function App() {
@@ -271,6 +272,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <MyPermitsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/permits/request"
+                element={
+                  <ProtectedRoute>
+                    <RequestPermitPage />
                   </ProtectedRoute>
                 }
               />
