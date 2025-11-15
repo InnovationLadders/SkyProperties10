@@ -69,19 +69,43 @@ export const getPermitById = async (permitId) => {
 
 export const getUserPermits = async (userId) => {
   try {
+    console.log('[getUserPermits] Starting query for userId:', userId);
+
     const q = query(
       collection(db, 'permits'),
       where('userId', '==', userId),
       orderBy('createdAt', 'desc')
     );
+
     const querySnapshot = await getDocs(q);
     const permits = [];
+
     querySnapshot.forEach((doc) => {
-      permits.push({ id: doc.id, ...doc.data() });
+      const permitData = doc.data();
+      console.log('[getUserPermits] Found permit:', {
+        id: doc.id,
+        userId: permitData.userId,
+        propertyName: permitData.propertyName,
+        status: permitData.status
+      });
+      permits.push({ id: doc.id, ...permitData });
     });
+
+    console.log('[getUserPermits] Total permits found:', permits.length);
     return permits;
   } catch (error) {
-    console.error('Error getting user permits:', error);
+    console.error('[getUserPermits] Error getting user permits:', error);
+    console.error('[getUserPermits] Error details:', {
+      code: error.code,
+      message: error.message,
+      userId: userId
+    });
+
+    if (error.code === 'failed-precondition' || error.message?.includes('index')) {
+      console.warn('[getUserPermits] Index error detected, trying fallback query without orderBy');
+      return await getUserPermitsSimple(userId);
+    }
+
     throw error;
   }
 };
@@ -225,6 +249,37 @@ export const getPendingPermitsCount = async () => {
     return querySnapshot.size;
   } catch (error) {
     console.error('Error getting pending permits count:', error);
+    throw error;
+  }
+};
+
+export const getUserPermitsSimple = async (userId) => {
+  try {
+    console.log('[getUserPermitsSimple] Starting simple query for userId:', userId);
+
+    const q = query(
+      collection(db, 'permits'),
+      where('userId', '==', userId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const permits = [];
+
+    querySnapshot.forEach((doc) => {
+      const permitData = doc.data();
+      permits.push({ id: doc.id, ...permitData });
+    });
+
+    permits.sort((a, b) => {
+      const aTime = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const bTime = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return bTime - aTime;
+    });
+
+    console.log('[getUserPermitsSimple] Total permits found and sorted:', permits.length);
+    return permits;
+  } catch (error) {
+    console.error('[getUserPermitsSimple] Error getting user permits:', error);
     throw error;
   }
 };

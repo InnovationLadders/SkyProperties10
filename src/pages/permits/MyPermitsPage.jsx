@@ -17,6 +17,7 @@ const MyPermitsPage = () => {
   const [permits, setPermits] = useState([]);
   const [filteredPermits, setFilteredPermits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -33,10 +34,36 @@ const MyPermitsPage = () => {
   const fetchPermits = async () => {
     try {
       setLoading(true);
+      setError(null);
+
+      console.log('[MyPermitsPage] User profile:', {
+        uid: userProfile?.uid,
+        email: userProfile?.email,
+        role: userProfile?.role
+      });
+
+      if (!userProfile?.uid) {
+        console.error('[MyPermitsPage] No user profile or uid found');
+        setError('noUserProfile');
+        return;
+      }
+
+      console.log('[MyPermitsPage] Fetching permits for user:', userProfile.uid);
       const fetchedPermits = await getUserPermits(userProfile.uid);
+
+      console.log('[MyPermitsPage] Fetched permits:', {
+        count: fetchedPermits.length,
+        permits: fetchedPermits.map(p => ({
+          id: p.id,
+          propertyName: p.propertyName,
+          status: p.status
+        }))
+      });
+
       setPermits(fetchedPermits);
     } catch (error) {
-      console.error('Error fetching permits:', error);
+      console.error('[MyPermitsPage] Error fetching permits:', error);
+      setError(error.message || 'fetchError');
     } finally {
       setLoading(false);
     }
@@ -106,6 +133,23 @@ const MyPermitsPage = () => {
         <div className="text-center py-12">
           <p className="text-gray-600">{t('common.loading')}</p>
         </div>
+      ) : error ? (
+        <Card>
+          <div className="p-12 text-center">
+            <FileText className="w-16 h-16 mx-auto text-red-400 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {t('permit.errorLoadingPermits')}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {error === 'noUserProfile'
+                ? t('permit.errorNoUserProfile')
+                : t('permit.errorGeneric')}
+            </p>
+            <Button onClick={fetchPermits}>
+              {t('common.tryAgain')}
+            </Button>
+          </div>
+        </Card>
       ) : filteredPermits.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPermits.map((permit) => (
